@@ -29,7 +29,7 @@
 
   <div flex layout="row">
     <!-- Side Menu -->
-    <md-sidenav layout-fill md-is-locked-open="true" class="md-sidenav-left md-whiteframe-z3">
+    <md-sidenav flex layout-fill md-is-locked-open="true" class="md-sidenav-left md-whiteframe-z3">
       <md-list layout-sm="column" layout-align="center center">
         <md-list-item ng-repeat="category in topPage.category">
           <md-button ng-href="{{category.url}}">{{category.name}}</md-button>
