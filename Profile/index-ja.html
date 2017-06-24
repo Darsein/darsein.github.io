@@ -1,0 +1,204 @@
+<html lang="en" ng-app="darsein-profile">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Darsein</title>
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+  <!-- My controllers -->
+  <script src="profile_info.js"></script>
+</head>
+
+<body ng-cloak ng-controller="profilePageController as profileCtrl">
+  <!-- Top Title -->
+  <md-toolbar layout="row" class="md-toolbar-tools">
+    <a ng-href="https://darsein.github.io/">
+      <h1> Darsein </h1> </a>
+  </md-toolbar>
+
+  <md-content flex layout-padding>
+    <!-- TODO: 英語ページを作る -->
+    <!-- <p> [ <a href="./index.html">English Page</a> ] </p> -->
+    <h1> 井上 祐馬 </h1>
+    <md-divider></md-divider>
+    <md-list>
+      <h3> 連絡先等 </h3>
+      <md-list-item>
+        e-mail: yuma [at] ist [dot] hokudai [dot] ac [dot] jp
+      </md-list-item>
+      <md-list-item>
+        twitter: <a href="https://twitter.com/Darsein">@Darsein</a>
+      </md-list-item>
+      <md-list-item>
+        Google Scholar: <a href="https://scholar.google.com/citations?user=eVZEoZsAAAAJ&hl=en">Yuma Inoue</a>
+      </md-list-item>
+      <md-list-item>
+        DBLP: <a href="http://dblp.uni-trier.de/pers/hd/i/Inoue:Yuma">Yuma Inoue</a>
+      </md-list-item>
+    </md-list>
+
+    <md-list>
+      <md-list-item md-colors="{background: 'blue'}" ng-click="profileCtrl.toggle('interests')">
+        <h3 flex> 興味 </h3>
+        <md-icon ng-if="!profileCtrl.isOpen('interests')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-if="profileCtrl.isOpen('interests')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+      </md-list-item>
+      <section ng-show="profileCtrl.isOpen('interests')">
+        <md-list>
+          <md-list-item ng-repeat="interest in profileCtrl.interests">
+            <div class="md-list-item-text">
+              <b>{{interest.category}}</b>
+              <p>{{interest.topic}}</p>
+            </div>
+            <md-divider ng-if="!$last"></md-divider>
+          </md-list-item>
+        </md-list>
+      </section>
+      <md-divider></md-divider>
+
+      <md-list-item md-colors="{background: 'blue'}" ng-click="profileCtrl.toggle('education')">
+        <h3 flex> 学歴 </h3>
+        <md-icon ng-if="!profileCtrl.isOpen('education')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-if="profileCtrl.isOpen('education')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+      </md-list-item>
+      <section ng-show="profileCtrl.isOpen('education')">
+        <md-list>
+          <md-list-item ng-repeat="education in profileCtrl.education">
+            <div class="md-list-item-text">
+              <b>{{education.degree}}: </b> {{education.affiliation}} ({{education.date}}修了
+              <span ng-if="!education.done_flag">見込</span>)
+            </div>
+            <md-divider ng-if="!$last"></md-divider>
+          </md-list-item>
+        </md-list>
+      </section>
+      <md-divider></md-divider>
+
+      <md-list-item md-colors="{background: 'blue'}" ng-click="profileCtrl.toggle('publications')">
+        <h3 flex> 学会・論文誌 </h3>
+        <md-icon ng-if="!profileCtrl.isOpen('publications')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-if="profileCtrl.isOpen('publications')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+      </md-list-item>
+      <section ng-show="profileCtrl.isOpen('publications')">
+        <md-list>
+          <md-list-item ng-repeat="publication in profileCtrl.publications">
+            <div class="md-list-item-text">
+              <h3> {{publication.type}} </h3>
+              <md-list>
+                <md-list-item ng-repeat="paper in publication.papers">
+                  <md-card class="md-accent">
+                    <md-card-content>
+                      <p class="md-body-2">{{paper.authors}}</p>
+                      <p class="md-body-2">{{paper.title}}</p>
+                      <a class="md-body-2" target="_blank" href="{{paper.journal_link}}">{{paper.journal}}</a>
+                    </md-card-content>
+                  </md-card>
+                </md-list-item>
+              </md-list>
+            </div>
+            <md-divider ng-if="!$last"></md-divider>
+          </md-list-item>
+        </md-list>
+      </section>
+      <md-divider></md-divider>
+
+      <md-list-item md-colors="{background: 'blue'}" ng-click="profileCtrl.toggle('awards')">
+        <h3 flex> 受賞等 </h3>
+        <md-icon ng-if="!profileCtrl.isOpen('awards')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-if="profileCtrl.isOpen('awards')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+      </md-list-item>
+      <section ng-show="profileCtrl.isOpen('awards')">
+        <md-list>
+          <md-list-item ng-repeat="award in profileCtrl.awards">
+            <div class="md-list-item-text">
+              <p> {{award.title}} ({{award.date}}) </p>
+            </div>
+            <md-divider ng-if="!$last"></md-divider>
+          </md-list-item>
+        </md-list>
+      </section>
+      <md-divider></md-divider>
+
+      <md-list-item md-colors="{background: 'blue'}" ng-click="profileCtrl.toggle('career')">
+        <h3 flex> 職歴 </h3>
+        <md-icon ng-if="!profileCtrl.isOpen('career')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-if="profileCtrl.isOpen('career')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+      </md-list-item>
+      <section ng-show="profileCtrl.isOpen('career')">
+        <md-list>
+          <md-list-item ng-repeat="career_type in profileCtrl.career">
+            <div class="md-list-item-text">
+              <h3> {{career_type.type}} </h3>
+              <md-list>
+                <md-list-item ng-repeat="job in career_type.jobs">
+                  <md-card class="md-accent">
+                    <md-card-content>
+                      <a class="md-body-2" ng-if="job.link===''">{{job.title}}</a>
+                      <a class="md-body-2" ng-if="job.link!==''" target="_blank" href="job.link">{{job.title}}</a>
+                      <span class="md-body-2" ng-if="job.date">({{job.date}})</span>
+                      <span class="md-body-2" ng-if="!job.date">({{job.start_date}}-{{job.end_date}})</span>
+                    </md-card-content>
+                  </md-card>
+                </md-list-item>
+              </md-list>
+            </div>
+            <md-divider ng-if="!$last"></md-divider>
+          </md-list-item>
+        </md-list>
+      </section>
+      <md-divider></md-divider>
+
+      <md-list-item md-colors="{background: 'blue'}" ng-click="profileCtrl.toggle('activities')">
+        <h3 flex> アウトリーチ </h3>
+        <md-icon ng-if="!profileCtrl.isOpen('activities')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-if="profileCtrl.isOpen('activities')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+      </md-list-item>
+      <section ng-show="profileCtrl.isOpen('activities')">
+        <md-list>
+          <md-list-item ng-repeat="work in profileCtrl.activities">
+            <div class="md-list-item-text">
+              <a class="md-body-2" ng-href="work.event_link"> {{work.event}}</a>: {{work.title}} ({{work.date}})
+            </div>
+            <md-divider ng-if="!$last"></md-divider>
+          </md-list-item>
+        </md-list>
+      </section>
+      <md-divider></md-divider>
+
+      <md-list-item md-colors="{background: 'blue'}" ng-click="profileCtrl.toggle('procon')">
+        <h3 flex> プログラミングコンテスト </h3>
+        <md-icon ng-if="!profileCtrl.isOpen('procon')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-if="profileCtrl.isOpen('procon')" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+      </md-list-item>
+      <section ng-show="profileCtrl.isOpen('procon')">
+
+        <ul>
+          <li> <a href="http://community.topcoder.com/tc">TopCoder</a> Algorithm 部門: <br>
+            <a href="http://community.topcoder.com/tc?module=MemberProfile&amp;cr=22883983">Darsein</a>, Rating 1955 (2015年10月現在) </li>
+
+          <li> <a href="http://codeforces.com/">Codeforces</a>: <br>
+            <a href="http://codeforces.com/profile/Darsein">Darsein</a>, Rating 2064 (2015年10月現在) </li>
+
+          <li> <a href="http://icpc.baylor.edu/welcome.icpc">ACM-ICPC</a>: <br> 国内予選突破、アジア地区予選東京大会進出 (2010, 2012) <br> アジア地区予選台湾大会参加 (2013) </li>
+
+          <li> <a href="https://code.google.com/codejam">Google Code Jam</a>: <br> 世界 131 位 (2014) </li>
+        </ul>
+      </section>
+
+    </md-list>
+  </md-content>
+</body>
+
+</html>

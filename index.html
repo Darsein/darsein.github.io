@@ -1,7 +1,49 @@
-<!DOCTYPE html>
-<html>
-<body>
-<h1>Darsein's Pages</h1>
-<p>Welcome to the 僕のホームページ</p>
+<html lang="en" ng-app="darsein-hp">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Darsein</title>
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+  <!-- My controllers -->
+  <script src="top_categories.js"></script>
+</head>
+
+<body ng-cloak ng-controller="topPageController as topPage">
+  <!-- Top Title -->
+  <md-toolbar layout="row" class="md-toolbar-tools">
+    <a ng-href="https://darsein.github.io/"> <h1> Darsein </h1> </a>
+  </md-toolbar>
+
+  <div flex layout="row">
+    <!-- Side Menu -->
+    <md-sidenav layout-fill md-is-locked-open="true" class="md-sidenav-left md-whiteframe-z3">
+      <md-list layout-sm="column" layout-align="center center">
+        <md-list-item ng-repeat="category in topPage.category">
+          <md-button ng-href="{{category.url}}">{{category.name}}</md-button>
+          <md-divider ng-if="!$last"></md-divider>
+        </md-list-item>
+      </md-list>
+    </md-sidenav>
+
+    <!-- Content -->
+    <md-content flex layout-padding>
+      <h2>このページについて</h2>
+      <p>これから適当にいろいろ追加していきます</p>
+    </md-content>
+  </div>
 </body>
+
 </html>
