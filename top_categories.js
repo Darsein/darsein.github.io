@@ -4,5 +4,9 @@ angular.module('darsein-hp', ['ngMaterial'])
         name: 'Profile',
         url: 'profile/index-ja.html'
       },
+      {
+        name: 'LoveLive',
+        url: 'lovelive/'
+      },
     ];
   });
