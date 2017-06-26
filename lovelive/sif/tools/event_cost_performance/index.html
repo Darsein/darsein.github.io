@@ -1,0 +1,135 @@
+<html lang="en" ng-app="darsein-hp">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Darsein</title>
+  <!-- Google Analytics -->
+  <!-- Google Analytics -->
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-101239470-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+  <script src="rank.js"></script>
+  <script src="event_points.js"></script>
+</head>
+
+<body ng-cloak ng-controller='eventPointsController'>
+  <md-content flex>
+    ※現在とりあえずスコアマッチ (EXPERT or TECHNICAL) のみ、Rank 500まで対応です
+    <h2> 入力項目 </h2>
+    <md-list>
+      <!-- TODO: validation -->
+      <md-list-item>
+        現在のRank: <input type='number' ng-model='scoreMatch.current_rank'>
+      </md-list-item>
+      <md-list-item>
+        現在のExp: <input type='number' ng-model='scoreMatch.current_exp'>
+      </md-list-item>
+      <md-list-item>
+        現在のLP: <input type='number' ng-model='scoreMatch.current_LP'>
+      </md-list-item>
+      <!-- TODO: calc from difficulties, score_rank, and match_rank -->
+      <md-list-item>
+        平均獲得ポイント: <input type='number' step=0.01 ng-model='scoreMatch.average_points'>
+      </md-list-item>
+      <md-list-item>
+        現在の獲得ポイント: <input type='number' ng-model='scoreMatch.current_points'>
+      </md-list-item>
+      <md-list-item>
+        目標ポイント: <input type='number' ng-model='scoreMatch.target_points'>
+      </md-list-item>
+    </md-list>
+    <md-divider></md-divider>
+
+    <h2> 計算結果 </h2>
+    <md-list>
+      <md-list-item>
+        現在日時: {{ scoreMatch.now | date: 'M月d日 HH:mm' }}
+      </md-list-item>
+      <md-list-item>
+        イベント期間: {{ scoreMatch.event_start | date: 'M月d日 HH:mm' }} - {{ scoreMatch.event_end | date: 'M月d日 HH:mm' }}
+      </md-list-item>
+      <md-list-item>
+        残り期間: {{ scoreMatch.remain_date | date: 'd日 H時間 m分' }}
+      </md-list-item>
+
+      <md-list-item>
+        最終ポイント: {{ scoreMatch.final_points | number }}
+      </md-list-item>
+      <md-list-item>
+        使用石個数: {{ scoreMatch.used_stone | number }}
+      </md-list-item>
+      <md-list-item>
+        最終Rank: {{ scoreMatch.final_rank | number }}
+      </md-list-item>
+      <md-list-item>
+        最終EXP: {{ scoreMatch.final_exp | number }}
+      </md-list-item>
+      <md-list-item>
+        最終LP: {{ scoreMatch.final_LP | number }}
+      </md-list-item>
+      <md-list-item>
+        プレイ回数: {{ scoreMatch.final_play_num | number }}
+      </md-list-item>
+      <md-list-item>
+        予想プレイ時間 (1回3分と仮定): {{ 3 * scoreMatch.final_play_num | number }} 分
+      </md-list-item>
+    </md-list>
+    <md-divider></md-divider>
+
+    <h2> 更新履歴 </h2>
+    <md-list>
+      <md-list-item>
+        2017/06/26: スコマのみ、EXのみ、Rank 500までの状態で公開
+      </md-list-item>
+    </md-list>
+    <md-divider></md-divider>
+
+    <h2> アップデート予定 (個人的優先度順) </h2> 下記以外にも要望があれば <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> まで。
+    <ul>
+      <li> 難易度 EASY, NORMAL, HARD の入力に対応 </li>
+      <li> スコア・コンボ・順位などの入力から平均ポイントを自動算出 </li>
+      <li> 石の個数・最終Rankも入力項目にして、変更された場合それに合わせて他の項目を自動計算 </li>
+      <li> UIのブラッシュアップ </li>
+      <li> 現在時刻や終了時刻の手動入力 </li>
+      <li> 平均獲得ポイント以外の小数入力禁止 </li>
+      <li> 前回までの入力内容を保存・再利用 (cookie, テキストデータのダウンロード/アップロードなど) </li>
+      <li> スコマ以外のイベントに対応 </li>
+      <li> Rank 500以上をEXP近似式で対応 </li>
+      <li> 獲得アイテム一覧の表示 </li>
+      <li> イベント期間外の利用時に対応 (警告を出す、現在時刻を次のイベント開始時刻にしてLP補完等) </li>
+      <li> 開催中のイベントをデフォルト値に設定 </li>
+      <li> 獲得アイテムを石の価値に換算した際の石効率最適化 </li>
+      <li> 入力されたユニットをからスコマ平均順位を予想し自動補完 </li>
+    </ul>
+  </md-content>
+</body>
+
+</html>
