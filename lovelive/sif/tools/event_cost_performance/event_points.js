@@ -1,21 +1,35 @@
-angular.module('darsein-hp', ['ngMaterial', 'rank'])
-  .service("ScoreMatch", function(Rank) {
+angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
+  .service("Event", function(Rank, ScoreMatch) {
 
-    var scoreMatch = function() {
+    var event = function() {
       this.rank = new Rank();
+      this.reward = {};
+      this.reward["score_match"] = new ScoreMatch();
+
+      this.event_type = "score_match";
+      this.difficulty = "expert";
       this.current_rank = 100;
       this.current_exp = 0;
       this.current_LP = 0;
       this.current_points = 0;
-      this.average_points = 500.00;
       this.target_points = 50000;
+      // Score: S, Ranking: 2nd
+      this.average_points = Math.ceil(this.reward[this.event_type].base_points[this.difficulty] * 1.2 * 1.15);
     }
-    var p = scoreMatch.prototype;
+    var p = event.prototype;
 
-    // unverified
+    p.secToDateTuple = function(sec) {
+      var min = Math.floor(sec / 60);
+      var hour = Math.floor(min / 60);
+      min -= hour * 60;
+      var day = Math.floor(hour / 24);
+      hour -= day * 24;
+      return [day, hour ,min];
+    }
+
     p.consumeLP = function() {
-      var LP_per_play = 25; // TODO
-      var exp_per_play = 83; // TODO
+      var LP_per_play = this.reward[this.event_type].required_LP[this.difficulty];
+      var exp_per_play = this.reward[this.event_type].exp[this.difficulty];
       while (true) {
         var play_num = Math.floor(this.final_LP / LP_per_play);
         if (play_num === 0) break;
@@ -59,8 +73,8 @@ angular.module('darsein-hp', ['ngMaterial', 'rank'])
         this.event_start = new Date(this.now.getFullYear(), this.now.getMonth(), 20, 16);
         this.event_end = new Date(this.now.getFullYear(), this.now.getMonth() + 1, 0, 15);
       }
-      this.remain_date = new Date(1970, 0, 0).setSeconds((this.event_end - this.now)/1000);
-      this.final_LP += Math.floor((this.event_end-this.now)/1000/60/6);
+      [this.remain_day, this.remain_hour, this.remain_min] =
+          this.secToDateTuple( Math.floor((this.event_end - this.now)/1000) );
 
       this.consumeLP();
       while (this.final_points < this.target_points) {
@@ -68,21 +82,25 @@ angular.module('darsein-hp', ['ngMaterial', 'rank'])
         this.used_stone++;
         this.consumeLP();
       }
+
+      [this.required_day, this.required_hour, this.required_min] =
+          this.secToDateTuple(this.final_play_num * 3 * 60);
     }
 
-    return scoreMatch;
+    return event;
   })
-  .controller('eventPointsController', function($scope, $timeout, ScoreMatch) {
-    $scope.scoreMatch = new ScoreMatch();
+  .controller('eventPointsController', function($scope, $timeout, Event) {
+    $scope.event = new Event();
 
     $scope.$watchGroup([
-      'scoreMatch.current_rank',
-      'scoreMatch.current_exp',
-      'scoreMatch.current_LP',
-      'scoreMatch.current_points',
-      'scoreMatch.average_points',
-      'scoreMatch.target_points',
+      'event.difficulty',
+      'event.current_rank',
+      'event.current_exp',
+      'event.current_LP',
+      'event.current_points',
+      'event.average_points',
+      'event.target_points',
     ], function(newVal, oldVal) {
-      $scope.scoreMatch.calc();
+      $scope.event.calc();
     });
   });

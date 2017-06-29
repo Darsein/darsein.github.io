@@ -35,6 +35,7 @@
   <!-- Angular Material Library -->
   <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
 
+  <script src="points.js"></script>
   <script src="rank.js"></script>
   <script src="event_points.js"></script>
 </head>
@@ -44,25 +45,35 @@
     ※現在とりあえずスコアマッチ (EXPERT or TECHNICAL) のみ、Rank 500まで対応です
     <h2> 入力項目 </h2>
     <md-list>
+      <md-list-item>
+        難易度:
+        <md-radio-group ng-model="event.difficulty">
+          <md-radio-button value="easy">EASY</md-radio-button>
+          <md-radio-button value="normal">NORMAL</md-radio-button>
+          <md-radio-button value="hard">HARD</md-radio-button>
+          <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
+          <md-radio-button value="technical">TECHNICAL</md-radio-button>
+        </md-radio-group>
+      </md-list-item>
       <!-- TODO: validation -->
       <md-list-item>
-        現在のRank: <input type='number' ng-model='scoreMatch.current_rank'>
+        現在のRank: <input type='number' step=1 ng-model='event.current_rank'>
       </md-list-item>
       <md-list-item>
-        現在のExp: <input type='number' ng-model='scoreMatch.current_exp'>
+        現在のExp: <input type='number' step=1 ng-model='event.current_exp'>
       </md-list-item>
       <md-list-item>
-        現在のLP: <input type='number' ng-model='scoreMatch.current_LP'>
+        現在のLP: <input type='number' step=1 ng-model='event.current_LP'>
       </md-list-item>
       <!-- TODO: calc from difficulties, score_rank, and match_rank -->
       <md-list-item>
-        平均獲得ポイント: <input type='number' step=0.01 ng-model='scoreMatch.average_points'>
+        平均獲得ポイント: <input type='number' step=0.01 ng-model='event.average_points'>
       </md-list-item>
       <md-list-item>
-        現在の獲得ポイント: <input type='number' ng-model='scoreMatch.current_points'>
+        現在の獲得ポイント: <input type='number' step=1 ng-model='event.current_points'>
       </md-list-item>
       <md-list-item>
-        目標ポイント: <input type='number' ng-model='scoreMatch.target_points'>
+        目標ポイント: <input type='number' step=1 ng-model='event.target_points'>
       </md-list-item>
     </md-list>
     <md-divider></md-divider>
@@ -70,35 +81,35 @@
     <h2> 計算結果 </h2>
     <md-list>
       <md-list-item>
-        現在日時: {{ scoreMatch.now | date: 'M月d日 HH:mm' }}
+        現在日時: {{ event.now | date: 'M月d日 HH:mm' }}
       </md-list-item>
       <md-list-item>
-        イベント期間: {{ scoreMatch.event_start | date: 'M月d日 HH:mm' }} - {{ scoreMatch.event_end | date: 'M月d日 HH:mm' }}
+        イベント期間: {{ event.event_start | date: 'M月d日 HH:mm' }} - {{ event.event_end | date: 'M月d日 HH:mm' }}
       </md-list-item>
       <md-list-item>
-        残り期間: {{ scoreMatch.remain_date | date: 'd日 H時間 m分' }}
+        残り期間: {{ event.remain_day | number }} 日 {{ event.remain_hour | number }} 時間 {{ event.remain_min | number }} 分
       </md-list-item>
 
       <md-list-item>
-        最終ポイント: {{ scoreMatch.final_points | number }}
+        最終ポイント: {{ event.final_points | number }}
       </md-list-item>
       <md-list-item>
-        使用石個数: {{ scoreMatch.used_stone | number }}
+        使用石個数: {{ event.used_stone | number }}
       </md-list-item>
       <md-list-item>
-        最終Rank: {{ scoreMatch.final_rank | number }}
+        最終Rank: {{ event.final_rank | number }}
       </md-list-item>
       <md-list-item>
-        最終EXP: {{ scoreMatch.final_exp | number }}
+        最終EXP: {{ event.final_exp | number }}
       </md-list-item>
       <md-list-item>
-        最終LP: {{ scoreMatch.final_LP | number }}
+        最終LP: {{ event.final_LP | number }}
       </md-list-item>
       <md-list-item>
-        プレイ回数: {{ scoreMatch.final_play_num | number }}
+        プレイ回数: {{ event.final_play_num | number }}
       </md-list-item>
       <md-list-item>
-        予想プレイ時間 (1回3分と仮定): {{ 3 * scoreMatch.final_play_num | number }} 分
+        予想プレイ時間 (1回3分と仮定): {{ event.required_day | number }} 日 {{ event.required_hour | number }} 時間 {{ event.required_min | number }} 分
       </md-list-item>
     </md-list>
     <md-divider></md-divider>
