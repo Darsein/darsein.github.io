@@ -92,8 +92,13 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
   .controller('eventPointsController', function($scope, $timeout, Event) {
     $scope.event = new Event();
 
+    $scope.$watch('event.difficulty', function(newVal, oldVal) {
+      // Score: S, Ranking: 2nd
+      $scope.event.average_points = Math.ceil($scope.event.reward[$scope.event.event_type].base_points[$scope.event.difficulty] * 1.2 * 1.15);
+      $scope.event.calc();
+    });
+
     $scope.$watchGroup([
-      'event.difficulty',
       'event.current_rank',
       'event.current_exp',
       'event.current_LP',
