@@ -8,13 +8,14 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
 
       this.event_type = "score_match";
       this.difficulty = "expert";
+      this.score = "S";
+      this.ranking = 1;
       this.current_rank = 100;
       this.current_exp = 0;
       this.current_LP = 0;
       this.current_points = 0;
       this.target_points = 50000;
-      // Score: S, Ranking: 2nd
-      this.average_points = Math.ceil(this.reward[this.event_type].base_points[this.difficulty] * 1.2 * 1.15);
+      this.average_points = Math.ceil(this.reward[this.event_type].base_points[this.difficulty] * this.reward[this.event_type].score_bonus[this.score] * this.reward[this.event_type].ranking_bonus[this.ranking]);
     }
     var p = event.prototype;
 
@@ -92,9 +93,13 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
   .controller('eventPointsController', function($scope, $timeout, Event) {
     $scope.event = new Event();
 
-    $scope.$watch('event.difficulty', function(newVal, oldVal) {
+    $scope.$watchGroup([
+      'event.difficulty',
+      'event.score',
+      'event.ranking',
+    ], function(newVal, oldVal) {
       // Score: S, Ranking: 2nd
-      $scope.event.average_points = Math.ceil($scope.event.reward[$scope.event.event_type].base_points[$scope.event.difficulty] * 1.2 * 1.15);
+      $scope.event.average_points = Math.ceil($scope.event.reward[$scope.event.event_type].base_points[$scope.event.difficulty] * $scope.event.reward[$scope.event.event_type].score_bonus[$scope.event.score] * $scope.event.reward[$scope.event.event_type].ranking_bonus[$scope.event.ranking]);
       $scope.event.calc();
     });
 

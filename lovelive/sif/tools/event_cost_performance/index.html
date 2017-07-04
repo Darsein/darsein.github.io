@@ -42,11 +42,11 @@
 
 <body ng-cloak ng-controller='eventPointsController'>
   <md-content flex>
-    ※現在とりあえずスコアマッチ (EXPERT or TECHNICAL) のみ、Rank 500まで対応です
+    ※現在とりあえずスコアマッチのみ、Rank 500まで対応です
     <h2> 入力項目 </h2>
-    <md-list>
-      <md-list-item>
-        難易度:
+    <div layout="row" flex>
+      <div>
+        <p>難易度</p>
         <md-radio-group ng-model="event.difficulty">
           <md-radio-button value="easy">EASY</md-radio-button>
           <md-radio-button value="normal">NORMAL</md-radio-button>
@@ -54,28 +54,38 @@
           <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
           <md-radio-button value="technical">TECHNICAL</md-radio-button>
         </md-radio-group>
-      </md-list-item>
-      <!-- TODO: validation -->
-      <md-list-item>
-        現在のRank: <input type='number' step=1 ng-model='event.current_rank'>
-      </md-list-item>
-      <md-list-item>
-        現在のExp: <input type='number' step=1 ng-model='event.current_exp'>
-      </md-list-item>
-      <md-list-item>
-        現在のLP: <input type='number' step=1 ng-model='event.current_LP'>
-      </md-list-item>
-      <!-- TODO: calc from difficulties, score_rank, and match_rank -->
-      <md-list-item>
-        平均獲得ポイント: <input type='number' step=0.01 ng-model='event.average_points'>
-      </md-list-item>
-      <md-list-item>
-        現在の獲得ポイント: <input type='number' step=1 ng-model='event.current_points'>
-      </md-list-item>
-      <md-list-item>
-        目標ポイント: <input type='number' step=1 ng-model='event.target_points'>
-      </md-list-item>
-    </md-list>
+      </div>
+      <div>
+        <p>スコア</p>
+        <md-radio-group ng-model="event.score">
+          <md-radio-button value="S" class="ng-primary">S</md-radio-button>
+          <md-radio-button value="A">A</md-radio-button>
+          <md-radio-button value="B">B</md-radio-button>
+          <md-radio-button value="C">C</md-radio-button>
+          <md-radio-button value="D">スコアなし</md-radio-button>
+        </md-radio-group>
+      </div>
+      <div>
+        <p>順位</p>
+        <md-radio-group ng-model="event.ranking">
+          <md-radio-button value=1 class="ng-primary">1</md-radio-button>
+          <md-radio-button value=2>2</md-radio-button>
+          <md-radio-button value=3>3</md-radio-button>
+          <md-radio-button value=4>4</md-radio-button>
+        </md-radio-group>
+      </div>
+    </div>
+    <!-- TODO: validation -->
+    <div layout="row" flex>
+      <span>現在のRank: <input type='number' step=1 ng-model='event.current_rank'></span>
+      <span>現在のExp: <input type='number' step=1 ng-model='event.current_exp'></span>
+      <span>現在のLP: <input type='number' step=1 ng-model='event.current_LP'></span>
+    </div>
+    <div layout="row" flex>
+      平均獲得ポイント: <input type='number' step=0.01 ng-model='event.average_points'>
+      現在の獲得ポイント: <input type='number' step=1 ng-model='event.current_points'>
+      目標ポイント: <input type='number' step=1 ng-model='event.target_points'>
+    </div>
     <md-divider></md-divider>
 
     <h2> 計算結果 </h2>
@@ -117,6 +127,9 @@
     <h2> 更新履歴 </h2>
     <md-list>
       <md-list-item>
+        2017/07/04: スコア・コンボ・順位などの入力から平均ポイントを自動算出
+      </md-list-item>
+      <md-list-item>
         2017/06/30: 難易度 EASY, NORMAL, HARD の入力に対応, 細かなバグの修正等
       </md-list-item>
       <md-list-item>
@@ -127,7 +140,6 @@
 
     <h2> アップデート予定 (個人的優先度順) </h2> 下記以外にも要望があれば <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> まで。
     <ul>
-      <li> スコア・コンボ・順位などの入力から平均ポイントを自動算出 </li>
       <li> 石の個数・最終Rankも入力項目にして、変更された場合それに合わせて他の項目を自動計算 </li>
       <li> UIのブラッシュアップ </li>
       <li> 現在時刻や終了時刻の手動入力 </li>

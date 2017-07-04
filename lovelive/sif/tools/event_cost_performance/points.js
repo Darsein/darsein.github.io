@@ -22,6 +22,19 @@ angular.module('points', [])
       this.base_points["hard"] = 177;
       this.base_points["expert"] = 357;
       this.base_points["technical"] = 357;
+
+      this.score_bonus = {};
+      this.score_bonus["S"] = 1.20;
+      this.score_bonus["A"] = 1.15;
+      this.score_bonus["B"] = 1.10;
+      this.score_bonus["C"] = 1.05;
+      this.score_bonus["D"] = 1.00;
+
+      this.ranking_bonus = {};
+      this.ranking_bonus[1] = 1.25;
+      this.ranking_bonus[2] = 1.15;
+      this.ranking_bonus[3] = 1.05;
+      this.ranking_bonus[4] = 1.00;
     }
     return scoreMatch;
   });
