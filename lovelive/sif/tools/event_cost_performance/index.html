@@ -42,30 +42,54 @@
 
 <body ng-cloak ng-controller='eventPointsController'>
   <md-content flex>
-    ※現在とりあえずスコアマッチのみ、Rank 500まで対応です
+    ※現在とりあえずスコアマッチとマカロン (HARD, EX) のみ、Rank 500まで対応です
     <h2> 入力項目 </h2>
     <div layout="row" flex>
+      <md-radio-group ng-model="event.event_type">
+        <md-radio-button value="score_match">スコアマッチ</md-radio-button>
+        <md-radio-button value="macaron">マカロン</md-radio-button>
+      </md-radio-group>
+    </div>
+    <div layout="row" layout-margin flex>
       <div>
-        <p>難易度</p>
+        <p><span ng-if="event.event_type==='macaron'">周回曲</span>難易度</p>
         <md-radio-group ng-model="event.difficulty">
           <md-radio-button value="easy">EASY</md-radio-button>
           <md-radio-button value="normal">NORMAL</md-radio-button>
           <md-radio-button value="hard">HARD</md-radio-button>
           <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
-          <md-radio-button value="technical">TECHNICAL</md-radio-button>
+        </md-radio-group>
+      </div>
+      <div ng-if="event.event_type==='macaron'">
+        <p>課題曲難易度</p>
+        <md-radio-group ng-model="event.task_difficulty">
+          <md-radio-button value="easy" ng-if="event.event_type!=='macaron'">EASY</md-radio-button>
+          <md-radio-button value="normal" ng-if="event.event_type!=='macaron'">NORMAL</md-radio-button>
+          <md-radio-button value="hard">HARD</md-radio-button>
+          <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
         </md-radio-group>
       </div>
       <div>
         <p>スコア</p>
         <md-radio-group ng-model="event.score">
-          <md-radio-button value="S" class="ng-primary">S</md-radio-button>
-          <md-radio-button value="A">A</md-radio-button>
-          <md-radio-button value="B">B</md-radio-button>
-          <md-radio-button value="C">C</md-radio-button>
-          <md-radio-button value="D">スコアなし</md-radio-button>
+          <md-radio-button value=0 class="ng-primary">S</md-radio-button>
+          <md-radio-button value=1>A</md-radio-button>
+          <md-radio-button value=2>B</md-radio-button>
+          <md-radio-button value=3>C</md-radio-button>
+          <md-radio-button value=4 ng-if="event.event_type!=='macaron'">なし</md-radio-button>
         </md-radio-group>
       </div>
-      <div>
+      <div ng-if="event.event_type!=='score_match'">
+        <p>コンボ</p>
+        <md-radio-group ng-model="event.combo">
+          <md-radio-button value=0 class="ng-primary">S</md-radio-button>
+          <md-radio-button value=1>A</md-radio-button>
+          <md-radio-button value=2>B</md-radio-button>
+          <md-radio-button value=3>C</md-radio-button>
+          <md-radio-button value=4>なし</md-radio-button>
+        </md-radio-group>
+      </div>
+      <div ng-if="event.event_type==='score_match'">
         <p>順位</p>
         <md-radio-group ng-model="event.ranking">
           <md-radio-button value=1 class="ng-primary">1</md-radio-button>
@@ -76,15 +100,18 @@
       </div>
     </div>
     <!-- TODO: validation -->
-    <div layout="row" flex>
+    <div layout="row" flex layout-margin>
       <span>現在のRank: <input type='number' step=1 ng-model='event.current_rank'></span>
       <span>現在のExp: <input type='number' step=1 ng-model='event.current_exp'></span>
       <span>現在のLP: <input type='number' step=1 ng-model='event.current_LP'></span>
     </div>
-    <div layout="row" flex>
-      平均獲得ポイント: <input type='number' step=0.01 ng-model='event.average_points'>
-      現在の獲得ポイント: <input type='number' step=1 ng-model='event.current_points'>
-      目標ポイント: <input type='number' step=1 ng-model='event.target_points'>
+    <div layout="row" flex layout-margin>
+      <span>平均獲得ポイント: <input type='number' step=0.01 ng-model='event.average_points'></span>
+      <span>現在の獲得ポイント: <input type='number' step=1 ng-model='event.current_points'></span>
+      <span>目標ポイント: <input type='number' step=1 ng-model='event.target_points'></span>
+    </div>
+    <div layout="row" flex layout-margin ng-if="event.event_type==='macaron'">
+      <span>所持マカロン数: <input type='number' ng-model='event.macaron'></span>
     </div>
     <md-divider></md-divider>
 
@@ -116,7 +143,10 @@
         最終LP: {{ event.final_LP | number }}
       </md-list-item>
       <md-list-item>
-        プレイ回数: {{ event.final_play_num | number }}
+        <span ng-if="event.event_type==='macaron'">周回曲</span>プレイ回数: {{ event.final_play_num | number }}
+      </md-list-item>
+      <md-list-item ng-if="event.event_type==='macaron'">
+        課題曲プレイ回数: {{ event.final_task_play_num | number }}
       </md-list-item>
       <md-list-item>
         予想プレイ時間 (1回3分と仮定): {{ event.required_day | number }} 日 {{ event.required_hour | number }} 時間 {{ event.required_min | number }} 分
@@ -126,6 +156,9 @@
 
     <h2> 更新履歴 </h2>
     <md-list>
+      <md-list-item>
+        2017/07/05: マカロンに対応、自然回復LPが反映されていないバグを修正
+      </md-list-item>
       <md-list-item>
         2017/07/04: スコア・コンボ・順位などの入力から平均ポイントを自動算出
       </md-list-item>
@@ -146,7 +179,7 @@
       <li> ランクアップのタイミング </li>
       <li> 平均獲得ポイント以外の小数入力禁止 </li>
       <li> 前回までの入力内容を保存・再利用 (cookie, テキストデータのダウンロード/アップロードなど) </li>
-      <li> スコマ以外のイベントに対応 </li>
+      <li> スコマ・マカロン以外のイベントに対応 </li>
       <li> Rank 500以上をEXP近似式で対応 </li>
       <li> 獲得アイテム一覧の表示 </li>
       <li> イベント期間外の利用時に対応 (警告を出す、現在時刻を次のイベント開始時刻にしてLP補完等) </li>
