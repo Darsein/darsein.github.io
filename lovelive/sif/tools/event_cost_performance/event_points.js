@@ -102,6 +102,7 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
       [this.remain_day, this.remain_hour, this.remain_min] =
           this.secToDateTuple( Math.floor((this.event_end - Math.max(this.now, this.event_start))/1000) );
       this.final_LP += Math.floor((this.event_end - Math.max(this.now, this.event_start)) / 1000 / 60 / 6);
+      console.log(this.final_LP);
 
       this.consumeLP();
       while (this.final_points < this.target_points) {
@@ -143,6 +144,7 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
       'event.current_points',
       'event.average_points',
       'event.target_points',
+      'event.macaron',
     ], function(newVal, oldVal) {
       $scope.event.calc();
     });

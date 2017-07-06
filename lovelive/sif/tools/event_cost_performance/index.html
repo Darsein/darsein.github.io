@@ -3,7 +3,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Darsein</title>
+  <title>スクフェス イベント効率計算</title>
   <!-- Google Analytics -->
   <script>
     (function(i, s, o, g, r, a, m) {
@@ -150,6 +150,9 @@
       </md-list-item>
       <md-list-item>
         予想プレイ時間 (1回3分と仮定): {{ event.required_day | number }} 日 {{ event.required_hour | number }} 時間 {{ event.required_min | number }} 分
+      </md-list-item>
+      <md-list-item ng-if="event.event_type==='macaron'">
+        残りマカロン数: {{ event.final_macaron | number }}
       </md-list-item>
     </md-list>
     <md-divider></md-divider>
