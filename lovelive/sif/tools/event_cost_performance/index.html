@@ -50,14 +50,14 @@
     <p>※現在とりあえずスコアマッチとマカロン (HARD, EX) のみ、Rank 500まで対応です</p>
     <h2> 入力項目 </h2>
     <div layout="row" flex>
-      <md-radio-group ng-model="event.event_type">
+      <md-radio-group ng-model="event.event_name">
         <md-radio-button value="score_match">スコアマッチ</md-radio-button>
         <md-radio-button value="macaron">マカロン</md-radio-button>
       </md-radio-group>
     </div>
     <div layout="row" layout-margin flex>
       <div>
-        <p><span ng-if="event.event_type==='macaron'">周回曲</span>難易度</p>
+        <p><span ng-if="event.event_name==='macaron'">周回曲</span>難易度</p>
         <md-radio-group ng-model="event.difficulty">
           <md-radio-button value="easy">EASY</md-radio-button>
           <md-radio-button value="normal">NORMAL</md-radio-button>
@@ -65,11 +65,11 @@
           <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
         </md-radio-group>
       </div>
-      <div ng-if="event.event_type==='macaron'">
+      <div ng-if="event.event_name==='macaron'">
         <p>課題曲難易度</p>
         <md-radio-group ng-model="event.task_difficulty">
-          <md-radio-button value="easy" ng-if="event.event_type!=='macaron'">EASY</md-radio-button>
-          <md-radio-button value="normal" ng-if="event.event_type!=='macaron'">NORMAL</md-radio-button>
+          <md-radio-button value="easy" ng-if="event.event_name!=='macaron'">EASY</md-radio-button>
+          <md-radio-button value="normal" ng-if="event.event_name!=='macaron'">NORMAL</md-radio-button>
           <md-radio-button value="hard">HARD</md-radio-button>
           <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
         </md-radio-group>
@@ -81,10 +81,10 @@
           <md-radio-button value=1>A</md-radio-button>
           <md-radio-button value=2>B</md-radio-button>
           <md-radio-button value=3>C</md-radio-button>
-          <md-radio-button value=4 ng-if="event.event_type!=='macaron'">なし</md-radio-button>
+          <md-radio-button value=4 ng-if="event.event_name!=='macaron'">なし</md-radio-button>
         </md-radio-group>
       </div>
-      <div ng-if="event.event_type!=='score_match'">
+      <div ng-if="event.event_name!=='score_match'">
         <p>コンボ</p>
         <md-radio-group ng-model="event.combo">
           <md-radio-button value=0 class="ng-primary">S</md-radio-button>
@@ -94,7 +94,7 @@
           <md-radio-button value=4>なし</md-radio-button>
         </md-radio-group>
       </div>
-      <div ng-if="event.event_type==='score_match'">
+      <div ng-if="event.event_name==='score_match'">
         <p>順位</p>
         <md-radio-group ng-model="event.ranking">
           <md-radio-button value=1 class="ng-primary">1</md-radio-button>
@@ -115,7 +115,7 @@
       <span>現在の獲得ポイント: <input type='number' step=1 ng-model='event.current_points'></span>
       <span>目標ポイント: <input type='number' step=1 ng-model='event.target_points'></span>
     </div>
-    <div layout="row" flex layout-margin ng-if="event.event_type==='macaron'">
+    <div layout="row" flex layout-margin ng-if="event.event_name==='macaron'">
       <span>所持マカロン数: <input type='number' ng-model='event.macaron'></span>
     </div>
     <md-divider></md-divider>
@@ -148,16 +148,24 @@
         最終LP: {{ event.final_LP | number }}
       </md-list-item>
       <md-list-item>
-        <span ng-if="event.event_type==='macaron'">周回曲</span>プレイ回数: {{ event.final_play_num | number }}
+        <span ng-if="event.event_name==='macaron'">周回曲</span>プレイ回数: {{ event.final_play_num | number }}
       </md-list-item>
-      <md-list-item ng-if="event.event_type==='macaron'">
+      <md-list-item ng-if="event.event_name==='macaron'">
         課題曲プレイ回数: {{ event.final_task_play_num | number }}
       </md-list-item>
       <md-list-item>
         予想プレイ時間 (1回3分と仮定): {{ event.required_day | number }} 日 {{ event.required_hour | number }} 時間 {{ event.required_min | number }} 分
       </md-list-item>
-      <md-list-item ng-if="event.event_type==='macaron'">
+      <md-list-item ng-if="event.event_name==='macaron'">
         残りマカロン数: {{ event.final_macaron | number }}
+      </md-list-item>
+      <md-list-item>
+        獲得報酬:
+        <md-list>
+          <md-list-item ng-repeat="(reward_category, reward_number) in event.rewards">
+            {{ reward_category }}: {{ reward_number }}
+          </md-list-item>
+        </md-list>
       </md-list-item>
     </md-list>
     <md-divider></md-divider>

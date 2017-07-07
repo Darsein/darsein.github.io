@@ -3,11 +3,11 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
 
     var event = function() {
       this.rank = new Rank();
-      this.reward = {};
-      this.reward["score_match"] = new ScoreMatch();
-      this.reward["macaron"] = new Macaron();
+      this.event_type = {};
+      this.event_type["score_match"] = new ScoreMatch();
+      this.event_type["macaron"] = new Macaron();
 
-      this.event_type = 'macaron';
+      this.event_name = 'macaron';
       this.difficulty = 'expert';
       this.task_difficulty = "expert";
       this.score = 0;
@@ -19,10 +19,10 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
       this.current_points = 0;
       this.target_points = 25000;
       this.macaron = 0;
-      if (this.event_type === "macaron") {
-        this.average_points = this.reward[this.event_type].get_points[this.task_difficulty][this.score][this.combo];
+      if (this.event_name === "macaron") {
+        this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
       } else {
-        this.average_points = Math.ceil(this.reward[this.event_type].base_points[this.difficulty] * this.reward[this.event_type].score_bonus[this.score] * this.reward[this.event_type].ranking_bonus[this.ranking]);
+        this.average_points = Math.ceil(this.event_type[this.event_name].base_points[this.difficulty] * this.event_type[this.event_name].score_bonus[this.score] * this.event_type[this.event_name].ranking_bonus[this.ranking]);
       }
     }
     var p = event.prototype;
@@ -37,15 +37,15 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
     }
 
     p.consumeLP = function() {
-      var LP_per_play = this.reward[this.event_type].required_LP[this.difficulty];
-      var exp_per_play = this.reward[this.event_type].exp[this.difficulty];
+      var LP_per_play = this.event_type[this.event_name].required_LP[this.difficulty];
+      var exp_per_play = this.event_type[this.event_name].exp[this.difficulty];
       while (true) {
         var play_num = Math.floor(this.final_LP / LP_per_play);
         if (play_num === 0) break;
 
-        if (this.event_type === 'macaron') {
-          this.final_points += this.reward[this.event_type].get_macarons[this.difficulty] * play_num;
-          this.final_macaron += this.reward[this.event_type].get_macarons[this.difficulty] * play_num;
+        if (this.event_name === 'macaron') {
+          this.final_points += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num;
+          this.final_macaron += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num;
         } else {
           this.final_points += this.average_points * play_num;
         }
@@ -53,9 +53,9 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
         this.final_exp += exp_per_play * play_num;
         this.final_play_num += play_num;
 
-        if (this.event_type === 'macaron') {
-          var macaron_per_task_play = this.reward[this.event_type].required_macarons[this.task_difficulty];
-          var exp_per_task_play = this.reward[this.event_type].exp[this.task_difficulty];
+        if (this.event_name === 'macaron') {
+          var macaron_per_task_play = this.event_type[this.event_name].required_macarons[this.task_difficulty];
+          var exp_per_task_play = this.event_type[this.event_name].exp[this.task_difficulty];
           var task_play_num = Math.floor(this.final_macaron / macaron_per_task_play);
           this.final_macaron -= macaron_per_task_play * task_play_num;
           this.final_exp += exp_per_task_play * task_play_num;
@@ -102,7 +102,6 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
       [this.remain_day, this.remain_hour, this.remain_min] =
           this.secToDateTuple( Math.floor((this.event_end - Math.max(this.now, this.event_start))/1000) );
       this.final_LP += Math.floor((this.event_end - Math.max(this.now, this.event_start)) / 1000 / 60 / 6);
-      console.log(this.final_LP);
 
       this.consumeLP();
       while (this.final_points < this.target_points) {
@@ -113,6 +112,14 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
 
       [this.required_day, this.required_hour, this.required_min] =
           this.secToDateTuple((this.final_play_num + this.final_task_play_num) * 3 * 60);
+
+      this.rewards = {};
+      for (var reward of this.event_type[this.event_name].event_rewards) {
+        if (reward["required_points"] <= this.final_points) {
+          if (!this.rewards[reward["category"]]) this.rewards[reward["category"]] = 0;
+          this.rewards[reward["category"]] += reward["number"];
+        }
+      }
     }
 
     return event;
@@ -121,7 +128,7 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
     $scope.event = new Event();
 
     $scope.$watchGroup([
-      'event.event_type',
+      'event.event_name',
       'event.task_difficulty',
       'event.difficulty',
       'event.score',
@@ -129,10 +136,10 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
       'event.ranking',
     ], function(newVal, oldVal) {
       // Score: S, Ranking: 2nd
-      if ($scope.event.event_type == "macaron") {
-        $scope.event.average_points = $scope.event.reward[$scope.event.event_type].get_points[$scope.event.task_difficulty][$scope.event.score][$scope.event.combo];
+      if ($scope.event.event_name == "macaron") {
+        $scope.event.average_points = $scope.event.event_type[$scope.event.event_name].get_points[$scope.event.task_difficulty][$scope.event.score][$scope.event.combo];
       } else {
-        $scope.event.average_points = Math.ceil($scope.event.reward[$scope.event.event_type].base_points[$scope.event.difficulty] * $scope.event.reward[$scope.event.event_type].score_bonus[$scope.event.score] * $scope.event.reward[$scope.event.event_type].ranking_bonus[$scope.event.ranking]);
+        $scope.event.average_points = Math.ceil($scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty] * $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.score] * $scope.event.event_type[$scope.event.event_name].ranking_bonus[$scope.event.ranking]);
       }
       $scope.event.calc();
     });
@@ -149,8 +156,8 @@ angular.module('darsein-hp', ['ngMaterial', 'rank', 'points'])
       $scope.event.calc();
     });
 
-    $scope.$watch('event.event_type', function(newVal, oldVal) {
-      if ($scope.event.event_type === 'score_match') $scope.event.target_points = 50000;
-      if ($scope.event.event_type === 'macaron') $scope.event.target_points = 25000;
+    $scope.$watch('event.event_name', function(newVal, oldVal) {
+      if ($scope.event.event_name === 'score_match') $scope.event.target_points = 50000;
+      if ($scope.event.event_name === 'macaron') $scope.event.target_points = 25000;
     });
   });
