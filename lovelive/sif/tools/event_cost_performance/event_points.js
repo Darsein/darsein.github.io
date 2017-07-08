@@ -29,19 +29,19 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.score = $cookies.get('score') ? $cookies.get('score') : 0;
       this.combo = $cookies.get('combo') ? $cookies.get('combo') : 0;
       this.ranking = $cookies.get('ranking') ? $cookies.get('ranking') : 1;
-      this.current_rank = $cookies.get('current_rank') ? $cookies.get('current_rank', Number) : 100;
-      this.current_exp = $cookies.get('current_exp') ? $cookies.get('current_exp', Number) : 0;
-      this.current_LP = $cookies.get('current_LP') ? $cookies.get('current_LP', Number) : 0;
-      this.current_points = $cookies.get('current_points') ? $cookies.get('current_points', Number) : 0;
-      this.target_points = $cookies.get('target_points') ? $cookies.get('target_points', Number) : 25000;
-      this.macaron = $cookies.get('macaron') ? $cookies.get('macaron', Number) : 0;
+      this.current_rank = $cookies.get('current_rank') ? Number($cookies.get('current_rank')) : 100;
+      this.current_exp = $cookies.get('current_exp') ? Number($cookies.get('current_exp')) : 0;
+      this.current_LP = $cookies.get('current_LP') ? Number($cookies.get('current_LP')) : 0;
+      this.current_points = $cookies.get('current_points') ? Number($cookies.get('current_points')) : 0;
+      this.target_points = $cookies.get('target_points') ? Number($cookies.get('target_points')) : 25000;
+      this.macaron = $cookies.get('macaron') ? Number($cookies.get('macaron')) : 0;
       if (this.event_name === 'macaron') {
         this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
       } else {
         this.average_points = Math.ceil(this.event_type[this.event_name].base_points[this.difficulty] * this.event_type[this.event_name].score_bonus[this.score] * this.event_type[this.event_name].ranking_bonus[this.ranking]);
       }
       if ($cookies.get('average_points')) {
-        this.average_points = $cookies.get('average_points', Number);
+        this.average_points = Number($cookies.get('average_points', Number));
       }
     }
     var p = event.prototype;
