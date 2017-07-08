@@ -161,10 +161,6 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
   })
   .controller('eventPointsController', function($scope, $timeout, Event) {
     $scope.event = new Event();
-    $scope.$watch('event.event_name', function(newVal, oldVal) {
-      if ($scope.event.event_name === 'score_match') $scope.event.target_points = 50000;
-      if ($scope.event.event_name === 'macaron') $scope.event.target_points = 25000;
-    });
 
     $scope.$watchGroup([
       'event.event_name',
