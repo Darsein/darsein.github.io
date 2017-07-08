@@ -7,19 +7,6 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.event_type['score_match'] = new ScoreMatch();
       this.event_type['macaron'] = new Macaron();
 
-      this.event_name = 'macaron';
-      this.difficulty = 'expert';
-      this.task_difficulty = 'expert';
-      this.score = 0;
-      this.combo = 0;
-      this.ranking = 1;
-      this.current_rank = 100;
-      this.current_exp = 0;
-      this.current_LP = 0;
-      this.current_points = 0;
-      this.target_points = 25000;
-      this.macaron = 0;
-
       this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'macaron';
       this.difficulty = $cookies.get('difficulty') ? $cookies.get('difficulty') :'expert';
       this.task_difficulty = $cookies.get('task_difficulty') ? $cookies.get('task_difficulty') :'expert';
