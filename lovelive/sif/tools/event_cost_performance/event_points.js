@@ -20,9 +20,6 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.target_points = 25000;
       this.macaron = 0;
 
-      console.log($cookies.get('current_rank'));
-      console.log($cookies.get('current_exp'));
-      console.log($cookies.get('current_LP'));
       this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'macaron';
       this.difficulty = $cookies.get('difficulty') ? $cookies.get('difficulty') :'expert';
       this.task_difficulty = $cookies.get('task_difficulty') ? $cookies.get('task_difficulty') :'expert';
