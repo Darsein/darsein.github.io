@@ -63,7 +63,7 @@ angular.module('points', [])
           {required_points: 17500, category: "R先生", number: 1},
           {required_points: 20000, category: "ラブカストーン", number: 1},
           {required_points: 22500, category: "友情pt", number: 550},
-          {required_points: 25000, category: "SR部員", number: 1},
+          {required_points: 25000, category: "SR部員1", number: 1},
           {required_points: 27500, category: "友情pt", number: 600},
           {required_points: 30000, category: "G", number: 20000},
           {required_points: 32500, category: "ラブカストーン", number: 2},
@@ -77,7 +77,7 @@ angular.module('points', [])
           {required_points: 52500, category: "G", number: 40000},
           {required_points: 55000, category: "友情pt", number: 1000},
           {required_points: 57500, category: "G", number: 50000},
-          {required_points: 60000, category: "SR部員", number: 1},
+          {required_points: 60000, category: "SR部員1", number: 1},
           {required_points: 62500, category: "ラブカストーン", number: 2},
           {required_points: 65000, category: "友情pt", number: 1100},
           {required_points: 67500, category: "G", number: 75000},
@@ -85,14 +85,23 @@ angular.module('points', [])
           {required_points: 75000, category: "勧誘チケット", number: 1},
           {required_points: 80000, category: "ラブカストーン", number: 2},
           {required_points: 90000, category: "友情pt", number: 1300},
-          {required_points: 100000, category: "SR部員", number: 1},
+          {required_points: 100000, category: "SR部員1", number: 1},
           {required_points: 110000, category: "ラブカストーン", number: 3},
           {required_points: 120000, category: "友情pt", number: 1400},
           {required_points: 130000, category: "勧誘チケット", number: 1},
           {required_points: 140000, category: "友情pt", number: 1500},
           {required_points: 150000, category: "G", number: 100000},
           {required_points: 160000, category: "ラブカストーン", number: 4},
-        ]
+        ];
+
+        this.ranking_rewards = [
+          {border: 10000, category: "SR部員2", number: 1},
+          {border: 10000, category: "勧誘チケット", number: 1},
+          {border: 50000, category: "SR部員2", number: 1},
+          {border: 120000, category: "SR部員2", number: 1},
+          {border: 120000, category: "勧誘チケット", number: 1},
+          {border: 700000, category: "N部員", number: 1},
+        ];
       }
       return scoreMatch;
     })
@@ -167,7 +176,7 @@ angular.module('points', [])
           {required_points: 8000, category: "R先生", number: 1},
           {required_points: 9000, category: "ラブカストーン", number: 1},
           {required_points: 10000, category: "友情pt", number: 550},
-          {required_points: 11000, category: "SR部員", number: 1},
+          {required_points: 11000, category: "SR部員1", number: 1},
           {required_points: 12000, category: "友情pt", number: 600},
           {required_points: 13000, category: "G", number: 20000},
           {required_points: 14000, category: "ラブカストーン", number: 2},
@@ -181,7 +190,7 @@ angular.module('points', [])
           {required_points: 22000, category: "G", number: 40000},
           {required_points: 23000, category: "友情pt", number: 1000},
           {required_points: 24000, category: "G", number: 50000},
-          {required_points: 25000, category: "SR部員", number: 1},
+          {required_points: 25000, category: "SR部員1", number: 1},
           {required_points: 26500, category: "ラブカストーン", number: 2},
           {required_points: 28000, category: "友情pt", number: 1100},
           {required_points: 30000, category: "G", number: 75000},
@@ -189,13 +198,23 @@ angular.module('points', [])
           {required_points: 34000, category: "勧誘チケット", number: 1},
           {required_points: 36000, category: "ラブカストーン", number: 2},
           {required_points: 38000, category: "友情pt", number: 1300},
-          {required_points: 40000, category: "SR部員", number: 1},
+          {required_points: 40000, category: "SR部員1", number: 1},
           {required_points: 42500, category: "ラブカストーン", number: 3},
           {required_points: 45000, category: "友情pt", number: 1400},
           {required_points: 50000, category: "勧誘チケット", number: 1},
           {required_points: 55000, category: "友情pt", number: 1500},
           {required_points: 60000, category: "G", number: 100000},
-          {required_points: 65000, category: "ラブカストーン", number: 4},        ]
+          {required_points: 65000, category: "ラブカストーン", number: 4},
+        ];
+
+        this.ranking_rewards = [
+          {border: 10000, category: "SR部員2", number: 1},
+          {border: 10000, category: "勧誘チケット", number: 1},
+          {border: 50000, category: "SR部員2", number: 1},
+          {border: 120000, category: "SR部員2", number: 1},
+          {border: 120000, category: "勧誘チケット", number: 1},
+          {border: 700000, category: "N部員", number: 1},
+        ];
       }
       return macaron;
     });

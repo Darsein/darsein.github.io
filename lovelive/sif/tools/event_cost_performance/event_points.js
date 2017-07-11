@@ -18,6 +18,11 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.current_LP = $cookies.get('current_LP') ? Number($cookies.get('current_LP')) : 0;
       this.current_points = $cookies.get('current_points') ? Number($cookies.get('current_points')) : 0;
       this.target_points = $cookies.get('target_points') ? Number($cookies.get('target_points')) : 25000;
+      this.border = {}
+      this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 63000;
+      this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) : 28000;
+      this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 12000;
+      this.border[700000] = 0;
       this.macaron = $cookies.get('macaron') ? Number($cookies.get('macaron')) : 0;
       if (this.event_name === 'macaron') {
         this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
@@ -123,6 +128,13 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
           this.rewards[reward['category']] += reward['number'];
         }
       }
+
+      for (var ranking_reward of this.event_type[this.event_name].ranking_rewards) {
+        if (this.border[ranking_reward['border']] <= this.final_points) {
+          if (!this.rewards[ranking_reward['category']]) this.rewards[ranking_reward['category']] = 0;
+          this.rewards[ranking_reward['category']] += ranking_reward['number'];
+        }
+      }
     }
 
     p.setCookies = function() {
@@ -141,6 +153,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $cookies.put('current_points', this.current_points, {expires: expire});
       $cookies.put('target_points', this.target_points, {expires: expire});
       $cookies.put('average_points', this.target_points, {expires: expire});
+      $cookies.put('border_10000', this.border_10000, {expires: expire});
+      $cookies.put('border_50000', this.border_50000, {expires: expire});
+      $cookies.put('border_120000', this.border_120000, {expires: expire});
       $cookies.put('macaron', this.macaron, {expires: expire});
     }
 
@@ -174,6 +189,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       'event.current_points',
       'event.average_points',
       'event.target_points',
+      'event.border',
       'event.macaron',
     ], function(newVal, oldVal) {
       $scope.event.calc();

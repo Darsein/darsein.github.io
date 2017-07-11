@@ -115,6 +115,11 @@
       <span>現在の獲得ポイント: <input type='number' step=1 ng-model='event.current_points'></span>
       <span>目標ポイント: <input type='number' step=1 ng-model='event.target_points'></span>
     </div>
+    <div layout="row" flex layout-margin>
+      <span>1万位ボーダー: <input type='number' step=1 ng-model='event.border[10000]'></span>
+      <span>5万位ボーダー: <input type='number' step=1 ng-model='event.border[50000]'></span>
+      <span>12万位ボーダー: <input type='number' step=1 ng-model='event.border[120000]'></span>
+    </div>
     <div layout="row" flex layout-margin ng-if="event.event_name==='macaron'">
       <span>所持マカロン数: <input type='number' ng-model='event.macaron'></span>
     </div>
