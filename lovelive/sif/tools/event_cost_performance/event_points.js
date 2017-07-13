@@ -23,6 +23,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) : 28000;
       this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 12000;
       this.border[700000] = 0;
+      this.used_stone = $cookies.get('used_stone') ? Number($cookies.get('used_stone')) : 0;
       this.macaron = $cookies.get('macaron') ? Number($cookies.get('macaron')) : 0;
       if (this.event_name === 'macaron') {
         this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
@@ -95,7 +96,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.final_play_num = 0;
       this.final_task_play_num = 0;
       this.final_macaron = this.macaron;
-      this.used_stone = 0;
+      this.required_stone = 0;
       this.next_exp = this.rank.rankTable[this.final_rank];
 
       // TODO: alert when current date is out of event term
@@ -114,7 +115,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.consumeLP();
       while (this.final_points < this.target_points) {
         this.final_LP += this.max_LP;
-        this.used_stone++;
+        this.required_stone++;
         this.consumeLP();
       }
 
@@ -156,6 +157,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $cookies.put('border_10000', this.border_10000, {expires: expire});
       $cookies.put('border_50000', this.border_50000, {expires: expire});
       $cookies.put('border_120000', this.border_120000, {expires: expire});
+      $cookies.put('used_stone', this.used_stone, {expires: expire});
       $cookies.put('macaron', this.macaron, {expires: expire});
     }
 
@@ -194,6 +196,16 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
     ], function(newVal, oldVal) {
       $scope.event.calc();
       $scope.event.setCookies();
+    });
+
+    $scope.$watchGroup([
+      'event.used_stone',
+      'event.required_stone',
+      'event.rewards["ラブカストーン"]',
+    ], function(newVal, oldVal) {
+      $scope.event.total_stone = $scope.event.used_stone + $scope.event.required_stone;
+      var reward_stone = $scope.event.rewards["ラブカストーン"] ? $scope.event.rewards["ラブカストーン"] : 0;
+      $scope.event.stone_diff = reward_stone - $scope.event.total_stone;
     });
 
   });

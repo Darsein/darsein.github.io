@@ -120,8 +120,9 @@
       <span>5万位ボーダー: <input type='number' step=1 ng-model='event.border[50000]'></span>
       <span>12万位ボーダー: <input type='number' step=1 ng-model='event.border[120000]'></span>
     </div>
-    <div layout="row" flex layout-margin ng-if="event.event_name==='macaron'">
-      <span>所持マカロン数: <input type='number' ng-model='event.macaron'></span>
+    <div layout="row" flex layout-margin>
+      <span>使った石の数: <input type='number' step=1 ng-model='event.used_stone'></span>
+      <span ng-if="event.event_name==='macaron'">所持マカロン数: <input type='number' ng-model='event.macaron'></span>
     </div>
     <md-divider></md-divider>
 
@@ -141,7 +142,7 @@
         最終ポイント: {{ event.final_points | number }}
       </md-list-item>
       <md-list-item>
-        使用石個数: {{ event.used_stone | number }}
+        使用石個数: {{ event.required_stone | number }}
       </md-list-item>
       <md-list-item>
         最終Rank: {{ event.final_rank | number }}
@@ -172,11 +173,17 @@
           </md-list-item>
         </md-list>
       </md-list-item>
+      <md-list-item>
+        石収支: {{ event.stone_diff | number }}
+      </md-list-item>
     </md-list>
     <md-divider></md-divider>
 
     <h2> 更新履歴 </h2>
     <md-list>
+      <md-list-item>
+        2017/07/13: これまでに使った石の個数を入力し、全体の石収支を計算
+      </md-list-item>
       <md-list-item>
         2017/07/12: ボーダー予想を入力することでポイントランキングの報酬も追加表示
       </md-list-item>
