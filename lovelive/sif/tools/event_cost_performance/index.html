@@ -45,142 +45,303 @@
 </head>
 
 <body ng-cloak ng-controller='eventPointsController'>
-  <md-content flex>
-    <p>スクフェスのイベント効率を計算できます。Rankや目標イベントptなどを入力すると石の消費や報酬の見積もりが得られます。</p>
-    <p>※現在とりあえずスコアマッチとマカロン (HARD, EX) のみ、Rank 500まで対応です</p>
-    <h2> 入力項目 </h2>
-    <div layout="row" flex>
-      <md-radio-group ng-model="event.event_name">
-        <md-radio-button value="score_match">スコアマッチ</md-radio-button>
-        <md-radio-button value="macaron">マカロン</md-radio-button>
-      </md-radio-group>
-    </div>
-    <div layout="row" layout-margin flex>
-      <div>
-        <p><span ng-if="event.event_name==='macaron'">周回曲</span>難易度</p>
-        <md-radio-group ng-model="event.difficulty">
-          <md-radio-button value="easy">EASY</md-radio-button>
-          <md-radio-button value="normal">NORMAL</md-radio-button>
-          <md-radio-button value="hard">HARD</md-radio-button>
-          <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
-        </md-radio-group>
-      </div>
-      <div ng-if="event.event_name==='macaron'">
-        <p>課題曲難易度</p>
-        <md-radio-group ng-model="event.task_difficulty">
-          <md-radio-button value="easy" ng-if="event.event_name!=='macaron'">EASY</md-radio-button>
-          <md-radio-button value="normal" ng-if="event.event_name!=='macaron'">NORMAL</md-radio-button>
-          <md-radio-button value="hard">HARD</md-radio-button>
-          <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
-        </md-radio-group>
-      </div>
-      <div>
-        <p>スコア</p>
-        <md-radio-group ng-model="event.score">
-          <md-radio-button value=0 class="ng-primary">S</md-radio-button>
-          <md-radio-button value=1>A</md-radio-button>
-          <md-radio-button value=2>B</md-radio-button>
-          <md-radio-button value=3>C</md-radio-button>
-          <md-radio-button value=4 ng-if="event.event_name!=='macaron'">なし</md-radio-button>
-        </md-radio-group>
-      </div>
-      <div ng-if="event.event_name!=='score_match'">
-        <p>コンボ</p>
-        <md-radio-group ng-model="event.combo">
-          <md-radio-button value=0 class="ng-primary">S</md-radio-button>
-          <md-radio-button value=1>A</md-radio-button>
-          <md-radio-button value=2>B</md-radio-button>
-          <md-radio-button value=3>C</md-radio-button>
-          <md-radio-button value=4>なし</md-radio-button>
-        </md-radio-group>
-      </div>
-      <div ng-if="event.event_name==='score_match'">
-        <p>順位</p>
-        <md-radio-group ng-model="event.ranking">
-          <md-radio-button value=1 class="ng-primary">1</md-radio-button>
-          <md-radio-button value=2>2</md-radio-button>
-          <md-radio-button value=3>3</md-radio-button>
-          <md-radio-button value=4>4</md-radio-button>
-        </md-radio-group>
-      </div>
-    </div>
-    <!-- TODO: validation -->
-    <div layout="row" flex layout-margin>
-      <span>現在のRank: <input type='number' step=1 ng-model='event.current_rank'></span>
-      <span>現在のExp: <input type='number' step=1 ng-model='event.current_exp'></span>
-      <span>現在のLP: <input type='number' step=1 ng-model='event.current_LP'></span>
-    </div>
-    <div layout="row" flex layout-margin>
-      <span>平均獲得ポイント: <input type='number' step=0.01 ng-model='event.average_points'></span>
-      <span>現在の獲得ポイント: <input type='number' step=1 ng-model='event.current_points'></span>
-      <span>目標ポイント: <input type='number' step=1 ng-model='event.target_points'></span>
-    </div>
-    <div layout="row" flex layout-margin>
-      <span>1万位ボーダー: <input type='number' step=1 ng-model='event.border[10000]'></span>
-      <span>5万位ボーダー: <input type='number' step=1 ng-model='event.border[50000]'></span>
-      <span>12万位ボーダー: <input type='number' step=1 ng-model='event.border[120000]'></span>
-    </div>
-    <div layout="row" flex layout-margin>
-      <span>使った石の数: <input type='number' step=1 ng-model='event.used_stone'></span>
-      <span ng-if="event.event_name==='macaron'">所持マカロン数: <input type='number' ng-model='event.macaron'></span>
-    </div>
-    <md-divider></md-divider>
+  <md-content flex layout-padding>
+    スクフェスのイベント効率を計算できます。Rankや目標イベントptなどを入力すると石の消費や報酬の見積もりが得られます。<br> ※現在とりあえずスコアマッチとマカロン (HARD, EX) のみ、Rank 500まで対応です<br><br>
 
-    <h2> 計算結果 </h2>
-    <md-list>
-      <md-list-item>
-        現在日時: {{ event.now | date: 'M月d日 HH:mm' }}
-      </md-list-item>
-      <md-list-item>
-        イベント期間: {{ event.event_start | date: 'M月d日 HH:mm' }} - {{ event.event_end | date: 'M月d日 HH:mm' }}
-      </md-list-item>
-      <md-list-item>
-        残り期間: {{ event.remain_day | number }} 日 {{ event.remain_hour | number }} 時間 {{ event.remain_min | number }} 分
-      </md-list-item>
+    <md-toolbar class="md-accent" ng-click="event_input=!event_input">
+      <div class="md-toolbar-tools">
+        <md-icon ng-show="event_input" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-show="!event_input" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+        <h3 flex> イベント情報入力 </h3>
+      </div>
+    </md-toolbar>
+    <div ng-show='!event_input'>
+      <!-- TODO: validation -->
+      <md-card flex layout-margin>
+        <md-card-header>
+          <md-card-header-text>
+            <span class='md-title'>期間</span>
+          </md-card-header-text>
+        </md-card-header>
+        <md-card-content>
+          <span>現在日時: {{ event.now | date: 'M月d日 HH:mm' }}</span><br>
+          <span>イベント期間: {{ event.event_start | date: 'M月d日 HH:mm' }} - {{ event.event_end | date: 'M月d日 HH:mm' }}</span><br>
+          <span>残り期間: {{ event.remain_day | number }} 日 {{ event.remain_hour | number }} 時間 {{ event.remain_min | number }} 分</span>
+        </md-card-content>
+      </md-card>
 
-      <md-list-item>
-        最終ポイント: {{ event.final_points | number }}
-      </md-list-item>
-      <md-list-item>
-        使用石個数: {{ event.required_stone | number }}
-      </md-list-item>
-      <md-list-item>
-        最終Rank: {{ event.final_rank | number }}
-      </md-list-item>
-      <md-list-item>
-        最終EXP: {{ event.final_exp | number }}
-      </md-list-item>
-      <md-list-item>
-        最終LP: {{ event.final_LP | number }}
-      </md-list-item>
-      <md-list-item>
-        <span ng-if="event.event_name==='macaron'">周回曲</span>プレイ回数: {{ event.final_play_num | number }}
-      </md-list-item>
-      <md-list-item ng-if="event.event_name==='macaron'">
-        課題曲プレイ回数: {{ event.final_task_play_num | number }}
-      </md-list-item>
-      <md-list-item>
-        予想プレイ時間 (1回3分と仮定): {{ event.required_day | number }} 日 {{ event.required_hour | number }} 時間 {{ event.required_min | number }} 分
-      </md-list-item>
-      <md-list-item ng-if="event.event_name==='macaron'">
-        残りマカロン数: {{ event.final_macaron | number }}
-      </md-list-item>
-      <md-list-item>
-        獲得報酬:
-        <md-list>
-          <md-list-item ng-repeat="(reward_category, reward_number) in event.rewards">
-            {{ reward_category }}: {{ reward_number }}
-          </md-list-item>
-        </md-list>
-      </md-list-item>
-      <md-list-item>
-        石収支: {{ event.stone_diff | number }}
-      </md-list-item>
-    </md-list>
-    <md-divider></md-divider>
+
+      <div class='md-padding' layout="row" layout-wrap>
+        <md-card style="width: 200px;">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>イベント種別</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.event_name">
+              <md-radio-button value="score_match">スコアマッチ</md-radio-button>
+              <md-radio-button value="macaron">マカロン</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 180px;">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>
+            <span ng-if="event.event_name==='macaron'">周回曲</span>難易度
+              </span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.difficulty">
+              <md-radio-button value="easy">EASY</md-radio-button>
+              <md-radio-button value="normal">NORMAL</md-radio-button>
+              <md-radio-button value="hard">HARD</md-radio-button>
+              <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 180px;" ng-if="event.event_name==='macaron'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>課題曲難易度</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.task_difficulty">
+              <md-radio-button value="easy" ng-if="event.event_name!=='macaron'">EASY</md-radio-button>
+              <md-radio-button value="normal" ng-if="event.event_name!=='macaron'">NORMAL</md-radio-button>
+              <md-radio-button value="hard">HARD</md-radio-button>
+              <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>スコア</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.score">
+              <md-radio-button value=0 class="ng-primary">S</md-radio-button>
+              <md-radio-button value=1>A</md-radio-button>
+              <md-radio-button value=2>B</md-radio-button>
+              <md-radio-button value=3>C</md-radio-button>
+              <md-radio-button value=4 ng-if="event.event_name!=='macaron'">なし</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;" ng-if="event.event_name!=='score_match'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>コンボ</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.combo">
+              <md-radio-button value=0 class="ng-primary">S</md-radio-button>
+              <md-radio-button value=1>A</md-radio-button>
+              <md-radio-button value=2>B</md-radio-button>
+              <md-radio-button value=3>C</md-radio-button>
+              <md-radio-button value=4>なし</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;" flex ng-if="event.event_name==='score_match'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>順位</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.ranking">
+              <md-radio-button value=1 class="ng-primary">1</md-radio-button>
+              <md-radio-button value=2>2</md-radio-button>
+              <md-radio-button value=3>3</md-radio-button>
+              <md-radio-button value=4>4</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+      </div>
+
+      <div class='md-padding' layout="row" layout-wrap>
+        <md-card style="width: 200px;">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>ポイント</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-input-container ng-if="event.event_name==='macaron'">
+              <label>所持マカロン数</label>
+              <input type='number' ng-model='event.macaron'>
+            </md-input-container>
+            <md-input-container>
+              <label>平均獲得ポイント</label>
+              <input type='number' step=0.01 ng-model='event.average_points'>
+            </md-input-container>
+            <md-input-container>
+              <label>現在の獲得ポイント</label>
+              <input type='number' step=1 ng-model='event.current_points'>
+            </md-input-container>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 200px;">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>ボーダー</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-input-container>
+              <label>1万位ボーダー</label>
+              <input type='number' step=1 ng-model='event.border[10000]'>
+            </md-input-container>
+            <md-input-container>
+              <label>5万位ボーダー</label>
+              <input type='number' step=1 ng-model='event.border[50000]'>
+            </md-input-container>
+            <md-input-container>
+              <label>12万位ボーダー</label>
+              <input type='number' step=1 ng-model='event.border[120000]'>
+            </md-input-container>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 200px;">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>プレイヤー情報</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-input-container>
+              <label>現在のRank</label>
+              <input type='number' step=1 ng-model='event.current_rank'>
+            </md-input-container>
+            <md-input-container>
+              <label>現在のExp</label>
+              <input type='number' step=1 ng-model='event.current_exp'>
+            </md-input-container>
+            <md-input-container>
+              <label>現在のLP</label>
+              <input type='number' step=1 ng-model='event.current_LP'>
+            </md-input-container>
+            <md-input-container>
+              <label>これまでに使った石の数</label>
+              <input type='number' step=1 ng-model='event.used_stone'>
+            </md-input-container>
+          </md-card-actions>
+        </md-card>
+
+      </div>
+    </div>
+
+    <md-toolbar class="md-accent" ng-click="target_input=!target_input">
+      <div class="md-toolbar-tools">
+        <md-icon ng-show="target_input" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-show="!target_input" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+        <h3 flex> 目標入力 </h3>
+      </div>
+    </md-toolbar>
+    <div ng-show='!target_input'>
+      <md-card flex layout-margin>
+        <md-card-actions>
+          <md-input-container>
+            <label>目標ポイント</label>
+            <input type='number' step=1 ng-model='event.target_points'>
+          </md-input-container>
+          <md-input-container>
+            <label>使用石個数</label>
+            <input type='number' step=1 ng-model='event.target_stone'>
+          </md-input-container>
+          <md-input-container>
+            <label>最終Rank</label>
+            <input type='number' step=1 ng-model='event.target_rank'>
+          </md-input-container>
+          </md-card-container>
+      </md-card>
+    </div>
+
+    <md-toolbar class="md-accent" ng-click="reward_output=!reward_output">
+      <div class="md-toolbar-tools">
+        <md-icon ng-show="reward_output" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-show="!reward_output" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+        <h3 flex> イベント収支 </h3>
+      </div>
+    </md-toolbar>
+    <div ng-show='!reward_output'>
+      <md-card flex layout-margin>
+        <md-card-content>
+          <span>最終ポイント: {{ event.final_points | number }}</span><br>
+          <span>使用予定の石個数: {{ event.required_stone | number }}</span><br>
+          <span>石収支: {{ event.stone_diff | number }}</span>
+        </md-card-content>
+      </md-card>
+
+      <md-card flex layout-margin>
+        <md-card-header>
+          <md-card-header-text>
+            <span class='md-title'>獲得報酬</span>
+          </md-card-header-text>
+        </md-card-header>
+        <md-card-content>
+          <span ng-repeat="(reward_category, reward_number) in event.rewards">
+          {{ reward_category }}: {{ reward_number }}<br>
+        </span>
+        </md-card-content>
+      </md-card>
+    </div>
+
+    <md-toolbar class="md-accent" ng-click="detail_output=!detail_output">
+      <div class="md-toolbar-tools">
+        <md-icon ng-show="detail_output" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
+        <md-icon ng-show="!detail_output" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
+        <h3 flex> イベント結果詳細 </h3>
+      </div>
+    </md-toolbar>
+    <div ng-show='!detail_output'>
+      <md-card flex layout-margin>
+        <md-card-header>
+          <md-card-header-text>
+            <span class='md-title'>プレイヤー情報</span>
+          </md-card-header-text>
+        </md-card-header>
+        <md-card-content>
+          <span>最終Rank: {{ event.final_rank | number }}</span><br>
+          <span>最終EXP: {{ event.final_exp | number }}</span><br>
+          <span>最終LP: {{ event.final_LP | number }}</span>
+        </md-card-content>
+      </md-card>
+
+      <md-card flex layout-margin>
+        <md-card-header>
+          <md-card-header-text>
+            <span class='md-title'>イベント情報</span>
+          </md-card-header-text>
+        </md-card-header>
+        <md-card-content>
+          <span><span ng-if="event.event_name==='macaron'">周回曲</span>プレイ回数: {{ event.final_play_num | number }}</span><br>
+          <span ng-if="event.event_name==='macaron'">課題曲プレイ回数: {{ event.final_task_play_num | number }}</span><br>
+          <span>予想プレイ時間 (1回3分と仮定): {{ event.required_day | number }} 日 {{ event.required_hour | number }} 時間 {{ event.required_min | number }} 分</span><br>
+          <span ng-if="event.event_name==='macaron'">残りマカロン数: {{ event.final_macaron | number }}</span>
+        </md-card-content>
+      </md-card>
+    </div>
 
     <h2> 更新履歴 </h2>
     <md-list>
+      <md-list-item>
+        2017/07/17: 目標として使用石の個数・Rankを設定可能に。UIを変更
+      </md-list-item>
       <md-list-item>
         2017/07/13: これまでに使った石の個数を入力し、全体の石収支を計算
       </md-list-item>
@@ -209,14 +370,13 @@
     <md-divider></md-divider>
 
     <h2> アップデート予定 (個人的優先度順) </h2> 下記以外にも要望があれば <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> まで。
-    <ul>
-      <li> 石の個数・最終Rankも入力項目にして、変更された場合それに合わせて他の項目を自動計算 </li>
-      <li> UIのブラッシュアップ </li>
+    <ul layout-margin>
       <li> 現在時刻や終了時刻の手動入力 </li>
+      <li> スコマ・マカロン以外のイベントに対応 </li>
       <li> ランクアップのタイミング </li>
       <li> 平均獲得ポイント以外の小数入力禁止 </li>
-      <li> スコマ・マカロン以外のイベントに対応 </li>
       <li> Rank 500以上をEXP近似式で対応 </li>
+      <li> UIのブラッシュアップ </li>
       <li> イベント期間外の利用時に対応 (警告を出す、現在時刻を次のイベント開始時刻にしてLP補完等) </li>
       <li> 開催中のイベントをデフォルト値に設定 </li>
       <li> 獲得アイテムを石の価値に換算した際の石効率最適化 </li>
