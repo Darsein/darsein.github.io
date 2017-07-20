@@ -20,17 +20,17 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       if (this.event_name === 'macaron') {
         this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
       } else {
-        var points = this.event.event_type[this.event.event_name].base_points[this.event.difficulty];
-        points *= this.event.event_type[this.event.event_name].score_bonus[this.event.score];
-        if (this.event.event_name == 'score_match') {
-          points *= this.event.event_type[this.event.event_name].ranking_bonus[this.event.ranking];
+        var points = this.event_type[this.event_name].base_points[this.difficulty];
+        points *= this.event_type[this.event_name].score_bonus[this.score];
+        if (this.event_name == 'score_match') {
+          points *= this.event_type[this.event_name].ranking_bonus[this.ranking];
         }
-        if (this.event.event_name == 'nakayoshi_match') {
-          points *= this.event.event_type[this.event.event_name].combo_bonus[this.event.combo];
-          points *= this.event.event_type[this.event.event_name].contribution_bonus[this.event.contribution];
-          points *= this.event.event_type[this.event.event_name].mission_bonus[this.event.mission];
+        if (this.event_name == 'nakayoshi_match') {
+          points *= this.event_type[this.event_name].combo_bonus[this.combo];
+          points *= this.event_type[this.event_name].contribution_bonus[this.contribution];
+          points *= this.event_type[this.event_name].mission_bonus[this.mission];
         }
-        this.event.average_points = Math.ceil(points);
+        this.average_points = Math.ceil(points);
       }
       if ($cookies.get('average_points')) {
         this.average_points = Number($cookies.get('average_points', Number));
