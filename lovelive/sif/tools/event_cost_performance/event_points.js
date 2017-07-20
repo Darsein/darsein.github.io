@@ -1,11 +1,12 @@
 angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
-  .service('Event', function($cookies, Rank, ScoreMatch, Macaron) {
+  .service('Event', function($cookies, Rank, ScoreMatch, Macaron, NakayoshiMatch) {
 
     var event = function() {
       this.rank = new Rank();
       this.event_type = {};
       this.event_type['score_match'] = new ScoreMatch();
       this.event_type['macaron'] = new Macaron();
+      this.event_type['nakayoshi_match'] = new NakayoshiMatch();
 
       this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'macaron';
       this.difficulty = $cookies.get('difficulty') ? $cookies.get('difficulty') :'expert';
@@ -13,6 +14,8 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.score = $cookies.get('score') ? $cookies.get('score') : 0;
       this.combo = $cookies.get('combo') ? $cookies.get('combo') : 0;
       this.ranking = $cookies.get('ranking') ? $cookies.get('ranking') : 1;
+      this.contribution = $cookies.get('contribution') ? $cookies.get('contribution') : 1;
+      this.mission = $cookies.get('mission') ? $cookies.get('mission') : 0;
       this.current_points = $cookies.get('current_points') ? Number($cookies.get('current_points')) : 0;
       if (this.event_name === 'macaron') {
         this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
@@ -24,11 +27,10 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       }
 
       this.border = {}
-      this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 63000;
-      this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) : 28000;
-      this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 12000;
+      this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 160000;
+      this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) :  100000;
+      this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 60000;
       this.border[700000] = 0;
-
 
       this.current_rank = $cookies.get('current_rank') ? Number($cookies.get('current_rank')) : 100;
       this.current_exp = $cookies.get('current_exp') ? Number($cookies.get('current_exp')) : 0;
@@ -197,6 +199,8 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $cookies.put('score', this.score, {expires: expire});
       $cookies.put('combo', this.combo, {expires: expire});
       $cookies.put('ranking', this.ranking, {expires: expire});
+      $cookies.put('contribution', this.contribution, {expires: expire});
+      $cookies.put('mission', this.mission, {expires: expire});
 
       $cookies.put('current_points', this.current_points, {expires: expire});
       $cookies.put('average_points', this.target_points, {expires: expire});
@@ -228,12 +232,24 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       'event.score',
       'event.combo',
       'event.ranking',
+      'event.contribution',
+      'event.mission',
     ], function(newVal, oldVal) {
       // Score: S, Ranking: 2nd
       if ($scope.event.event_name == 'macaron') {
         $scope.event.average_points = $scope.event.event_type[$scope.event.event_name].get_points[$scope.event.task_difficulty][$scope.event.score][$scope.event.combo];
       } else {
-        $scope.event.average_points = Math.ceil($scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty] * $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.score] * $scope.event.event_type[$scope.event.event_name].ranking_bonus[$scope.event.ranking]);
+        var points = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty];
+        points *= $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.score];
+        if ($scope.event.event_name == 'score_match') {
+          points *= $scope.event.event_type[$scope.event.event_name].ranking_bonus[$scope.event.ranking];
+        }
+        if ($scope.event.event_name == 'nakayoshi_match') {
+          points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
+          points *= $scope.event.event_type[$scope.event.event_name].contribution_bonus[$scope.event.contribution];
+          points *= $scope.event.event_type[$scope.event.event_name].mission_bonus[$scope.event.mission];
+        }
+        $scope.event.average_points = Math.ceil(points);
       }
       $scope.event.calcPoints();
       $scope.event.setCookies();

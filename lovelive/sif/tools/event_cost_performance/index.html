@@ -82,6 +82,7 @@
             <md-radio-group ng-model="event.event_name">
               <md-radio-button value="score_match">スコアマッチ</md-radio-button>
               <md-radio-button value="macaron">マカロン</md-radio-button>
+              <md-radio-button value="nakayoshi_match">なかよしマッチ</md-radio-button>
             </md-radio-group>
           </md-card-actions>
         </md-card>
@@ -166,6 +167,41 @@
               <md-radio-button value=2>2</md-radio-button>
               <md-radio-button value=3>3</md-radio-button>
               <md-radio-button value=4>4</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;" flex ng-if="event.event_name==='nakayoshi_match'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>貢献度</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.contribution">
+              <md-radio-button value=1 class="ng-primary">1</md-radio-button>
+              <md-radio-button value=2>2</md-radio-button>
+              <md-radio-button value=3>3</md-radio-button>
+              <md-radio-button value=4>4</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;" flex ng-if="event.event_name==='nakayoshi_match'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>ミッション</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.mission">
+              <md-radio-button value=0 class="ng-primary">SSS</md-radio-button>
+              <md-radio-button value=1>SS</md-radio-button>
+              <md-radio-button value=2>S</md-radio-button>
+              <md-radio-button value=3>A</md-radio-button>
+              <md-radio-button value=4>B</md-radio-button>
+              <md-radio-button value=5>C</md-radio-button>
+              <md-radio-button value=6>なし</md-radio-button>
             </md-radio-group>
           </md-card-actions>
         </md-card>
@@ -339,6 +375,9 @@
 
     <h2> 更新履歴 </h2>
     <md-list>
+      <md-list-item>
+        2017/07/20: なかよしマッチに対応
+      </md-list-item>
       <md-list-item>
         2017/07/17: 目標として使用石の個数・Rankを設定可能に。UIを変更
       </md-list-item>
