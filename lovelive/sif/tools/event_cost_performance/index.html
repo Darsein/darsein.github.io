@@ -48,7 +48,7 @@
   <md-content flex layout-padding>
     スクフェスのイベント効率を計算できます。Rankや目標イベントptなどを入力すると石の消費や報酬の見積もりが得られます。<br> ※現在とりあえずスコアマッチとマカロン (HARD, EX) のみ、Rank 500まで対応です<br><br>
 
-    <md-toolbar class="md-accent" ng-click="event_input=!event_input">
+    <md-toolbar class="md-accent" md-whiteframe="5" ng-click="event_input=!event_input">
       <div class="md-toolbar-tools">
         <md-icon ng-show="event_input" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
         <md-icon ng-show="!event_input" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
@@ -281,7 +281,7 @@
       </div>
     </div>
 
-    <md-toolbar class="md-accent" ng-click="target_input=!target_input">
+    <md-toolbar class="md-accent" md-whiteframe="5" ng-click="target_input=!target_input">
       <div class="md-toolbar-tools">
         <md-icon ng-show="target_input" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
         <md-icon ng-show="!target_input" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
@@ -291,23 +291,34 @@
     <div ng-show='!target_input'>
       <md-card flex layout-margin>
         <md-card-actions>
-          <md-input-container>
-            <label>目標ポイント</label>
-            <input type='number' step=1 ng-model='event.target_points'>
-          </md-input-container>
-          <md-input-container>
-            <label>使用石個数</label>
-            <input type='number' step=1 ng-model='event.target_stone'>
-          </md-input-container>
-          <md-input-container>
-            <label>最終Rank</label>
-            <input type='number' step=1 ng-model='event.target_rank'>
-          </md-input-container>
-          </md-card-container>
+          <md-radio-group ng-model="event.target">
+            <div layout="row" flex>
+              <md-radio-button value="points" class="ng-primary" aria-label="target_points"></md-radio-button>
+              <md-input-container>
+                <label>目標ポイント</label>
+                <input type='number' step=1 ng-model='event.target_points' ng-disabled='event.target!=="points"'>
+              </md-input-container>
+            </div>
+            <div layout="row" flex>
+              <md-radio-button value="stone" aria-label="target_stone"></md-radio-button>
+              <md-input-container>
+                <label>使用石個数</label>
+                <input type='number' step=1 ng-model='event.target_stone' ng-disabled='event.target!=="stone"'>
+              </md-input-container>
+            </div>
+            <div layout="row" flex>
+              <md-radio-button value="rank" aria-label="target_rank"></md-radio-button>
+              <md-input-container>
+                <label>最終Rank</label>
+                <input type='number' step=1 ng-model='event.target_rank' ng-disabled='event.target!=="rank"'>
+              </md-input-container>
+            </div>
+          </md-radio-group>
+        </md-card-actions>
       </md-card>
     </div>
 
-    <md-toolbar class="md-accent" ng-click="reward_output=!reward_output">
+    <md-toolbar class="md-accent" md-whiteframe="5" ng-click="reward_output=!reward_output">
       <div class="md-toolbar-tools">
         <md-icon ng-show="reward_output" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
         <md-icon ng-show="!reward_output" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
@@ -337,7 +348,7 @@
       </md-card>
     </div>
 
-    <md-toolbar class="md-accent" ng-click="detail_output=!detail_output">
+    <md-toolbar class="md-accent" md-whiteframe="5" ng-click="detail_output=!detail_output">
       <div class="md-toolbar-tools">
         <md-icon ng-show="detail_output" ng-style="{color: 'white'}" md-font-set="material-icons">expand_more</md-icon>
         <md-icon ng-show="!detail_output" ng-style="{color: 'white'}" md-font-set="material-icons">expand_less</md-icon>
@@ -375,6 +386,9 @@
 
     <h2> 更新履歴 </h2>
     <md-list>
+      <md-list-item>
+        2017/07/21: 平均獲得ポイントが0になると動かなくなるバグを修正。UIを微調整
+      </md-list-item>
       <md-list-item>
         2017/07/20: なかよしマッチに対応
       </md-list-item>

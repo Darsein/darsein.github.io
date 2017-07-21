@@ -8,7 +8,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.event_type['macaron'] = new Macaron();
       this.event_type['nakayoshi_match'] = new NakayoshiMatch();
 
-      this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'macaron';
+      this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'nakayoshi_match';
       this.difficulty = $cookies.get('difficulty') ? $cookies.get('difficulty') :'expert';
       this.task_difficulty = $cookies.get('task_difficulty') ? $cookies.get('task_difficulty') :'expert';
       this.score = $cookies.get('score') ? $cookies.get('score') : 0;
@@ -48,11 +48,12 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.used_stone = $cookies.get('used_stone') ? Number($cookies.get('used_stone')) : 0;
       this.macaron = $cookies.get('macaron') ? Number($cookies.get('macaron')) : 0;
 
-      this.target_points = $cookies.get('target_points') ? Number($cookies.get('target_points')) : 25000;
+      this.target = $cookies.get('target') ? Number($cookies.get('target')) : 'points';
+      this.target_points = $cookies.get('target_points') ? Number($cookies.get('target_points')) : 60000;
       this.target_stone = $cookies.get('target_stone') ? Number($cookies.get('target_stone')) : 0;
       this.target_rank = $cookies.get('target_rank') ? Number($cookies.get('target_rank')) : this.current_rank;
 
-      this.calcPoints();
+      this.calcTarget();
     }
     var p = event.prototype;
 
@@ -148,46 +149,25 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       }
     }
 
-    p.calcPoints = function() {
-      this.calcInitialize();
-
-      this.final_LP += Math.floor((this.event_end - Math.max(this.now, this.event_start)) / 1000 / 60 / 6);
-      this.consumeLP();
-      while (this.final_points < this.target_points) {
-        this.final_LP += this.max_LP;
-        this.required_stone++;
-        this.consumeLP();
+    p.checkTargetCondition = function() {
+      if (this.target === "points" && this.final_points < this.target_points) {
+        return true;
       }
-
-      [this.required_day, this.required_hour, this.required_min] =
-          this.secToDateTuple((this.final_play_num + this.final_task_play_num) * 3 * 60);
-
-      this.calcRewards();
+      if (this.target === "stone" && this.required_stone < this.target_stone) {
+        return true;
+      }
+      if (this.target === "rank" && this.final_rank < this.target_rank) {
+        return true;
+      }
+      return false;
     }
 
-    p.calcStones = function() {
+    p.calcTarget = function() {
       this.calcInitialize();
 
       this.final_LP += Math.floor((this.event_end - Math.max(this.now, this.event_start)) / 1000 / 60 / 6);
       this.consumeLP();
-      while (this.required_stone < this.target_stone) {
-        this.final_LP += this.max_LP;
-        this.required_stone++;
-        this.consumeLP();
-      }
-
-      [this.required_day, this.required_hour, this.required_min] =
-          this.secToDateTuple((this.final_play_num + this.final_task_play_num) * 3 * 60);
-
-      this.calcRewards();
-    }
-
-    p.calcRank = function() {
-      this.calcInitialize();
-
-      this.final_LP += Math.floor((this.event_end - Math.max(this.now, this.event_start)) / 1000 / 60 / 6);
-      this.consumeLP();
-      while (this.final_rank < this.target_rank) {
+      while (this.checkTargetCondition()) {
         this.final_LP += this.max_LP;
         this.required_stone++;
         this.consumeLP();
@@ -225,6 +205,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $cookies.put('used_stone', this.used_stone, {expires: expire});
       $cookies.put('macaron', this.macaron, {expires: expire});
 
+      $cookies.put('target', this.target, {expires: expire});
       $cookies.put('target_points', this.target_points, {expires: expire});
       $cookies.put('target_stone', this.target_stone, {expires: expire});
       $cookies.put('target_rank', this.target_rank, {expires: expire});
@@ -261,8 +242,6 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         }
         $scope.event.average_points = Math.ceil(points);
       }
-      $scope.event.calcPoints();
-      $scope.event.setCookies();
     });
 
     $scope.$watchGroup([
@@ -271,11 +250,17 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       'event.current_LP',
       'event.current_points',
       'event.average_points',
+      'event.target',
       'event.target_points',
+      'event.target_stone',
+      'event.target_rank',
       'event.border',
       'event.macaron',
     ], function(newVal, oldVal) {
-      $scope.event.calcPoints();
+      // TODO: revisit after introducing validation
+      if ($scope.event.average_points > 0) {
+        $scope.event.calcTarget();
+      }
       $scope.event.setCookies();
     });
 
@@ -287,15 +272,5 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $scope.event.total_stone = $scope.event.used_stone + $scope.event.required_stone;
       var reward_stone = $scope.event.rewards["ラブカストーン"] ? $scope.event.rewards["ラブカストーン"] : 0;
       $scope.event.stone_diff = reward_stone - $scope.event.total_stone;
-    });
-
-    $scope.$watch('event.target_rank', function(newVal, oldVal) {
-      $scope.event.calcRank();
-      $scope.event.setCookies();
-    });
-
-    $scope.$watch('event.target_stone', function(newVal, oldVal) {
-      $scope.event.calcStones();
-      $scope.event.setCookies();
     });
   });
