@@ -193,7 +193,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $cookies.put('mission', this.mission, {expires: expire});
 
       $cookies.put('current_points', this.current_points, {expires: expire});
-      $cookies.put('average_points', this.target_points, {expires: expire});
+      $cookies.put('average_points', this.average_points, {expires: expire});
 
       $cookies.put('border_10000', this.border_10000, {expires: expire});
       $cookies.put('border_50000', this.border_50000, {expires: expire});
