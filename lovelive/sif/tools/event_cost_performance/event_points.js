@@ -48,7 +48,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.used_stone = $cookies.get('used_stone') ? Number($cookies.get('used_stone')) : 0;
       this.macaron = $cookies.get('macaron') ? Number($cookies.get('macaron')) : 0;
 
-      this.target = $cookies.get('target') ? Number($cookies.get('target')) : 'points';
+      this.target = $cookies.get('target') ? $cookies.get('target') : 'points';
       this.target_points = $cookies.get('target_points') ? Number($cookies.get('target_points')) : 60000;
       this.target_stone = $cookies.get('target_stone') ? Number($cookies.get('target_stone')) : 0;
       this.target_rank = $cookies.get('target_rank') ? Number($cookies.get('target_rank')) : this.current_rank;
