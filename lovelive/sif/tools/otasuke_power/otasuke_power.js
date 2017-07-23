@@ -22,9 +22,11 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'otasukeTable'])
         this.otasuke_value += this.unit[i].rare * this.unit[i].skill;
       }
       this.otasuke_power = 0;
-      while (this.otasukeTable.otasuke_threshold[this.otasuke_power] <= this.otasuke_value) {
+      while (this.otasuke_power < 10 &&
+             this.otasukeTable.otasuke_threshold[this.otasuke_power] <= this.otasuke_value) {
         this.otasuke_power++;
       }
+
       this.next_required = this.otasukeTable.otasuke_threshold[this.otasuke_power] - this.otasuke_value;
       this.required_R = Math.ceil(this.next_required / this.otasukeTable.rare_ratio["R"]);
       this.required_SR = Math.ceil(this.next_required / this.otasukeTable.rare_ratio["SR"]);

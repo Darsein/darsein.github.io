@@ -46,9 +46,7 @@
 <body ng-cloak ng-controller='otasukePowerController'>
 
   <md-content flex layout-padding>
-    ユニットの情報を入力すると、おたすけパワーが計算できます。<br>
-    <a href="https://darseinsif.wordpress.com/2017/07/23/otasuke-power-calculation/">なかよしマッチ おたすけパワー計算式 (ほぼ確)</a>のデータを基準にしています。 未検証の部分もありますので、信用するかは自己責任でお願いします。<br>
-    結果が合わないユニットの例や、バグと思われる挙動、その他要望等がありましたら<a href="https://twitter.com/Darsein_LL">@Darsein_LL</a>まで。<br><br>
+    ユニットの情報を入力すると、おたすけパワーが計算できます。未検証の部分もありますので、信用するかは自己責任でお願いします。<br>
     ※ 配布・特典系の部員はすべてR扱いです (公式より) <br><br>
 
     <md-toolbar class="md-accent" md-whiteframe="5">
@@ -58,14 +56,14 @@
     </md-toolbar>
 
     <div class='md-padding' layout="row" layout-wrap>
-      <md-card style="width: 200px;" ng-repeat="member in otasukePower.unit track by $index">
+      <md-card style="width: 250px;" ng-repeat="member in otasukePower.unit track by $index">
         <md-card-header>
           <md-card-header-text>部員{{$index + 1}}</md-card-header-text>
         </md-card-header>
         <md-card-content>
           <div layout="row">
             <md-input-container>
-              <label>レアリティ</label>
+              <label>レア度</label>
               <md-select ng-model="member.rare">
                 <md-option ng-repeat="(rarity, ratio) in otasukePower.otasukeTable.rare_ratio" ng-value="ratio">
                   {{rarity}}
@@ -91,18 +89,74 @@
         <md-card-content>
           <span>このユニットのおたすけパワーは {{otasukePower.otasuke_power}} です。</span><br>
           <div ng-show="otasukePower.otasuke_power!=10">
-          <span>このユニットの総合おたすけ値は {{otasukePower.otasuke_value}} で、おたすけパワーを上げるにはあと {{otasukePower.next_required}} 必要です。これは、</span>
-          <ul>
-            <li>Rの特技Lv.であれば {{otasukePower.required_R}} </li>
-            <li>SRの特技Lv.であれば {{otasukePower.required_SR}} </li>
-            <li>SSRの特技Lv.であれば {{otasukePower.required_SSR}} </li>
-            <li>URの特技Lv.であれば {{otasukePower.required_UR}} </li>
-          </ul>
-          <span>上げることに相当します。</span>
+            <span>このユニットの総合おたすけ値は {{otasukePower.otasuke_value}} で、おたすけパワーを上げるにはあと {{otasukePower.next_required}} 必要です。これは、</span>
+            <ul>
+              <li>Rの特技Lv.であれば {{otasukePower.required_R}} </li>
+              <li>SRの特技Lv.であれば {{otasukePower.required_SR}} </li>
+              <li>SSRの特技Lv.であれば {{otasukePower.required_SSR}} </li>
+              <li>URの特技Lv.であれば {{otasukePower.required_UR}} </li>
+            </ul>
+            <span>上げることに相当します。</span>
           </div>
           <div ng-show="otasukePower.otasuke_power==10">
             おたすけパワーは {{otasukePower.otasuke_power}} でMAXです。
           </div>
+        </md-card-content>
+      </md-card>
+    </div>
+
+    <md-toolbar class="md-accent" md-whiteframe="5">
+      <div class="md-toolbar-tools">
+        <h3 flex> 計算式 </h3>
+      </div>
+    </md-toolbar>
+    <div flex layout-margin>
+      <md-card>
+        <md-card-content>
+          計算手順は以下の通りです。
+          <ol>
+            <li>ユニットの各部員の「おたすけ値」を計算する。おたすけ値は、<br>
+                　　<b>(おたすけ値) = (その部員の特技Lv.) × (その部員のレアリティに応じたレア係数)</b><br>
+                で計算する。レア係数は下記のレア係数表を参照する。</li>
+            <li>全部員のおたすけ値の合計「総合おたすけ値」を計算する。</li>
+            <li>下記のおたすけパワー換算表を参照し、自分のユニットの総合おたすけ値が「総合おたすけ値下限」以上 (等しい場合含む) となる最大のおたすけパワーが、そのユニットのおたすけパワー。</li>
+          </ol>
+
+          例: 総合おたすけ値が 3150 のユニットのおたすけパワーは 6
+          <div layout-mardgin layout="row">
+            <table rules="all">
+              <caption>レア係数表</caption>
+              <thead>
+                <tr>
+                  <th>レアリティ</th>
+                  <th>レア係数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="(rarity, ratio) in otasukePower.otasukeTable.rare_ratio">
+                  <td>{{rarity}}</td>
+                  <td>{{ratio}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table rules="all">
+              <caption>おたすけパワー換算表</caption>
+              <thead>
+                <tr>
+                  <th>総合おたすけ値下限</th>
+                  <th>おたすけパワー</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="threshold in otasukePower.otasukeTable.otasuke_threshold">
+                  <td>{{threshold}}</td>
+                  <td>{{$index+1}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <a href="https://darseinsif.wordpress.com/2017/07/23/otasuke-power-calculation/">なかよしマッチ おたすけパワー計算式 (ほぼ確)</a>に計算例もあるので、よくわからなかったら参考にしてください。
         </md-card-content>
       </md-card>
     </div>
@@ -114,6 +168,13 @@
       </md-list-item>
     </md-list>
 
+    <div layout-margin>
+    結果が合わないユニットの例や、バグと思われる挙動、その他要望等がありましたら
+    <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a>まで。<br>
+    特におたすけパワー 9 付近は完全に手元にデータがなくて正直ヤマカンなので、是非お願いします。<br>
+    また、覚醒/未覚醒や配置・センター、スロットやSISなどが関係するという説もありますが、当方では再現していないので、
+    もしそのような例があれば具体的に教えていただけると嬉しいです。
+  </div>
   </md-content>
 </body>
 
