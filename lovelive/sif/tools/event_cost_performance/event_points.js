@@ -17,6 +17,24 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.contribution = $cookies.get('contribution') ? $cookies.get('contribution') : 1;
       this.mission = $cookies.get('mission') ? $cookies.get('mission') : 0;
       this.current_points = $cookies.get('current_points') ? Number($cookies.get('current_points')) : 0;
+      if (this.event_name === 'macaron') {
+        this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
+      } else {
+        var points = this.event_type[this.event_name].base_points[this.difficulty];
+        points *= this.event_type[this.event_name].score_bonus[this.score];
+        if (this.event_name == 'score_match') {
+          points *= this.event_type[this.event_name].ranking_bonus[this.ranking];
+        }
+        if (this.event_name == 'nakayoshi_match') {
+          points *= this.event_type[this.event_name].combo_bonus[this.combo];
+          points *= this.event_type[this.event_name].contribution_bonus[this.contribution];
+          points *= this.event_type[this.event_name].mission_bonus[this.mission];
+        }
+        this.average_points = Math.ceil(points);
+      }
+      if ($cookies.get('average_points')) {
+        this.average_points = Number($cookies.get('average_points'));
+      }
 
       this.border = {}
       this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 160000;
@@ -34,25 +52,6 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.target_points = $cookies.get('target_points') ? Number($cookies.get('target_points')) : 60000;
       this.target_stone = $cookies.get('target_stone') ? Number($cookies.get('target_stone')) : 0;
       this.target_rank = $cookies.get('target_rank') ? Number($cookies.get('target_rank')) : this.current_rank;
-
-      if (this.event_name === 'macaron') {
-        this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
-      } else {
-        var points = this.event_type[this.event_name].base_points[this.difficulty];
-        points *= this.event_type[this.event_name].score_bonus[this.score];
-        if (this.event_name == 'score_match') {
-          points *= this.event_type[this.event_name].ranking_bonus[this.ranking];
-        }
-        if (this.event_name == 'nakayoshi_match') {
-          points *= this.event_type[this.event_name].combo_bonus[this.combo];
-          points *= this.event_type[this.event_name].contribution_bonus[this.contribution];
-          points *= this.event_type[this.event_name].mission_bonus[this.mission];
-        }
-        this.average_points = Math.ceil(points);
-      }
-      if ($cookies.get('average_points')) {
-        this.average_points = Number($cookies.get('average_points', Number));
-      }
 
       this.calcTarget();
     }
