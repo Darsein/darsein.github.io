@@ -1,0 +1,114 @@
+<html lang="en" ng-app="darsein-hp">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>スクフェス おたすけパワー計算</title>
+  <meta name="keywords" content="ラブライブ, スクフェス イベント, なかよしマッチ, おたすけパワー">
+  <meta name="description" content="
+  ラブライブ！スクールアイドルフェスティバルのイベント・なかよしマッチのおたすけパワーを計算します。">
+
+  <!-- Google Analytics -->
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-101239470-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-cookies.min.js"></script>
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+  <script src="otasuke_power.js"></script>
+  <script src="table.js"></script>
+</head>
+
+<body ng-cloak ng-controller='otasukePowerController'>
+
+  <md-content flex layout-padding>
+    ユニットの情報を入力すると、おたすけパワーが計算できます。<br> ※
+    <a href="https://darseinsif.wordpress.com/2017/07/23/otasuke-power-calculation/">なかよしマッチ おたすけパワー計算式 (ほぼ確)</a>のデータを基準にしています。 未検証の部分もありますので、信用するかは自己責任でお願いします。
+    <br> 結果が合わないユニットの例や、バグと思われる挙動、その他要望等がありましたら <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> まで。<br><br>
+
+    <md-toolbar class="md-accent" md-whiteframe="5">
+      <div class="md-toolbar-tools">
+        <h3 flex> ユニット情報入力 </h3>
+      </div>
+    </md-toolbar>
+
+    <div class='md-padding' layout="row" layout-wrap>
+      <md-card style="width: 200px;" ng-repeat="member in otasukePower.unit track by $index">
+        <md-card-header>
+          <md-card-header-text>部員{{$index + 1}}</md-card-header-text>
+        </md-card-header>
+        <md-card-content>
+          <div layout="row">
+            <md-input-container>
+              <label>レアリティ</label>
+              <md-select ng-model="member.rare">
+                <md-option ng-repeat="(key, value) in otasukePower.otasukeTable.rare_ratio" ng-value="value">
+                  {{key}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+          <md-input-container>
+            <label>特技Lv.</label>
+            <input type='number' step=1 ng-model='member.skill'>
+          </md-input-container>
+        </div>
+        </md-card-content>
+      </md-card>
+    </div>
+
+    <md-toolbar class="md-accent" md-whiteframe="5">
+      <div class="md-toolbar-tools">
+        <h3 flex> ユニット情報入力 </h3>
+      </div>
+    </md-toolbar>
+    <div flex layout-margin>
+      <md-card>
+        <md-card-content>
+          <span>このユニットのおたすけパワーは {{otasukePower.otasuke_power}} です。</span><br>
+          <span>このユニットの総合おたすけ値は {{otasukePower.otasuke_value}} で、おたすけパワーを上げるにはあと {{otasukePower.next_required}} 必要です。これは、</span>
+          <ul>
+            <li>Rの特技Lv.であれば {{otasukePower.required_R}} </li>
+            <li>SRの特技Lv.であれば {{otasukePower.required_SR}} </li>
+            <li>SSRの特技Lv.であれば {{otasukePower.required_SSR}} </li>
+            <li>URの特技Lv.であれば {{otasukePower.required_UR}} </li>
+          </ul>
+          <span>上げることに相当します。</span>
+        </md-card-content>
+      </md-card>
+    </div>
+
+    <h2> 更新履歴 </h2>
+    <md-list>
+      <md-list-item>
+        2017/07/23: 公開
+      </md-list-item>
+    </md-list>
+
+  </md-content>
+</body>
+
+</html>
