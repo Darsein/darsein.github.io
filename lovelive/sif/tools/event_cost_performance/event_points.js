@@ -17,6 +17,24 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.contribution = $cookies.get('contribution') ? $cookies.get('contribution') : 1;
       this.mission = $cookies.get('mission') ? $cookies.get('mission') : 0;
       this.current_points = $cookies.get('current_points') ? Number($cookies.get('current_points')) : 0;
+
+      this.border = {}
+      this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 160000;
+      this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) :  100000;
+      this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 60000;
+      this.border[700000] = 0;
+
+      this.current_rank = $cookies.get('current_rank') ? Number($cookies.get('current_rank')) : 100;
+      this.current_exp = $cookies.get('current_exp') ? Number($cookies.get('current_exp')) : 0;
+      this.current_LP = $cookies.get('current_LP') ? Number($cookies.get('current_LP')) : 0;
+      this.used_stone = $cookies.get('used_stone') ? Number($cookies.get('used_stone')) : 0;
+      this.macaron = $cookies.get('macaron') ? Number($cookies.get('macaron')) : 0;
+
+      this.target = $cookies.get('target') ? $cookies.get('target') : 'points';
+      this.target_points = $cookies.get('target_points') ? Number($cookies.get('target_points')) : 60000;
+      this.target_stone = $cookies.get('target_stone') ? Number($cookies.get('target_stone')) : 0;
+      this.target_rank = $cookies.get('target_rank') ? Number($cookies.get('target_rank')) : this.current_rank;
+
       if (this.event_name === 'macaron') {
         this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
       } else {
@@ -35,23 +53,6 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       if ($cookies.get('average_points')) {
         this.average_points = Number($cookies.get('average_points', Number));
       }
-
-      this.border = {}
-      this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 160000;
-      this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) :  100000;
-      this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 60000;
-      this.border[700000] = 0;
-
-      this.current_rank = $cookies.get('current_rank') ? Number($cookies.get('current_rank')) : 100;
-      this.current_exp = $cookies.get('current_exp') ? Number($cookies.get('current_exp')) : 0;
-      this.current_LP = $cookies.get('current_LP') ? Number($cookies.get('current_LP')) : 0;
-      this.used_stone = $cookies.get('used_stone') ? Number($cookies.get('used_stone')) : 0;
-      this.macaron = $cookies.get('macaron') ? Number($cookies.get('macaron')) : 0;
-
-      this.target = $cookies.get('target') ? $cookies.get('target') : 'points';
-      this.target_points = $cookies.get('target_points') ? Number($cookies.get('target_points')) : 60000;
-      this.target_stone = $cookies.get('target_stone') ? Number($cookies.get('target_stone')) : 0;
-      this.target_rank = $cookies.get('target_rank') ? Number($cookies.get('target_rank')) : this.current_rank;
 
       this.calcTarget();
     }
