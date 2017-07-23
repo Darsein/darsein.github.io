@@ -7,9 +7,8 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'otasukeTable'])
       this.unit = new Array(9);
       for (var i=0; i<9; i++) {
         var member = new Object();
-        member.rare = $cookies.get('rare' + i) ? $cookies.get('rare' + i) : 0;
-        member.skill = $cookies.get('skill' + i) ? $cookies.get('skill' + i) : 0;
-        console.log(member.rare, member.skill);
+        member.rare = $cookies.get('rare' + i) ? Number($cookies.get('rare' + i)) : 0;
+        member.skill = $cookies.get('skill' + i) ? Number($cookies.get('skill' + i)) : 0;
         this.unit[i] = member;
       }
       this.calcOtasukePower();
