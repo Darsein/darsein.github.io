@@ -9,6 +9,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'otasukeTable'])
         var member = new Object();
         member.rare = $cookies.get('rare' + i) ? $cookies.get('rare' + i) : 0;
         member.skill = $cookies.get('skill' + i) ? $cookies.get('skill' + i) : 0;
+        console.log(member.rare, member.skill);
         this.unit[i] = member;
       }
       this.calcOtasukePower();

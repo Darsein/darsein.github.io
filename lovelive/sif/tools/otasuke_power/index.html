@@ -66,23 +66,23 @@
             <md-input-container>
               <label>レアリティ</label>
               <md-select ng-model="member.rare">
-                <md-option ng-repeat="(key, value) in otasukePower.otasukeTable.rare_ratio" ng-value="value">
-                  {{key}}
+                <md-option ng-repeat="(rarity, ratio) in otasukePower.otasukeTable.rare_ratio" ng-value="ratio">
+                  {{rarity}}
                 </md-option>
               </md-select>
             </md-input-container>
-          <md-input-container>
-            <label>特技Lv.</label>
-            <input type='number' step=1 ng-model='member.skill'>
-          </md-input-container>
-        </div>
+            <md-input-container>
+              <label>特技Lv.</label>
+              <input type='number' step=1 ng-model="member.skill">
+            </md-input-container>
+          </div>
         </md-card-content>
       </md-card>
     </div>
 
     <md-toolbar class="md-accent" md-whiteframe="5">
       <div class="md-toolbar-tools">
-        <h3 flex> ユニット情報入力 </h3>
+        <h3 flex> 計算結果 </h3>
       </div>
     </md-toolbar>
     <div flex layout-margin>
