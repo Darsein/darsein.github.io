@@ -56,7 +56,7 @@
     </md-toolbar>
 
     <div class='md-padding' layout="row" layout-wrap>
-      <md-card style="width: 250px;" ng-repeat="member in otasukePower.unit track by $index">
+      <md-card style="width: 200px;" ng-repeat="member in otasukePower.unit track by $index">
         <md-card-header>
           <md-card-header-text>部員{{$index + 1}}</md-card-header-text>
         </md-card-header>
@@ -123,8 +123,8 @@
           </ol>
 
           例: 総合おたすけ値が 3150 のユニットのおたすけパワーは 6
-          <div layout-mardgin layout="row">
-            <table rules="all">
+          <div layout="row" class="md-padding" layout-wrap>
+            <table layout-margin rules="all">
               <caption>レア係数表</caption>
               <thead>
                 <tr>
@@ -140,7 +140,7 @@
               </tbody>
             </table>
 
-            <table rules="all">
+            <table layout-margin rules="all">
               <caption>おたすけパワー換算表</caption>
               <thead>
                 <tr>
