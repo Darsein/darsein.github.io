@@ -103,25 +103,24 @@
         </md-card-content>
       </md-card>
 
-        <md-card ng-show="otasukePower.otasuke_power!=10">
-          <md-card-header>
-            <md-card-header-text>おたすけパワーを上げるための最小特技経験値</md-card-header-text>
-          </md-card-header>
-          <md-card-content>
-            <div ng-show="otasukePower.required_skill_exp">
-              必要経験値の最小値 (属性無視) : {{otasukePower.required_skill_exp}}<br>
-              強化例:
-              <ul>
-                <li ng-repeat="member in otasukePower.unit">
-                  部員 {{$index+1}}: Lv. {{member.skill}} → Lv. {{member.next_level}} (必要経験値: {{member.next_exp}})
-                </li>
-              </ul>
-            </div>
-            <div ng-show="!otasukePower.required_skill_exp">
-              残念ながらこのユニットの特技Lv.を強化してもおたすけパワーは上がりません。 レアリティの高い部員に入れ替えましょう。
-            </div>
-          </md-card-content>
-        </md-card>
+      <md-card ng-show="otasukePower.otasuke_power!=10">
+        <md-card-header>
+          <md-card-header-text>おたすけパワーを上げるための最小特技経験値</md-card-header-text>
+        </md-card-header>
+        <md-card-content>
+          <div ng-show="otasukePower.required_skill_exp">
+            必要経験値の最小値 (属性無視) : {{otasukePower.required_skill_exp}}<br> 強化例:
+            <ul>
+              <li ng-repeat="member in otasukePower.unit">
+                部員 {{$index+1}}: Lv. {{member.skill}} → Lv. {{member.next_level}} (必要経験値: {{member.next_exp}})
+              </li>
+            </ul>
+          </div>
+          <div ng-show="!otasukePower.required_skill_exp">
+            残念ながらこのユニットの特技Lv.を強化してもおたすけパワーは上がりません。 レアリティの高い部員に入れ替えましょう。
+          </div>
+        </md-card-content>
+      </md-card>
     </div>
 
     <md-toolbar class="md-accent" md-whiteframe="5">
