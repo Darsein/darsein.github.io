@@ -46,8 +46,7 @@
 <body ng-cloak ng-controller='otasukePowerController'>
 
   <md-content flex layout-padding>
-    ユニットの情報を入力すると、おたすけパワーが計算できます。未検証の部分もありますので、信用するかは自己責任でお願いします。<br>
-    ※ 配布・特典系の部員はすべてR扱いです (公式より) <br><br>
+    ユニットの情報を入力すると、おたすけパワーが計算できます。未検証の部分もありますので、信用するかは自己責任でお願いします。<br> ※ 配布・特典系の部員はすべてR扱いです (公式より) <br><br>
 
     <md-toolbar class="md-accent" md-whiteframe="5">
       <div class="md-toolbar-tools">
@@ -103,6 +102,26 @@
           </div>
         </md-card-content>
       </md-card>
+
+        <md-card ng-show="otasukePower.otasuke_power!=10">
+          <md-card-header>
+            <md-card-header-text>おたすけパワーを上げるための最小特技経験値</md-card-header-text>
+          </md-card-header>
+          <md-card-content>
+            <div ng-show="otasukePower.required_skill_exp">
+              必要経験値の最小値 (属性無視) : {{otasukePower.required_skill_exp}}<br>
+              強化例:
+              <ul>
+                <li ng-repeat="member in otasukePower.unit">
+                  部員 {{$index+1}}: Lv. {{member.skill}} → Lv. {{member.next_level}} (必要経験値: {{member.next_exp}})
+                </li>
+              </ul>
+            </div>
+            <div ng-show="!otasukePower.required_skill_exp">
+              残念ながらこのユニットの特技Lv.を強化してもおたすけパワーは上がりません。 レアリティの高い部員に入れ替えましょう。
+            </div>
+          </md-card-content>
+        </md-card>
     </div>
 
     <md-toolbar class="md-accent" md-whiteframe="5">
@@ -116,8 +135,8 @@
           計算手順は以下の通りです。
           <ol>
             <li>ユニットの各部員の「おたすけ値」を計算する。おたすけ値は、<br>
-                　　<b>(おたすけ値) = (その部員の特技Lv.) × (その部員のレアリティに応じたレア係数)</b><br>
-                で計算する。レア係数は下記のレア係数表を参照する。</li>
+              <b>(おたすけ値) = (その部員の特技Lv.) × (その部員のレアリティに応じたレア係数)</b><br> で計算する。レア係数は下記のレア係数表を参照する。
+            </li>
             <li>全部員のおたすけ値の合計「総合おたすけ値」を計算する。</li>
             <li>下記のおたすけパワー換算表を参照し、自分のユニットの総合おたすけ値が「総合おたすけ値下限」以上 (等しい場合含む) となる最大のおたすけパワーが、そのユニットのおたすけパワー。</li>
           </ol>
@@ -164,17 +183,17 @@
     <h2> 更新履歴 </h2>
     <md-list>
       <md-list-item>
+        2017/07/24: 最小必要特技経験値とそれを実現する例を追加
+      </md-list-item>
+      <md-list-item>
         2017/07/23: 公開
       </md-list-item>
     </md-list>
 
     <div layout-margin>
-    結果が合わないユニットの例や、バグと思われる挙動、その他要望等がありましたら
-    <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a>まで。<br>
-    特におたすけパワー 9 付近は完全に手元にデータがなくて正直ヤマカンなので、是非お願いします。<br>
-    また、覚醒/未覚醒や配置・センター、スロットやSISなどが関係するという説もありますが、当方では再現していないので、
-    もしそのような例があれば具体的に教えていただけると嬉しいです。
-  </div>
+      結果が合わないユニットの例や、バグと思われる挙動、その他要望等がありましたら
+      <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a>まで。<br> 特におたすけパワー 9 付近は完全に手元にデータがなくて正直ヤマカンなので、是非お願いします。<br> また、覚醒/未覚醒や配置・センター、スロットやSISなどが関係するという説もありますが、当方では再現していないので、 もしそのような例があれば具体的に教えていただけると嬉しいです。
+    </div>
   </md-content>
 </body>
 

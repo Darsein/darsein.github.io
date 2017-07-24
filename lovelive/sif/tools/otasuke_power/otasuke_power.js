@@ -1,8 +1,9 @@
 angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'otasukeTable'])
-  .service('OtasukePower', function($cookies, OtasukeTable) {
+  .service('OtasukePower', function($cookies, OtasukeTable, SkillLevelTable) {
 
     var otasukePower = function() {
       this.otasukeTable = new OtasukeTable();
+      this.skillLevelTable = new SkillLevelTable();
 
       this.unit = new Array(9);
       for (var i=0; i<9; i++) {
@@ -32,6 +33,51 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'otasukeTable'])
       this.required_SR = Math.ceil(this.next_required / this.otasukeTable.rare_ratio["SR"]);
       this.required_SSR = Math.ceil(this.next_required / this.otasukeTable.rare_ratio["SSR"]);
       this.required_UR = Math.ceil(this.next_required / this.otasukeTable.rare_ratio["UR"]);
+
+      if (this.otasuke_power != 10) {
+        this.calcRequiredSkillExp(this.next_required);
+      }
+    }
+
+    p.calcRequiredSkillExp = function(required_otasuke_value) {
+      var cur = Array(required_otasuke_value+1);
+      cur[0] = [0];
+      for (var i = 0; i < 9; ++i) {
+        this.unit[i].next_level = this.unit[i].skill;
+        this.unit[i].next_exp = 0;
+
+        for (var lev = this.unit[i].skill; lev <= 7; ++lev) {
+          var required_exp = this.skillLevelTable.skill_level_table[this.unit[i].rare][lev];
+          var gain_value = this.unit[i].rare;
+          if (gain_value == 0) continue;
+
+          for (var j = required_otasuke_value; j >= 0; --j) {
+            if (!cur[j]) continue;
+            var nxt_value = Math.min(j+gain_value, required_otasuke_value);
+
+            if (!cur[nxt_value] ||
+                cur[nxt_value][0] > cur[j][0] + required_exp) {
+                  cur[nxt_value] = [];
+                  for (var x = 0, len = cur[j].length; x < len; ++x) {
+                    cur[nxt_value].push(cur[j][x]);
+                  }
+                  cur[nxt_value][0] += required_exp;
+                  cur[nxt_value].push(i);
+                }
+          }
+        }
+      }
+
+      if (cur[required_otasuke_value]) {
+        this.required_skill_exp = cur[required_otasuke_value][0];
+        for (var i = 1, len = cur[required_otasuke_value].length; i < len; ++i) {
+          var id = cur[required_otasuke_value][i];
+          this.unit[id].next_exp += this.skillLevelTable.skill_level_table[this.unit[id].rare][this.unit[id].next_level];
+          this.unit[id].next_level++;
+        }
+      } else {
+        this.required_skill_exp = undefined;
+      }
     }
 
     p.setCookies = function() {
