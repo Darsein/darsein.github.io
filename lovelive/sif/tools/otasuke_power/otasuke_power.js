@@ -34,7 +34,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'otasukeTable'])
       this.required_SSR = Math.ceil(this.next_required / this.otasukeTable.rare_ratio["SSR"]);
       this.required_UR = Math.ceil(this.next_required / this.otasukeTable.rare_ratio["UR"]);
 
-      if (this.otasuke_power != 10) {
+      if (this.otasuke_power !== 10) {
         this.calcRequiredSkillExp(this.next_required);
       }
     }

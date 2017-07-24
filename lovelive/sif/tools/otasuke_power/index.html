@@ -87,7 +87,7 @@
       <md-card>
         <md-card-content>
           <span>このユニットのおたすけパワーは {{otasukePower.otasuke_power}} です。</span><br>
-          <div ng-show="otasukePower.otasuke_power!=10">
+          <div ng-show="otasukePower.otasuke_power!==10">
             <span>このユニットの総合おたすけ値は {{otasukePower.otasuke_value}} で、おたすけパワーを上げるにはあと {{otasukePower.next_required}} 必要です。これは、</span>
             <ul>
               <li>Rの特技Lv.であれば {{otasukePower.required_R}} </li>
@@ -97,13 +97,13 @@
             </ul>
             <span>上げることに相当します。</span>
           </div>
-          <div ng-show="otasukePower.otasuke_power==10">
+          <div ng-show="otasukePower.otasuke_power===10">
             おたすけパワーは {{otasukePower.otasuke_power}} でMAXです。
           </div>
         </md-card-content>
       </md-card>
 
-      <md-card ng-show="otasukePower.otasuke_power!=10">
+      <md-card ng-show="otasukePower.otasuke_power!==10">
         <md-card-header>
           <md-card-header-text>おたすけパワーを上げるための最小特技経験値</md-card-header-text>
         </md-card-header>
@@ -116,7 +116,7 @@
               </li>
             </ul>
           </div>
-          <div ng-show="!otasukePower.required_skill_exp">
+          <div ng-show="otasukePower.required_skill_exp == null">
             残念ながらこのユニットの特技Lv.を強化してもおたすけパワーは上がりません。 レアリティの高い部員に入れ替えましょう。
           </div>
         </md-card-content>
