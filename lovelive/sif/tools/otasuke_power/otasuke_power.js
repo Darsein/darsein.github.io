@@ -8,6 +8,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'otasukeTable'])
       this.unit = new Array(9);
       for (var i=0; i<9; i++) {
         var member = new Object();
+        member.name = $cookies.get('name' + i) ? $cookies.get('name' + i) : "部員" + (i+1);
         member.rare = $cookies.get('rare' + i) ? Number($cookies.get('rare' + i)) : 200;
         member.skill = $cookies.get('skill' + i) ? Number($cookies.get('skill' + i)) : 1;
         this.unit[i] = member;
@@ -96,7 +97,12 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'otasukeTable'])
     $scope.otasukePower = new OtasukePower();
 
     $scope.$watch('otasukePower.unit', function(newVal, oldVal) {
+      for (var i = 0; i < 9; ++i) {
+        if (oldVal[i].rare == 0) $scope.otasukePower.unit[i].skill = 1;
+        if (newVal[i].rare == 0) $scope.otasukePower.unit[i].skill = 0;
+      }
       $scope.otasukePower.calcOtasukePower();
       $scope.otasukePower.setCookies();
     }, true);
+
   });

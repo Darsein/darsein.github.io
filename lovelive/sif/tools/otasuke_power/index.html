@@ -55,11 +55,14 @@
     </md-toolbar>
 
     <div class='md-padding' layout="row" layout-wrap>
-      <md-card style="width: 200px;" ng-repeat="member in otasukePower.unit track by $index">
-        <md-card-header>
-          <md-card-header-text>部員{{$index + 1}}</md-card-header-text>
-        </md-card-header>
+      <md-card ng-repeat="member in otasukePower.unit track by $index">
+
         <md-card-content>
+          <md-input-container style="width: 150px;">
+            <label>部員{{$index + 1}}</label>
+            <input ng-model="member.name" width="1">
+          <md-input-container>
+
           <div layout="row">
             <md-input-container>
               <label>レア度</label>
@@ -71,7 +74,11 @@
             </md-input-container>
             <md-input-container>
               <label>特技Lv.</label>
-              <input type='number' step=1 ng-model="member.skill">
+              <md-select ng-model="member.skill">
+                <md-option ng-repeat="lev in member.rare===0 ? [0] : [1, 2, 3, 4, 5, 6, 7, 8]" ng-value="lev">
+                  {{lev}}
+                </md-option>
+              </md-select>
             </md-input-container>
           </div>
         </md-card-content>
@@ -112,7 +119,7 @@
             必要経験値の最小値 (属性無視) : {{otasukePower.required_skill_exp}}<br> 強化例:
             <ul>
               <li ng-repeat="member in otasukePower.unit">
-                部員 {{$index+1}}: Lv. {{member.skill}} → Lv. {{member.next_level}} (必要経験値: {{member.next_exp}})
+                {{member.name}}: Lv. {{member.skill}} → {{member.next_level}} (必要経験値: {{member.next_exp}})
               </li>
             </ul>
           </div>
@@ -181,6 +188,9 @@
 
     <h2> 更新履歴 </h2>
     <md-list>
+      <md-list-item>
+        2017/07/25: UI微調整
+      </md-list-item>
       <md-list-item>
         2017/07/24: 最小必要特技経験値とそれを実現する例を追加
       </md-list-item>
