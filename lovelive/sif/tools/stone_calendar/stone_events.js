@@ -32,17 +32,16 @@ angular.module('darsein-hp', ['ngMaterial'])
     };
 
     p.parseEvents = function(raw_events) {
-      console.log(raw_events);
       var events = [];
       for (var i = 0, len = raw_events.length; i < len; ++i) {
         var event = new Object();
         event.category = raw_events[i].summary.match(/(.*)\s\(.+\)/)[1];
 
-        event.start_date = new Date(raw_events[i].start.date + " 00:00:00");
+        event.start_date = new Date(raw_events[i].start.date.replace(/-/g, "/") + " 00:00:00");
 
         // UTNIL or null
         var maybe_end_date = raw_events[i].recurrence[0].match(/.*UNTIL=(.*).*/);
-        event.end_date = maybe_end_date ? new Date(maybe_end_date[1].slice(0, 4) + "-" + maybe_end_date[1].slice(4, 6) + "-" + maybe_end_date[1].slice(6, 8) + " 00:00:00") : null;
+        event.end_date = maybe_end_date ? new Date(maybe_end_date[1].slice(0, 4) + "/" + maybe_end_date[1].slice(4, 6) + "/" + maybe_end_date[1].slice(6, 8) + " 00:00:00") : null;
 
         // YEARLY, MONTHLY (BYMONTHDAY=-1), WEEKLY, DAILY
         event.frequency = raw_events[i].recurrence[0].match(/.*FREQ=([A-Z]+).*/)[1];
@@ -68,7 +67,6 @@ angular.module('darsein-hp', ['ngMaterial'])
     }
 
     p.calcStonesNum = function() {
-      console.log(this.events);
       this.rewards = {};
       for (var i = 0, len = this.events.length; i < len; ++i) {
         var event = this.events[i];
@@ -87,11 +85,9 @@ angular.module('darsein-hp', ['ngMaterial'])
           while (event_day <= end_day) {
             if (start_day <= event_day) times++;
             if (event.is_end_of_month) {
-              console.log(event_day);
               event_day.setDate(1);
               event_day.setMonth(event_day.getMonth() + 2);
               event_day.setDate(0);
-              console.log(event_day);
             } else {
               event_day.setMonth(event_day.getMonth() + 1);
             }
@@ -103,7 +99,6 @@ angular.module('darsein-hp', ['ngMaterial'])
             event_day.setFullYear(event_day.getFullYear() + 1);
           }
         }
-        console.log(start_day, end_day, times);
 
         if (!this.rewards[event.reward_type]) {
           this.rewards[event.reward_type] = new Object();
@@ -111,7 +106,6 @@ angular.module('darsein-hp', ['ngMaterial'])
         }
         this.rewards[event.reward_type].total_num += times * event.num_per_day;
 
-        console.log(event.category, times);
         if (!this.rewards[event.reward_type].detail) {
           this.rewards[event.reward_type].detail = new Object();
         }
@@ -122,7 +116,6 @@ angular.module('darsein-hp', ['ngMaterial'])
         }
         this.rewards[event.reward_type].detail[event.category].times += times;
       }
-      console.log(this.rewards);
     };
 
     return stone_events;
@@ -131,7 +124,6 @@ angular.module('darsein-hp', ['ngMaterial'])
     $scope.stone_events = new StoneEvents();
     CalendarData.getCalendarData().then(function(res) {
       $scope.stone_events.events = $scope.stone_events.parseEvents(res.data.items);
-      console.log($scope.stone_events.events);
       $scope.stone_events.calcStonesNum();
     });
 
@@ -141,7 +133,6 @@ angular.module('darsein-hp', ['ngMaterial'])
     ], function(newVal, oldVal) {
       $scope.stone_events.beginOfDay($scope.stone_events.start_day);
       $scope.stone_events.beginOfDay($scope.stone_events.target_day);
-      console.log($scope.stone_events.events);
       if ($scope.stone_events.events) $scope.stone_events.calcStonesNum();
     });
   });
