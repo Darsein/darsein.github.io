@@ -1,0 +1,92 @@
+<html lang="en" ng-app="darsein-hp">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>スクフェス パーフェクトサポート</title>
+  <meta name="keywords" content="ラブライブ,スクフェス,ツール,イベント">
+  <meta name="description" content="
+  ラブライブ！スクールアイドルフェスティバルのプレイに役立つツールを公開しています">
+
+  <!-- Google Analytics -->
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-101239470-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+  <script>
+    angular.module('darsein-hp', ['ngMaterial']);
+  </script>
+</head>
+
+<body ng-cloak>
+  <md-content flex layout-margin>
+    <!-- Top Title
+  <md-toolbar layout="row" class="md-toolbar-tools md-accent">
+    <a ng-href="https://darsein.github.io/">
+      <h1> Darsein </h1> </a>
+  </md-toolbar>
+   -->
+
+    ラブライブ！スクールアイドルフェスティバルのプレイに役立つツールを公開しています。
+    現在公開中のものは以下の通りです。
+    <ul>
+      <li>
+        <a href="https://darsein.github.io/lovelive/sif/tools/event_cost_performance">スクフェス イベント効率計算</a><br> イベント情報やRankなどから、目標ポイントまでに必要なラブカストーンや、得られる報酬などを計算します。
+      </li>
+      <li>
+        <a href="https://darsein.github.io/lovelive/sif/tools/otasuke_power">スクフェス おたすけパワー計算</a><br> ユニット情報を入力することで、そのユニットのなかよしマッチでのおたすけパワーを計算します。
+      </li>
+      <li>
+        <a href="https://darsein.github.io/lovelive/sif/tools/stone_calendar">スクフェス 報酬カレンダー</a><br> 指定した期間にログインボーナスやキャンペーンなどで得られるラブカストーンの個数を見積もります。
+      </li>
+    </ul>
+    <br>また、まだないもので作ろうかと計画いているツール案としては、
+    <ul>
+      <li>ユニットのスコア期待値計算 (スクフェス)</li>
+      <li>ユニット最適化 (スクフェス)</li>
+      <li>ユニット育成効率計算 (スクフェス)</li>
+      <li>イベントボーダー予測 (スクフェス)</li>
+    </ul>
+    などがあります。<br>
+    これらは例えば以下のサイトですでにできるものもありますが、より高機能だったり高精度だったりにできるように頑張りたいと思っています。
+    <ul>
+      <li><a href="http://schfes.sachi-web.com/">スクフェス ツールズ</a></li>
+      <li><a href="https://designedfor.sakura.ne.jp/nikuma-n/">designed for</a></li>
+    </ul>
+    余談: そのほかスクフェスで参考にすることが多いサイト
+    <ul>
+      <li><a href="https://www59.atwiki.jp/lovelive-sif/">ラブライブ！スクフェス 情報まとめwiki</a></li>
+      <li><a href="https://xn--hckp3ac2l023wu2ve.com/">スクフェス速報</a></li>
+    </ul>
+    <p>意見・要望等あればお気軽に <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> までどうぞ。</p>
+    <p>他に役立つ情報や、「それもうこのサイトでできるよ」等あればそれも教えてもらえると嬉しいです。</p>
+  </md-content>
+</body>
+
+</html>
