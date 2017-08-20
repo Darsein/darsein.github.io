@@ -1,19 +1,23 @@
 angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
-  .service('Event', function($cookies, Rank, ScoreMatch, Macaron, NakayoshiMatch) {
+  .service('Event', function($cookies, Rank, ScoreMatch, Macaron, ChallengeFestival, NakayoshiMatch) {
 
     var event = function() {
       this.rank = new Rank();
       this.event_type = {};
       this.event_type['score_match'] = new ScoreMatch();
       this.event_type['macaron'] = new Macaron();
+      this.event_type['challenge_festival'] = new ChallengeFestival();
       this.event_type['nakayoshi_match'] = new NakayoshiMatch();
 
-      this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'nakayoshi_match';
-      this.difficulty = $cookies.get('difficulty') ? $cookies.get('difficulty') :'expert';
-      this.task_difficulty = $cookies.get('task_difficulty') ? $cookies.get('task_difficulty') :'expert';
+      this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'challenge_festival';
+      this.difficulty = $cookies.get('difficulty') ? $cookies.get('difficulty') : 'expert';
+      this.task_difficulty = $cookies.get('task_difficulty') ? $cookies.get('task_difficulty') : 'expert';
       this.score = $cookies.get('score') ? $cookies.get('score') : 0;
       this.combo = $cookies.get('combo') ? $cookies.get('combo') : 0;
       this.ranking = $cookies.get('ranking') ? $cookies.get('ranking') : 1;
+      this.rounds = $cookies.get('rounds') ? $cookies.get('rounds') : 5;
+      this.pt_arrange = $cookies.get('pt_arrange') ? $cookies.get('pt_arrange') : 1;
+      this.exp_arrange = $cookies.get('exp_arrange') ? $cookies.get('exp_arrange') : 1;
       this.contribution = $cookies.get('contribution') ? $cookies.get('contribution') : 1;
       this.mission = $cookies.get('mission') ? $cookies.get('mission') : 0;
       this.current_points = $cookies.get('current_points') ? Number($cookies.get('current_points')) : 0;
@@ -30,6 +34,16 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
           points *= this.event_type[this.event_name].contribution_bonus[this.contribution];
           points *= this.event_type[this.event_name].mission_bonus[this.mission];
         }
+        if (this.event_name == 'challenge_festival') {
+          points = 0;
+          for (var i = 0; i < this.rounds; ++i) {
+            var point_per_round = this.event_type[this.event_name].base_points[this.difficulty][i]
+            point_per_round *= this.event_type[this.event_name].combo_bonus[this.combo];
+            point_per_round *= this.event_type[this.event_name].score_bonus[this.score];
+            point_per_round *= this.event_type[this.event_name].arrange_bonus[this.arrange];
+            points += Math.ceil(point_per_round);
+          }
+        }
         this.average_points = Math.ceil(points);
       }
       if ($cookies.get('average_points')) {
@@ -37,9 +51,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       }
 
       this.border = {}
-      this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 160000;
-      this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) :  100000;
-      this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 60000;
+      this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 130000;
+      this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) : 65000;
+      this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 30000;
       this.border[700000] = 0;
 
       this.current_rank = $cookies.get('current_rank') ? Number($cookies.get('current_rank')) : 100;
@@ -63,12 +77,24 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       min -= hour * 60;
       var day = Math.floor(hour / 24);
       hour -= day * 24;
-      return [day, hour ,min];
+      return [day, hour, min];
     }
 
     p.consumeLP = function() {
       var LP_per_play = this.event_type[this.event_name].required_LP[this.difficulty];
+      if (this.event_name == 'challenge_festival') {
+        LP_per_play *= this.rounds;
+      }
       var exp_per_play = this.event_type[this.event_name].exp[this.difficulty];
+      if (this.event_name == 'challenge_festival') {
+        exp_per_play = 0;
+        for (var i = 0; i < this.rounds; ++i) {
+          exp_per_play += Math.floor((this.event_type[this.event_name].exp[this.difficulty] +
+              this.event_type[this.event_name].exp_bonus[this.difficulty] * i) *
+            this.event_type[this.event_name].arrange_bonus[this.exp_arrange]);
+        }
+      }
+
       while (true) {
         var play_num = Math.floor(this.final_LP / LP_per_play);
         if (play_num === 0) break;
@@ -129,7 +155,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         this.event_end = new Date(this.now.getFullYear(), this.now.getMonth() + 1, 0, 15);
       }
       [this.remain_day, this.remain_hour, this.remain_min] =
-          this.secToDateTuple( Math.floor((this.event_end - Math.max(this.now, this.event_start))/1000) );
+      this.secToDateTuple(Math.floor((this.event_end - Math.max(this.now, this.event_start)) / 1000));
     }
 
     p.calcRewards = function() {
@@ -174,7 +200,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       }
 
       [this.required_day, this.required_hour, this.required_min] =
-          this.secToDateTuple((this.final_play_num + this.final_task_play_num) * 3 * 60);
+      this.secToDateTuple((this.final_play_num + this.final_task_play_num) * 3 * 60);
 
       this.calcRewards();
     }
@@ -183,32 +209,85 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       var expire = new Date();
       expire.setMonth(expire.getMonth() + 3);
 
-      $cookies.put('event_name', this.event_name, {expires: expire});
-      $cookies.put('difficulty', this.difficulty, {expires: expire});
-      $cookies.put('task_difficulty', this.task_difficulty, {expires: expire});
-      $cookies.put('score', this.score, {expires: expire});
-      $cookies.put('combo', this.combo, {expires: expire});
-      $cookies.put('ranking', this.ranking, {expires: expire});
-      $cookies.put('contribution', this.contribution, {expires: expire});
-      $cookies.put('mission', this.mission, {expires: expire});
+      $cookies.put('event_name', this.event_name, {
+        expires: expire
+      });
+      $cookies.put('difficulty', this.difficulty, {
+        expires: expire
+      });
+      $cookies.put('task_difficulty', this.task_difficulty, {
+        expires: expire
+      });
+      $cookies.put('score', this.score, {
+        expires: expire
+      });
+      $cookies.put('combo', this.combo, {
+        expires: expire
+      });
+      $cookies.put('ranking', this.ranking, {
+        expires: expire
+      });
+      $cookies.put('rounds', this.rounds, {
+        expires: expire
+      });
+      $cookies.put('pt_arrange', this.pt_arrange, {
+        expires: expire
+      });
+      $cookies.put('exp_arrange', this.exp_arrange, {
+        expires: expire
+      });
+      $cookies.put('contribution', this.contribution, {
+        expires: expire
+      });
+      $cookies.put('mission', this.mission, {
+        expires: expire
+      });
 
-      $cookies.put('current_points', this.current_points, {expires: expire});
-      $cookies.put('average_points', this.average_points, {expires: expire});
+      $cookies.put('current_points', this.current_points, {
+        expires: expire
+      });
+      $cookies.put('average_points', this.average_points, {
+        expires: expire
+      });
 
-      $cookies.put('border_10000', this.border_10000, {expires: expire});
-      $cookies.put('border_50000', this.border_50000, {expires: expire});
-      $cookies.put('border_120000', this.border_120000, {expires: expire});
+      $cookies.put('border_10000', this.border_10000, {
+        expires: expire
+      });
+      $cookies.put('border_50000', this.border_50000, {
+        expires: expire
+      });
+      $cookies.put('border_120000', this.border_120000, {
+        expires: expire
+      });
 
-      $cookies.put('current_rank', this.current_rank, {expires: expire});
-      $cookies.put('current_exp', this.current_exp, {expires: expire});
-      $cookies.put('current_LP', this.current_LP, {expires: expire});
-      $cookies.put('used_stone', this.used_stone, {expires: expire});
-      $cookies.put('macaron', this.macaron, {expires: expire});
+      $cookies.put('current_rank', this.current_rank, {
+        expires: expire
+      });
+      $cookies.put('current_exp', this.current_exp, {
+        expires: expire
+      });
+      $cookies.put('current_LP', this.current_LP, {
+        expires: expire
+      });
+      $cookies.put('used_stone', this.used_stone, {
+        expires: expire
+      });
+      $cookies.put('macaron', this.macaron, {
+        expires: expire
+      });
 
-      $cookies.put('target', this.target, {expires: expire});
-      $cookies.put('target_points', this.target_points, {expires: expire});
-      $cookies.put('target_stone', this.target_stone, {expires: expire});
-      $cookies.put('target_rank', this.target_rank, {expires: expire});
+      $cookies.put('target', this.target, {
+        expires: expire
+      });
+      $cookies.put('target_points', this.target_points, {
+        expires: expire
+      });
+      $cookies.put('target_stone', this.target_stone, {
+        expires: expire
+      });
+      $cookies.put('target_rank', this.target_rank, {
+        expires: expire
+      });
     }
 
     return event;
@@ -223,6 +302,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       'event.score',
       'event.combo',
       'event.ranking',
+      'event.rounds',
+      'event.pt_arrange',
+      'event.exp_arrange',
       'event.contribution',
       'event.mission',
     ], function(newVal, oldVal) {
@@ -239,6 +321,16 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
           points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
           points *= $scope.event.event_type[$scope.event.event_name].contribution_bonus[$scope.event.contribution];
           points *= $scope.event.event_type[$scope.event.event_name].mission_bonus[$scope.event.mission];
+        }
+        if ($scope.event.event_name == 'challenge_festival') {
+          points = 0;
+          for (var i = 0; i < $scope.event.rounds; ++i) {
+            var point_per_round = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty][i]
+            point_per_round *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
+            point_per_round *= $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.score];
+            point_per_round *= $scope.event.event_type[$scope.event.event_name].arrange_bonus[$scope.event.pt_arrange];
+            points += Math.round(point_per_round);
+          }
         }
         $scope.event.average_points = Math.ceil(points);
       }
