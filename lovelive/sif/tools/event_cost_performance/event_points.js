@@ -67,6 +67,13 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.target_stone = $cookies.get('target_stone') ? Number($cookies.get('target_stone')) : 0;
       this.target_rank = $cookies.get('target_rank') ? Number($cookies.get('target_rank')) : this.current_rank;
 
+      this.min_per_play = 2.5;
+      if (this.event_name === 'score_match' || this.event_name === 'nakayoshi_match') {
+        this.min_per_play = 3;
+      }
+      if (this.event_name === 'challenge_festival') {
+        this.min_per_play *= this.rounds;
+      }
       this.calcTarget();
     }
     var p = event.prototype;
@@ -199,8 +206,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         this.consumeLP();
       }
 
+      var required_time = (this.final_play_num + this.final_task_play_num) * this.min_per_play * 60;
       [this.required_day, this.required_hour, this.required_min] =
-      this.secToDateTuple((this.final_play_num + this.final_task_play_num) * 3 * 60);
+      this.secToDateTuple(required_time);
 
       this.calcRewards();
     }

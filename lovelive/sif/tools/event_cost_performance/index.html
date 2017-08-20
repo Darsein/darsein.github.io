@@ -189,10 +189,10 @@
           </md-card-actions>
         </md-card>
 
-        <md-card style="width: 100px;" ng-if="event.event_name==='challenge_festival'">
+        <md-card style="width: 140px;" ng-if="event.event_name==='challenge_festival'">
           <md-card-header>
             <md-card-header-text>
-              <span class='md-title'>イベントptアレンジ</span>
+              <span class='md-title'>イベントpt<br>アレンジ</span>
             </md-card-header-text>
           </md-card-header>
           <md-card-actions>
@@ -203,10 +203,10 @@
           </md-card-actions>
         </md-card>
 
-        <md-card style="width: 100px;" ng-if="event.event_name==='challenge_festival'">
+        <md-card style="width: 120px;" ng-if="event.event_name==='challenge_festival'">
           <md-card-header>
             <md-card-header-text>
-              <span class='md-title'>EXPアレンジ</span>
+              <span class='md-title'>EXP<br>アレンジ</span>
             </md-card-header-text>
           </md-card-header>
           <md-card-actions>
@@ -424,7 +424,7 @@
         <md-card-content>
           <span><span ng-if="event.event_name==='macaron'">周回曲</span>プレイ回数: {{ event.final_play_num | number }}</span><br>
           <span ng-if="event.event_name==='macaron'">課題曲プレイ回数: {{ event.final_task_play_num | number }}</span><br>
-          <span>予想プレイ時間 (1回3分と仮定): {{ event.required_day | number }} 日 {{ event.required_hour | number }} 時間 {{ event.required_min | number }} 分</span><br>
+          <span>予想プレイ時間 (1回{{event.min_per_play}}分と仮定): {{ event.required_day | number }} 日 {{ event.required_hour | number }} 時間 {{ event.required_min | number }} 分</span><br>
           <span ng-if="event.event_name==='macaron'">残りマカロン数: {{ event.final_macaron | number }}</span>
         </md-card-content>
       </md-card>
