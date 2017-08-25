@@ -39,14 +39,20 @@ angular.module('darsein-hp', ['ngMaterial'])
 
         event.start_date = new Date(raw_events[i].start.date.replace(/-/g, "/") + " 00:00:00");
 
-        // UTNIL or null
-        var maybe_end_date = raw_events[i].recurrence[0].match(/.*UNTIL=(.*).*/);
-        event.end_date = maybe_end_date ? new Date(maybe_end_date[1].slice(0, 4) + "/" + maybe_end_date[1].slice(4, 6) + "/" + maybe_end_date[1].slice(6, 8) + " 00:00:00") : null;
+        if (raw_events[i].recurrence) {
+          // UTNIL or null
+          var maybe_end_date = raw_events[i].recurrence[0].match(/.*UNTIL=(.*).*/);
+          event.end_date = maybe_end_date ? new Date(maybe_end_date[1].slice(0, 4) + "/" + maybe_end_date[1].slice(4, 6) + "/" + maybe_end_date[1].slice(6, 8) + " 00:00:00") : null;
 
-        // YEARLY, MONTHLY (BYMONTHDAY=-1), WEEKLY, DAILY
-        event.frequency = raw_events[i].recurrence[0].match(/.*FREQ=([A-Z]+).*/)[1];
+          // YEARLY, MONTHLY (BYMONTHDAY=-1), WEEKLY, DAILY
+          event.frequency = raw_events[i].recurrence[0].match(/.*FREQ=([A-Z]+).*/)[1];
 
-        event.is_end_of_month = raw_events[i].recurrence[0].match(/.*BYMONTHDAY=-1.*/) !== null;
+          event.is_end_of_month = raw_events[i].recurrence[0].match(/.*BYMONTHDAY=-1.*/) !== null;
+        } else {
+          event.end_date = event.start_date;
+          event.frequency = "DAILY";
+          event.is_end_of_month = false;
+        }
 
         // in ()
         event.num_per_day = Number(raw_events[i].summary.match(/.*\((.+)\)/)[1]);
