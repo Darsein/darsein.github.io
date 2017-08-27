@@ -1,7 +1,7 @@
 angular.module('unitScore')
   .component('unitMake', {
     templateUrl: 'unit_organization/unit_organization.template.html',
-    controller: function unitOrganizationController($scope, $mdDialog, $mdToast, $http, cardData, userData) {
+    controller: function unitOrganizationController($scope, $rootScope, $mdDialog, $mdToast, $http, cardData, userData) {
       var self = this;
       // show dialog for member selection
       self.showMemberSelection = function(ev, position) {
@@ -14,7 +14,7 @@ angular.module('unitScore')
             clickOutsideToClose: true,
           })
           .then(function(answer) {
-            // TODO: assign selected member into position
+            $rootScope.user_data.unit_members[position] = answer
             console.log(answer);
           }, function() {});
       };

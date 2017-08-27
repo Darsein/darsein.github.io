@@ -15,8 +15,7 @@ angular.module('data')
 
       this.unit_members = [];
       for (var i=0; i<9; ++i) {
-        var card_placeholder = { index: -1 };
-        this.unit_members.push(card_placeholder);
+        this.unit_members.push(-1);
       }
     };
     return userData;
