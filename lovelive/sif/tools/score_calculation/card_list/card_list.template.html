@@ -24,16 +24,16 @@
             <b>属性</b>
             <div layout-padding layout="row">
               <div ng-repeat="type in $root.card_data.types" flex="33" ng-click="$root.setTypeCondition($event, type)">
-                <img ng-if="$root.hasTypeCondition(type)" ng-src="img/materials/type_{{type}}_gray.png" width="50dp"/>
-                <img ng-if="!$root.hasTypeCondition(type)" ng-src="img/materials/type_{{type}}.png" width="50dp"/>
+                <img ng-if="$root.hasTypeCondition(type)" ng-src="img/filters/type_{{type}}_gray.png" width="50dp"/>
+                <img ng-if="!$root.hasTypeCondition(type)" ng-src="img/filters/type_{{type}}.png" width="50dp"/>
               </div>
             </div>
             <md-divider></md-divider>
             <b>レアリティ</b>
             <div layout="row">
               <div ng-repeat="rarity in $root.card_data.rarities" flex="20" ng-click="$root.setRarityCondition($event, rarity)">
-                <img ng-if="$root.hasRarityCondition(rarity)" ng-src="img/materials/rarity_{{rarity}}_gray.png" width="50dp" />
-                <img ng-if="!$root.hasRarityCondition(rarity)" ng-src="img/materials/rarity_{{rarity}}.png" width="50dp" />
+                <img ng-if="$root.hasRarityCondition(rarity)" ng-src="img/filters/rarity_{{rarity}}_gray.png" width="50dp" />
+                <img ng-if="!$root.hasRarityCondition(rarity)" ng-src="img/filters/rarity_{{rarity}}.png" width="50dp" />
               </div>
             </div>
           </md-menu-content>
@@ -45,7 +45,7 @@
 
   <!-- TODO: responsive height -->
   <div style="overflow:scroll;height:400px">
-    <md-grid-list md-cols=6 md-row-height="1:1">
+    <md-grid-list md-cols=10 md-row-height="1:1">
       <md-grid-tile ng-repeat="card in $root.card_data.card_list | filter:$root.card_filter | orderBy:($root.user_data.orderDirection+$root.user_data.orderKey)" ng-click="$ctrl.showCardRegistration($event, card)">
         <img ng-src="img/faces/{{card.id}}.png" width="100%" />
       </md-grid-tile>
