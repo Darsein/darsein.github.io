@@ -1,0 +1,54 @@
+<md-content layout-fill>
+  <div flex layout="row" layout-align="center center">
+    <div flex="33">
+      <md-select layout-align="center center" ng-model="$root.user_data.orderKey" aria-label="select_ordering_key">
+        <md-option value="id">ID順</md-option>
+        <md-option value="chara_name">名前順</md-option>
+        <md-option value="rarity">レア順</md-option>
+      </md-select>
+    </div>
+    <div flex="33" layout-align="center center">
+      <md-switch layout-align="center center" ng-model="$root.user_data.orderDirection" ng-true-value="'+'" ng-false-value="'-'" aria-label="order_switch">
+        <span ng-if="$root.user_data.orderDirection == '+'">昇順</span>
+        <span ng-if="$root.user_data.orderDirection == '-'">降順</span>
+      </md-switch>
+    </div>
+
+    <div flex="33" layout-align="center center">
+      <md-menubar>
+        <md-menu>
+          <md-button layout-align="center center" class="md-accent md-raised" md-ripple-size="fill" ng-click="$mdOpenMenu()">
+            <b>フィルタ</b>
+          </md-button>
+          <md-menu-content layout-align="center center" layout="column">
+            <b>属性</b>
+            <div layout-padding layout="row">
+              <div ng-repeat="type in $root.card_data.types" flex="33" ng-click="$root.setTypeCondition($event, type)">
+                <img ng-if="$root.hasTypeCondition(type)" ng-src="img/materials/type_{{type}}_gray.png" width="50dp"/>
+                <img ng-if="!$root.hasTypeCondition(type)" ng-src="img/materials/type_{{type}}.png" width="50dp"/>
+              </div>
+            </div>
+            <md-divider></md-divider>
+            <b>レアリティ</b>
+            <div layout="row">
+              <div ng-repeat="rarity in $root.card_data.rarities" flex="20" ng-click="$root.setRarityCondition($event, rarity)">
+                <img ng-if="$root.hasRarityCondition(rarity)" ng-src="img/materials/rarity_{{rarity}}_gray.png" width="50dp" />
+                <img ng-if="!$root.hasRarityCondition(rarity)" ng-src="img/materials/rarity_{{rarity}}.png" width="50dp" />
+              </div>
+            </div>
+          </md-menu-content>
+        </md-menu>
+      </md-menubar>
+    </div>
+  </div>
+  <md-divider></md-divider>
+
+  <!-- TODO: responsive height -->
+  <div style="overflow:scroll;height:400px">
+    <md-grid-list md-cols=6 md-row-height="1:1">
+      <md-grid-tile ng-repeat="card in $root.card_data.card_list | filter:$root.card_filter | orderBy:($root.user_data.orderDirection+$root.user_data.orderKey)" ng-click="$ctrl.showCardRegistration($event, card)">
+        <img ng-src="img/faces/{{card.id}}.png" width="100%" />
+      </md-grid-tile>
+    </md-grid-list>
+  </div>
+</md-content>

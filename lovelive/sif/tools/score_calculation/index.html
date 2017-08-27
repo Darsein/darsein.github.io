@@ -1,0 +1,58 @@
+<html lang="en" ng-app="unitScore">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+
+  <title>スクフェス スコア計算 (工事中)</title>
+  <meta name="keywords" content="ラブライブ, スクフェス, スコア計算, スコア分布">
+  <meta name="description" content="
+  ラブライブ！スクールアイドルフェスティバルのユニット構成・楽曲からスコアの分布を計算します。">
+  <!-- Google Analytics -->
+  <!-- TODO: remove comment out after implementation is done
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-101239470-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  -->
+
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-cookies.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+  <script src="data/data.module.js"></script>
+  <script src="data/card_data.factory.js"></script>
+  <script src="data/user_data.service.js"></script>
+  <script src="score_calculation.module.js"></script>
+  <script src="score_calculation/score_calculation.component.js"></script>
+  <script src="card_list/card_list.component.js"></script>
+  <script src="unit_organization/unit_organization.component.js"></script>
+</head>
+
+<body ng-cloak>
+  <score-calc></score-calc>
+</body>
+
+</html>

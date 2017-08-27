@@ -1,0 +1,13 @@
+<md-content layout-fill>
+<div style="height:450px">
+  <md-list>
+    <md-list-item ng-repeat="member in $root.user_data.unit_members">
+      <img ng-src="img/faces/{{member.index<0 ? 83 : $root.user_data.own_card_list[member.index].id}}.png" width="40dp"
+      ng-click="$ctrl.showMemberSelection($event)"/>
+      <div layout="row" ng-if="member.index>=0">
+        <p>空きスロット: {{$root.user_data.own_card_list[member.index].slot}}</p>
+      </div>
+    </md-list-item>
+  </md-list>
+</div>
+</md-content>
