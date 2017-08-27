@@ -2,10 +2,10 @@
 <div style="height:450px">
   <md-list>
     <md-list-item ng-repeat="member in $root.user_data.unit_members track by $index">
-      <img ng-src="img/faces/{{member<0 ? 83 : $root.user_data.own_card_list[member].id}}.png" width="40dp"
+      <img ng-src="img/faces/{{member<0 ? 83 : $root.user_data.own_card_list[member].id}}.png" width="50dp"
       ng-click="$ctrl.showMemberSelection($event, $index)"/>
-      <div layout="row" ng-if="member>=0">
-        <p>空きスロット: {{$root.user_data.own_card_list[member].slot}}</p>
+      <div ng-if="member>=0">
+        <slot-view member="member"></slot-view>
       </div>
     </md-list-item>
   </md-list>

@@ -19,7 +19,6 @@ angular.module('unitScore')
               $rootScope.user_data.unit_members[index] = $rootScope.user_data.unit_members[position];
             }
             $rootScope.user_data.unit_members[position] = answer;
-            console.log(answer);
           }, function() {});
       };
 
