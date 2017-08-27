@@ -14,7 +14,11 @@ angular.module('unitScore')
             clickOutsideToClose: true,
           })
           .then(function(answer) {
-            $rootScope.user_data.unit_members[position] = answer
+            var index = $rootScope.user_data.unit_members.indexOf(answer);
+            if (index >= 0) {
+              $rootScope.user_data.unit_members[index] = $rootScope.user_data.unit_members[position];
+            }
+            $rootScope.user_data.unit_members[position] = answer;
             console.log(answer);
           }, function() {});
       };
