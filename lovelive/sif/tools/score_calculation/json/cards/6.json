@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "クール", "rarity": "N", "init_pure": 400, "init_smile": 400, "init_cool": 1120, "chara_name": "西村文絵", "id": 6, "role": "ユニット"}
+{"type": "クール", "id": 6, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "西村文絵", "smile": 400, "pure": 400, "cool": 1120}

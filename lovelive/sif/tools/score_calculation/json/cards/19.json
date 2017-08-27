@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "スマイル", "rarity": "N", "init_pure": 600, "init_smile": 1760, "init_cool": 360, "chara_name": "近江遥", "id": 19, "role": "ユニット"}
+{"type": "スマイル", "id": 19, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "近江遥", "smile": 1760, "pure": 600, "cool": 360}

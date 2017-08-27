@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "クール", "rarity": "N", "init_pure": 360, "init_smile": 550, "init_cool": 1896, "chara_name": "篠宮あきる", "id": 24, "role": "ユニット"}
+{"type": "クール", "id": 24, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "篠宮あきる", "smile": 550, "pure": 360, "cool": 1896}

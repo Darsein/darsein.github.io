@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "スマイル", "rarity": "N", "init_pure": 565, "init_smile": 1808, "init_cool": 352, "chara_name": "支倉かさね", "id": 22, "role": "ユニット"}
+{"type": "スマイル", "id": 22, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "支倉かさね", "smile": 1808, "pure": 565, "cool": 352}

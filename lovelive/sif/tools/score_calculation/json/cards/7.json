@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "スマイル", "rarity": "N", "init_pure": 410, "init_smile": 1176, "init_cool": 396, "chara_name": "永山みなみ", "id": 7, "role": "ユニット"}
+{"type": "スマイル", "id": 7, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "永山みなみ", "smile": 1176, "pure": 410, "cool": 396}

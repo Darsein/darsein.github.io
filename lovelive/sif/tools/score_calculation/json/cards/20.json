@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "ピュア", "rarity": "N", "init_pure": 1792, "init_smile": 500, "init_cool": 440, "chara_name": "下園咲", "id": 20, "role": "ユニット"}
+{"type": "ピュア", "id": 20, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "下園咲", "smile": 500, "pure": 1792, "cool": 440}

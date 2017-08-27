@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "クール", "rarity": "N", "init_pure": 380, "init_smile": 350, "init_cool": 1040, "chara_name": "逢沢遊宇", "id": 3, "role": "ユニット"}
+{"type": "クール", "id": 3, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "逢沢遊宇", "smile": 350, "pure": 380, "cool": 1040}

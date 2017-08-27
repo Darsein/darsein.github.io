@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "スマイル", "rarity": "N", "init_pure": 1, "init_smile": 1, "init_cool": 1, "chara_name": "アルパカ", "id": 83, "role": "サポート"}
+{"type": "スマイル", "id": 83, "role": "サポート", "chara_title": "", "rarity": "N", "chara_name": "アルパカ", "smile": 1, "pure": 1, "cool": 1}

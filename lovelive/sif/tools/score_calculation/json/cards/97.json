@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "スマイル", "rarity": "N", "init_pure": 410, "init_smile": 1280, "init_cool": 510, "chara_name": "月島結架", "id": 97, "role": "ユニット"}
+{"type": "スマイル", "id": 97, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "月島結架", "smile": 1280, "pure": 410, "cool": 510}

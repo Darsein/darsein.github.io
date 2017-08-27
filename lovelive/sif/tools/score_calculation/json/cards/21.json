@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "クール", "rarity": "N", "init_pure": 384, "init_smile": 585, "init_cool": 1840, "chara_name": "田中さち子", "id": 21, "role": "ユニット"}
+{"type": "クール", "id": 21, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "田中さち子", "smile": 585, "pure": 384, "cool": 1840}

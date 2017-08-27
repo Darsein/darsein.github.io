@@ -1,1 +1,1 @@
-{"skill_name": "", "type": "スマイル", "rarity": "N", "init_pure": 450, "init_smile": 1790, "init_cool": 600, "chara_name": "黒崎隼", "id": 69, "role": "ユニット"}
+{"type": "スマイル", "id": 69, "role": "ユニット", "chara_title": "", "rarity": "N", "chara_name": "黒崎隼", "smile": 1790, "pure": 450, "cool": 600}
