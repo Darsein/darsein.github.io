@@ -1,7 +1,7 @@
-<md-dialog layout-margin aria-label="member_selection_dialog">
+<md-dialog flex layout-margin aria-label="member_selection_dialog">
   <!-- TODO: responsive height -->
   <md-dialog-content>
-    <md-grid-list md-cols=6 md-row-height="1:1">
+    <md-grid-list md-cols=10 md-row-height="1:1">
       <md-grid-tile ng-repeat="card in $root.user_data.own_card_list" ng-click="answer($index)">
         <img ng-src="img/faces/{{card.id}}.png" width="50dp" />
       </md-grid-tile>

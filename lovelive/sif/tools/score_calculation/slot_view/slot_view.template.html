@@ -1,13 +1,30 @@
 <div layout-margin>
   <div layout="row">
+    <div layout="row" ng-repeat="SIS in $ctrl.card_params.SIS">
+      <div ng-repeat="i in [] | range:SIS.slot">
+        <md-menu>
+          <md-button class="md-icon-button" aria-label="slot" ng-click="$mdOpenMenu()">
+            <img ng-src="img/SISs/{{SIS.imageName}}.png" width="30dp" />
+          </md-button>
+          <md-menu-content>
+            <md-menu-item>
+              <md-button layout-align="center center" ng-click="$ctrl.removeSIS(SIS)">
+                <img ng-src="img/SISs/{{SIS.imageName}}.png" width="20dp" /> {{SIS.name}} を外す
+              </md-button>
+            </md-menu-item>
+            <md-menu-content>
+        </md-menu>
+      </div>
+    </div>
+
     <div ng-repeat="i in [] | range:$ctrl.emptySlot()">
-      <md-menu width="15">
-        <md-button class="md-icon-button" aria-label="slot+i" ng-click="$mdOpenMenu()">
+      <md-menu>
+        <md-button class="md-icon-button" aria-label="slot" ng-click="$mdOpenMenu()">
           <img ng-src="img/SISs/empty_slot.png" width="30dp" />
         </md-button>
         <md-menu-content>
           <md-menu-item ng-repeat="SIS in $ctrl.availableSIS()">
-            <md-button layout-align="center center">
+            <md-button layout-align="center center" ng-click="$ctrl.setSIS(SIS)">
               <img ng-src="img/SISs/{{SIS.imageName}}.png" width="20dp" /> {{SIS.name}}
             </md-button>
           </md-menu-item>
