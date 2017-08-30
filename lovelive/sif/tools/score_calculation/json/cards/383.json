@@ -1,1 +1,1 @@
-{"type": "スマイル", "skill_name": "笑顔のサポート[SR]", "id": 383, "role": "サポート", "chara_title": "", "rarity": "N", "chara_name": "ミカ", "smile": 1, "pure": 1, "cool": 1}
+{"id": 383, "cool": [1], "smile": [1], "role": "サポート", "rarity": "N", "pure": [1], "chara_name": "ミカ", "chara_title": "", "type": "smile"}

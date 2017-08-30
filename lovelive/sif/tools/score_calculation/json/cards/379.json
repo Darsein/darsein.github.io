@@ -1,1 +1,1 @@
-{"type": "スマイル", "skill_name": "笑顔のサポート[R]", "id": 379, "role": "サポート", "chara_title": "", "rarity": "N", "chara_name": "矢澤ここあ", "smile": 1, "pure": 1, "cool": 1}
+{"id": 379, "cool": [1], "smile": [1], "role": "サポート", "rarity": "N", "pure": [1], "chara_name": "矢澤ここあ", "chara_title": "", "type": "smile"}
