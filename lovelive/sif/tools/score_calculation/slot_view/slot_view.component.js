@@ -31,24 +31,24 @@ angular.module('unitScore')
             }
           }
           if (SIS.name.slice(0, 5) === "プリンセス") {
-            if (card.type !== "スマイル") {
+            if (card.type !== "smile") {
               continue;
             }
           } else if (SIS.name.slice(0, 5) === "エンジェル") {
-            if (card.type !== "ピュア") {
+            if (card.type !== "pure") {
               continue;
             }
           } else if (SIS.name.slice(0, 5) === "エンプレス") {
-            if (card.type !== "クール") {
+            if (card.type !== "cool") {
               continue;
             }
           }
           if (SIS.name.slice(-4) === "チャーム") {
-            if (card.skill_type !== "スコア") {
+            if (card.skill.type !== "スコア") {
               continue;
             }
           } else if (SIS.name.slice(-3) === "ヒール") {
-            if (card.skill_type !== "回復") {
+            if (card.skill.type !== "回復") {
               continue;
             }
           }
