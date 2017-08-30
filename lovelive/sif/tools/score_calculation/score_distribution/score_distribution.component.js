@@ -89,7 +89,7 @@ angular.module('unitScore')
           if (/ピュア/.test(SIS)) type = "pure";
           if (/クール/.test(SIS)) type = "cool";
 
-          if (/トリック/.test(SIS)) trick[type] = ceil(Su[type] * 0.33);
+          if (/トリック/.test(SIS)) trick[type] = Math.ceil(Su[type] * 0.33);
         }
 
         for (var type of $rootScope.card_data.types) {
