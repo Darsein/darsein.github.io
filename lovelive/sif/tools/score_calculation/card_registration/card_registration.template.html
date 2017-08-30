@@ -26,6 +26,18 @@
         </md-input-container>
       </form>
 
+      <form name="kizunaForm">
+        <md-input-container>
+          <label>絆pt</label>
+          <input required name="kizunaInput" type="number" ng-model="selected_card_params.kizuna" ng-min="0" ng-max="transformed_max_kizuna" />
+          <div ng-messages="kizunaForm.kizunaInput.$error">
+            <div ng-message="required">絆ptを入力してください</div>
+            <div ng-message="min">絆ptが低すぎます</div>
+            <div ng-message="max">絆ptが高すぎます</div>
+          </div>
+        </md-input-container>
+      </form>
+
       <div layout="row" layout-margin>
       <div>
         <label>スロット</label>
@@ -45,6 +57,6 @@
   </md-dialog-content>
   <md-dialog-actions>
     <md-button ng-click="cancel()" class="md-primary">キャンセル</md-button>
-    <md-button ng-click="answer()" ng-disabled="levelForm.levelInput.$invalid" class="md-primary">登録</md-button>
+    <md-button ng-click="answer()" ng-disabled="levelForm.levelInput.$invalid || kizunaForm.kizunaInput.$invalid" class="md-primary">登録</md-button>
   </md-dialog-actions>
 </md-dialog>

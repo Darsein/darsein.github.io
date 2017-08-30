@@ -32,11 +32,14 @@ angular.module('unitScore')
           id: $scope.selected_card.id,
           level: $rootScope.card_data.normal_max_level_table[$scope.selected_card.rarity],
           slot: $rootScope.card_data.min_slot_table[$scope.selected_card.rarity],
+          kizuna: $rootScope.card_data.normal_max_kizuna_table[$scope.selected_card.rarity],
           skill_level: 1,
           SIS: [],
         };
         $scope.normal_max_level = $rootScope.card_data.normal_max_level_table[$scope.selected_card.rarity];
         $scope.transformed_max_level = $rootScope.card_data.transformed_max_level_table[$scope.selected_card.rarity];
+        $scope.normal_kizuna_level = $rootScope.card_data.normal_max_kizuna_table[$scope.selected_card.rarity];
+        $scope.transformed_kizuna_level = $rootScope.card_data.transformed_max_kizuna_table[$scope.selected_card.rarity];
         $scope.min_slot = $rootScope.card_data.min_slot_table[$scope.selected_card.rarity];
         $scope.max_slot = $rootScope.card_data.max_slot_table[$scope.selected_card.rarity];
         $scope.slot_range = [];
