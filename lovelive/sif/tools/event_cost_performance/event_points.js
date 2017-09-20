@@ -1,21 +1,22 @@
 angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
-  .service('Event', function($cookies, Rank, ScoreMatch, Macaron, ChallengeFestival, NakayoshiMatch) {
+  .service('Event', function($cookies, Rank, ScoreMatch, Macaron, MedleyFestival, ChallengeFestival, NakayoshiMatch) {
 
     var event = function() {
       this.rank = new Rank();
       this.event_type = {};
       this.event_type['score_match'] = new ScoreMatch();
       this.event_type['macaron'] = new Macaron();
+      this.event_type['medley_festival'] = new MedleyFestival();
       this.event_type['challenge_festival'] = new ChallengeFestival();
       this.event_type['nakayoshi_match'] = new NakayoshiMatch();
 
-      this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'challenge_festival';
+      this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'medley_festival';
       this.difficulty = $cookies.get('difficulty') ? $cookies.get('difficulty') : 'expert';
       this.task_difficulty = $cookies.get('task_difficulty') ? $cookies.get('task_difficulty') : 'expert';
       this.score = $cookies.get('score') ? $cookies.get('score') : 0;
       this.combo = $cookies.get('combo') ? $cookies.get('combo') : 0;
       this.ranking = $cookies.get('ranking') ? $cookies.get('ranking') : 1;
-      this.rounds = $cookies.get('rounds') ? $cookies.get('rounds') : 5;
+      this.rounds = $cookies.get('rounds') ? $cookies.get('rounds') : this.event_name === 'medley_festival' ? 3 : 5;
       this.pt_arrange = $cookies.get('pt_arrange') ? $cookies.get('pt_arrange') : 1;
       this.exp_arrange = $cookies.get('exp_arrange') ? $cookies.get('exp_arrange') : 1;
       this.contribution = $cookies.get('contribution') ? $cookies.get('contribution') : 1;
@@ -34,13 +35,19 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
           points *= this.event_type[this.event_name].contribution_bonus[this.contribution];
           points *= this.event_type[this.event_name].mission_bonus[this.mission];
         }
+        if (this.event_name == 'medley_festival') {
+          points = this.event_type[this.event_name].base_points[this.difficulty][this.rounds-1];
+          points *= this.event_type[this.event_name].combo_bonus[this.combo];
+          points *= this.event_type[this.event_name].score_bonus[this.score];
+          points *= this.event_type[this.event_name].arrange_bonus[this.pt_arrange];
+        }
         if (this.event_name == 'challenge_festival') {
           points = 0;
           for (var i = 0; i < this.rounds; ++i) {
             var point_per_round = this.event_type[this.event_name].base_points[this.difficulty][i]
             point_per_round *= this.event_type[this.event_name].combo_bonus[this.combo];
             point_per_round *= this.event_type[this.event_name].score_bonus[this.score];
-            point_per_round *= this.event_type[this.event_name].arrange_bonus[this.arrange];
+            point_per_round *= this.event_type[this.event_name].arrange_bonus[this.pt_arrange];
             points += Math.ceil(point_per_round);
           }
         }
@@ -71,7 +78,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       if (this.event_name === 'score_match' || this.event_name === 'nakayoshi_match') {
         this.min_per_play = 3;
       }
-      if (this.event_name === 'challenge_festival') {
+      if (this.event_name === 'challenge_festival' || this.event_name === 'medley_festival') {
         this.min_per_play *= this.rounds;
       }
       this.calcTarget();
@@ -89,10 +96,14 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
 
     p.consumeLP = function() {
       var LP_per_play = this.event_type[this.event_name].required_LP[this.difficulty];
-      if (this.event_name == 'challenge_festival') {
+      if (this.event_name === 'medley_festival' || this.event_name == 'challenge_festival') {
         LP_per_play *= this.rounds;
       }
       var exp_per_play = this.event_type[this.event_name].exp[this.difficulty];
+      if (this.event_name === 'medley_festival') {
+        exp_per_play = Math.ceil(exp_per_play * this.rounds
+          * this.event_type[this.event_name].arrange_bonus[this.exp_arrange]);
+      }
       if (this.event_name == 'challenge_festival') {
         exp_per_play = 0;
         for (var i = 0; i < this.rounds; ++i) {
@@ -329,6 +340,12 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
           points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
           points *= $scope.event.event_type[$scope.event.event_name].contribution_bonus[$scope.event.contribution];
           points *= $scope.event.event_type[$scope.event.event_name].mission_bonus[$scope.event.mission];
+        }
+        if ($scope.event.event_name == 'medley_festival') {
+          points = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty][$scope.event.rounds-1];
+          points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
+          points *= $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.score];
+          points *= $scope.event.event_type[$scope.event.event_name].arrange_bonus[$scope.event.pt_arrange];
         }
         if ($scope.event.event_name == 'challenge_festival') {
           points = 0;

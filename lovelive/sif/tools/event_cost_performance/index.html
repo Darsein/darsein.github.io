@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>スクフェス イベント効率計算</title>
-  <meta name="keywords" content="ラブライブ, スクフェス, イベント, スコマ, マカロン, チャレフェス, なかよし, 石効率">
+  <meta name="keywords" content="ラブライブ, スクフェス, イベント, スコマ, マカロン, メドフェス, チャレフェス, なかよし, 石効率">
   <meta name="description" content="
   ラブライブ！スクールアイドルフェスティバルのイベントの効率を計算します。
   現在のランクや目標イベントptなどから消費石の個数や報酬を計算します。">
@@ -82,6 +82,7 @@
             <md-radio-group ng-model="event.event_name">
               <md-radio-button value="score_match">スコアマッチ</md-radio-button>
               <md-radio-button value="macaron">マカロン</md-radio-button>
+              <md-radio-button value="medley_festival">メドレーフェスティバル</md-radio-button>
               <md-radio-button value="challenge_festival">チャレンジフェスティバル</md-radio-button>
               <md-radio-button value="nakayoshi_match">なかよしマッチ</md-radio-button>
             </md-radio-group>
@@ -101,7 +102,7 @@
               <md-radio-button value="easy">EASY</md-radio-button>
               <md-radio-button value="normal">NORMAL</md-radio-button>
               <md-radio-button value="hard">HARD</md-radio-button>
-              <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
+              <md-radio-button value="expert">EXPERT</md-radio-button>
             </md-radio-group>
           </md-card-actions>
         </md-card>
@@ -117,12 +118,12 @@
               <md-radio-button value="easy" ng-if="event.event_name!=='macaron'">EASY</md-radio-button>
               <md-radio-button value="normal" ng-if="event.event_name!=='macaron'">NORMAL</md-radio-button>
               <md-radio-button value="hard">HARD</md-radio-button>
-              <md-radio-button value="expert" class="ng-primary">EXPERT</md-radio-button>
+              <md-radio-button value="expert">EXPERT</md-radio-button>
             </md-radio-group>
           </md-card-actions>
         </md-card>
 
-        <md-card style="width: 180px;" ng-if="event.event_name==='challenge_festival'">
+        <md-card style="width: 180px;" ng-if="event.event_name==='medley_festival' || event.event_name==='challenge_festival'">
           <md-card-header>
             <md-card-header-text>
               <span class='md-title'>ラウンド数</span>
@@ -133,8 +134,8 @@
               <md-radio-button value=1>1</md-radio-button>
               <md-radio-button value=2>2</md-radio-button>
               <md-radio-button value=3>3</md-radio-button>
-              <md-radio-button value=4>4</md-radio-button>
-              <md-radio-button value=5 class="ng-primary">5</md-radio-button>
+              <md-radio-button value=4 ng-if="event.event_name==='challenge_festival'">4</md-radio-button>
+              <md-radio-button value=5 ng-if="event.event_name==='challenge_festival'">5</md-radio-button>
             </md-radio-group>
           </md-card-actions>
         </md-card>
@@ -147,7 +148,7 @@
           </md-card-header>
           <md-card-actions>
             <md-radio-group ng-model="event.score">
-              <md-radio-button value=0 class="ng-primary">S</md-radio-button>
+              <md-radio-button value=0>S</md-radio-button>
               <md-radio-button value=1>A</md-radio-button>
               <md-radio-button value=2>B</md-radio-button>
               <md-radio-button value=3>C</md-radio-button>
@@ -164,7 +165,7 @@
           </md-card-header>
           <md-card-actions>
             <md-radio-group ng-model="event.combo">
-              <md-radio-button value=0 class="ng-primary">S</md-radio-button>
+              <md-radio-button value=0>S</md-radio-button>
               <md-radio-button value=1>A</md-radio-button>
               <md-radio-button value=2>B</md-radio-button>
               <md-radio-button value=3>C</md-radio-button>
@@ -181,7 +182,7 @@
           </md-card-header>
           <md-card-actions>
             <md-radio-group ng-model="event.ranking">
-              <md-radio-button value=1 class="ng-primary">1</md-radio-button>
+              <md-radio-button value=1>1</md-radio-button>
               <md-radio-button value=2>2</md-radio-button>
               <md-radio-button value=3>3</md-radio-button>
               <md-radio-button value=4>4</md-radio-button>
@@ -189,7 +190,7 @@
           </md-card-actions>
         </md-card>
 
-        <md-card style="width: 140px;" ng-if="event.event_name==='challenge_festival'">
+        <md-card style="width: 140px;" ng-if="event.event_name==='medley_festival' || event.event_name==='challenge_festival'">
           <md-card-header>
             <md-card-header-text>
               <span class='md-title'>イベントpt<br>アレンジ</span>
@@ -197,13 +198,13 @@
           </md-card-header>
           <md-card-actions>
             <md-radio-group ng-model="event.pt_arrange">
-              <md-radio-button value=1 class="ng-primary">あり</md-radio-button>
+              <md-radio-button value=1>あり</md-radio-button>
               <md-radio-button value=0>なし</md-radio-button>
             </md-radio-group>
           </md-card-actions>
         </md-card>
 
-        <md-card style="width: 120px;" ng-if="event.event_name==='challenge_festival'">
+        <md-card style="width: 120px;" ng-if="event.event_name==='medley_festival' || event.event_name==='challenge_festival'">
           <md-card-header>
             <md-card-header-text>
               <span class='md-title'>EXP<br>アレンジ</span>
@@ -211,7 +212,7 @@
           </md-card-header>
           <md-card-actions>
             <md-radio-group ng-model="event.exp_arrange">
-              <md-radio-button value=1 class="ng-primary">あり</md-radio-button>
+              <md-radio-button value=1>あり</md-radio-button>
               <md-radio-button value=0>なし</md-radio-button>
             </md-radio-group>
           </md-card-actions>
@@ -433,6 +434,9 @@
     <h2> 更新履歴 </h2>
     <md-list>
       <md-list-item>
+        2017/09/20: メドレーフェスティバルに対応
+      </md-list-item>
+      <md-list-item>
         2017/08/20: チャレンジフェスティバルに対応
       </md-list-item>
       <md-list-item>
@@ -474,7 +478,7 @@
     <h2> アップデート予定 (個人的優先度順) </h2> 下記以外にも要望があれば <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> まで。
     <ul layout-margin>
       <li> 現在時刻や終了時刻の手動入力 </li>
-      <li> メドフェス・おさんぽラリーに対応 </li>
+      <li> おさんぽラリーに対応 </li>
       <li> ランクアップのタイミング </li>
       <li> 平均獲得ポイント以外の小数入力禁止 </li>
       <li> Rank 500以上をEXP近似式で対応 </li>
