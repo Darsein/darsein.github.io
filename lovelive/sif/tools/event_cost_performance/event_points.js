@@ -58,9 +58,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       }
 
       this.border = {}
-      this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 130000;
-      this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) : 65000;
-      this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 30000;
+      this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 110000;
+      this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) : 50000;
+      this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 25000;
       this.border[700000] = 0;
 
       this.current_rank = $cookies.get('current_rank') ? Number($cookies.get('current_rank')) : 100;
@@ -269,13 +269,13 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         expires: expire
       });
 
-      $cookies.put('border_10000', this.border_10000, {
+      $cookies.put('border_10000', this.border[10000], {
         expires: expire
       });
-      $cookies.put('border_50000', this.border_50000, {
+      $cookies.put('border_50000', this.border[50000], {
         expires: expire
       });
-      $cookies.put('border_120000', this.border_120000, {
+      $cookies.put('border_120000', this.border[120000], {
         expires: expire
       });
 
