@@ -371,9 +371,16 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       'event.target_points',
       'event.target_stone',
       'event.target_rank',
-      'event.border',
       'event.macaron',
     ], function(newVal, oldVal) {
+      // TODO: revisit after introducing validation
+      if ($scope.event.average_points > 0) {
+        $scope.event.calcTarget();
+      }
+      $scope.event.setCookies();
+    });
+
+    $scope.$watchCollection('event.border', function(newVal, oldVal) {
       // TODO: revisit after introducing validation
       if ($scope.event.average_points > 0) {
         $scope.event.calcTarget();
@@ -389,5 +396,6 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $scope.event.total_stone = $scope.event.used_stone + $scope.event.required_stone;
       var reward_stone = $scope.event.rewards["ラブカストーン"] ? $scope.event.rewards["ラブカストーン"] : 0;
       $scope.event.stone_diff = reward_stone - $scope.event.total_stone;
+      $scope.event.setCookies();
     });
   });
