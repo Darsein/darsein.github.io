@@ -1,9 +1,11 @@
 angular.module('unitScore')
   .component('scoreCalc', {
     templateUrl: 'score_calculation/score_calculation.template.html',
-    controller: function scoreCalculationController($rootScope, cardData, userData) {
+    controller: function scoreCalculationController($rootScope, $cookies, cardData, userData) {
       $rootScope.card_data = new cardData();
-      $rootScope.user_data = new userData();
+      $rootScope.user_data =
+        $cookies.get('user_data') ? JSON.parse($cookies.get('user_data')) : new userData();
+      console.log($rootScope.user_data);
 
       // for filtering
       $rootScope.card_filter = function(card, index) {

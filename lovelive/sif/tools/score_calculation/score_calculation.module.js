@@ -1,1 +1,1 @@
-angular.module('unitScore', ["ngMaterial", "ngMessages", "data", "core"]);
+angular.module('unitScore', ["ngMaterial", "ngMessages", "ngCookies", "data", "core"]);

@@ -1,9 +1,9 @@
 angular.module('unitScore')
   .component('scoreDistribution', {
     templateUrl: 'score_distribution/score_distribution.template.html',
-    controller: function scoreDistributionController($scope, $rootScope) {
-      this.music = {
-        "type" : "smile",
+    controller: function scoreDistributionController($scope, $rootScope, $cookies) {
+      this.music = $cookies.get('music') ? JSON.parse($cookies.get('music')) : {
+        "type": "smile",
         "notes": 500,
         "group": "μ's",
         "time": 120,
@@ -11,7 +11,7 @@ angular.module('unitScore')
       };
 
       // TODO: make bonus as user input
-      this.bonus = {
+      this.bonus =  $cookies.get('bonus') ? JSON.parse($cookies.get('bonus')) : {
         "LS": null,
         "arrange_tap": 1.0,
         "arrange_skill": 1.0,
@@ -332,14 +332,41 @@ angular.module('unitScore')
 
       this.getStatistics(this.getDeck(), this.music, this.bonus);
 
+      // watch change by user input
       var self = this;
       $rootScope.$watch("user_data", function(newVal, oldVal) {
+        // store in cookies
+        var expire = new Date();
+        expire.setMonth(expire.getMonth() + 3);
+        $cookies.put('user_data', JSON.stringify($rootScope.user_data), {
+          expires: expire
+        });
+
         self.getStatistics(self.getDeck(), self.music, self.bonus);
       }, true);
-      $scope.$watch(function () { return self.music; }, function(newVal, oldVal) {
+
+      $scope.$watch(function() {
+        return self.music;
+      }, function(newVal, oldVal) {
+        // store in cookies
+        var expire = new Date();
+        expire.setMonth(expire.getMonth() + 3);
+        $cookies.put('music', JSON.stringify(self.music), {
+          expires: expire
+        });
+
         self.getStatistics(self.getDeck(), self.music, self.bonus);
       }, true);
-      $scope.$watch(function () { return self.bonus; }, function(newVal, oldVal) {
+      $scope.$watch(function() {
+        return self.bonus;
+      }, function(newVal, oldVal) {
+        // store in cookies
+        var expire = new Date();
+        expire.setMonth(expire.getMonth() + 3);
+        $cookies.put('bonus', JSON.stringify(self.bonus), {
+          expires: expire
+        });
+
         self.getStatistics(self.getDeck(), self.music, self.bonus);
       }, true);
     }
