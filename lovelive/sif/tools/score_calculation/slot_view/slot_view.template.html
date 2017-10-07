@@ -1,6 +1,6 @@
 <div layout-margin>
   <div layout="row">
-    <div layout="row" ng-repeat="SIS in $ctrl.card_params.SIS">
+    <div layout="row" ng-repeat="SIS in $ctrl.getCardParams().SIS">
       <div ng-repeat="i in [] | range:SIS.slot">
         <md-menu>
           <md-button class="md-icon-button" aria-label="slot" ng-click="$mdOpenMenu()">

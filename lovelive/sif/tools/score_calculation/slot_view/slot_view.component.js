@@ -3,7 +3,10 @@ angular.module('unitScore')
     templateUrl: 'slot_view/slot_view.template.html',
     bindings: { member : '=' },
     controller: function slotController($scope, $rootScope, rangeFilter) {
-      this.card_params = $rootScope.user_data.own_card_list[this.member];
+      this.getCardParams = function() {
+        this.card_params = $rootScope.user_data.own_card_list[this.member];
+        return this.card_params;
+      };
 
       this.emptySlot = function() {
         var slot = this.card_params.slot;
