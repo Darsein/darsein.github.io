@@ -138,6 +138,7 @@ angular.module('unitScore')
         };
       };
 
+      this.status = 0;
       this.calcDeckStatus = function(deck, music, bonus) {
         if (deck.length != 9) return {
           "status": 0,
@@ -174,6 +175,8 @@ angular.module('unitScore')
           status += card_status.status;
           trick_status += card_status.status + card_status.trick_status;
         }
+
+        this.status = status;
         return {
           "status": status,
           "trick_status": trick_status,
