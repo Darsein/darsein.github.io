@@ -5,7 +5,6 @@ angular.module('unitScore')
       $rootScope.card_data = new cardData();
       $rootScope.user_data =
         $cookies.get('user_data') ? JSON.parse($cookies.get('user_data')) : new userData();
-      console.log($rootScope.user_data);
 
       // for filtering
       $rootScope.card_filter = function(card, index) {

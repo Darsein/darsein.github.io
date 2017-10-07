@@ -11,7 +11,7 @@ angular.module('unitScore')
       };
 
       // TODO: make bonus as user input
-      this.bonus =  $cookies.get('bonus') ? JSON.parse($cookies.get('bonus')) : {
+      this.bonus = $cookies.get('bonus') ? JSON.parse($cookies.get('bonus')) : {
         "LS": null,
         "arrange_tap": 1.0,
         "arrange_skill": 1.0,
@@ -307,9 +307,8 @@ angular.module('unitScore')
 
       this.average = 0;
       this.variance = 0;
-      this.getStatistics = function(deck, music, bonus) {
+      this.getStatistics = function(deck, music, bonus, times) {
         // TODO: ajust the number of simulations
-        var times = 1000;
         var scores = [];
         for (var i = 0; i < times; ++i) {
           scores.push(this.simulatePlay(deck, music, bonus));
@@ -328,9 +327,41 @@ angular.module('unitScore')
           squared_sum += (scores[i] - this.average) * (scores[i] - this.average);
         }
         this.variance = squared_sum / times;
+
+        return scores;
       };
 
-      this.getStatistics(this.getDeck(), this.music, this.bonus);
+      this.drawGraph = function() {
+        var times = 3000;
+        var scores = this.getStatistics(this.getDeck(), this.music, this.bonus, times);
+        var min = scores[0];
+        var max = scores[0];
+        for (var score of scores) {
+          min = Math.min(min, score);
+          max = Math.max(max, score);
+        }
+
+        var width = max - min;
+        var bucket_num = 30;
+        var bucket_size = Math.ceil(width / bucket_num);
+
+        var buckets = [];
+        var labels = [];
+        for (var i = 0; i < bucket_num; ++i) {
+          buckets.push(0);
+          labels.push(min + bucket_size * i);
+        }
+        for (var score of scores) {
+          buckets[Math.floor((score - min) / bucket_size)]++;
+        }
+        for (var i = 0; i < bucket_num; ++i) {
+          buckets[i] /= times;
+        }
+
+        // TODO: add regular distribution
+        $scope.labels = labels;
+        $scope.data = buckets;
+      }
 
       // watch change by user input
       var self = this;
@@ -342,7 +373,7 @@ angular.module('unitScore')
           expires: expire
         });
 
-        self.getStatistics(self.getDeck(), self.music, self.bonus);
+        self.drawGraph(self.getDeck(), self.music, self.bonus);
       }, true);
 
       $scope.$watch(function() {
@@ -355,7 +386,7 @@ angular.module('unitScore')
           expires: expire
         });
 
-        self.getStatistics(self.getDeck(), self.music, self.bonus);
+        self.drawGraph(self.getDeck(), self.music, self.bonus);
       }, true);
       $scope.$watch(function() {
         return self.bonus;
@@ -367,7 +398,7 @@ angular.module('unitScore')
           expires: expire
         });
 
-        self.getStatistics(self.getDeck(), self.music, self.bonus);
+        self.drawGraph(self.getDeck(), self.music, self.bonus);
       }, true);
     }
   });
