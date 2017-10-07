@@ -1,5 +1,4 @@
-<md-toolbar md-scroll-shrink>
-  <h2>Hello, 星を数えて</h2>
-</md-toolbar>
-
-<p>{{$ctrl.calcDeckStatus($ctrl.getDeck(), $ctrl.music, $ctrl.bonus)}}</p>
+<p>ユニットステータス: {{$ctrl.calcDeckStatus($ctrl.getDeck(), $ctrl.music, $ctrl.bonus).status}}</p>
+<p>トリックステータス: {{$ctrl.calcDeckStatus($ctrl.getDeck(), $ctrl.music, $ctrl.bonus).trick_status}}</p>
+<p>平均スコア: {{$ctrl.average}}</p>
+<p>スコア分散: {{$ctrl.variance}}</p>
