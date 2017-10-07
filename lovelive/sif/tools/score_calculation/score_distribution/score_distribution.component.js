@@ -2,15 +2,15 @@ angular.module('unitScore')
   .component('scoreDistribution', {
     templateUrl: 'score_distribution/score_distribution.template.html',
     controller: function scoreDistributionController($scope, $rootScope) {
-      // TODO: make music and bonus as user input
       this.music = {
-        "type": "cool",
+        "type" : "smile",
         "notes": 500,
         "group": "μ's",
         "time": 120,
         "perfect": 90,
       };
 
+      // TODO: make bonus as user input
       this.bonus = {
         "LS": null,
         "arrange_tap": 1.0,
@@ -334,6 +334,12 @@ angular.module('unitScore')
 
       var self = this;
       $rootScope.$watch("user_data", function(newVal, oldVal) {
+        self.getStatistics(self.getDeck(), self.music, self.bonus);
+      }, true);
+      $scope.$watch(function () { return self.music; }, function(newVal, oldVal) {
+        self.getStatistics(self.getDeck(), self.music, self.bonus);
+      }, true);
+      $scope.$watch(function () { return self.bonus; }, function(newVal, oldVal) {
         self.getStatistics(self.getDeck(), self.music, self.bonus);
       }, true);
     }

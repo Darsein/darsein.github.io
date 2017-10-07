@@ -1,4 +1,61 @@
-<p>ユニットステータス: {{$ctrl.calcDeckStatus($ctrl.getDeck(), $ctrl.music, $ctrl.bonus).status}}</p>
-<p>トリックステータス: {{$ctrl.calcDeckStatus($ctrl.getDeck(), $ctrl.music, $ctrl.bonus).trick_status}}</p>
-<p>平均スコア: {{$ctrl.average}}</p>
-<p>スコア分散: {{$ctrl.variance}}</p>
+<md-content layout-fill>
+  <md-card>
+    <md-card-header>
+      <md-card-header-text>
+        <span class='md-title'>曲情報</span>
+      </md-card-header-text>
+    </md-card-header>
+
+    <md-card-content>
+      <md-input-container>
+        <label>グループ</label>
+        <md-select ng-model="$ctrl.music.group">
+          <md-option ng-value="'μ\'s'">μ's</md-option>
+          <md-option ng-value="'Aqours'">Aqours</md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container>
+        <label>属性</label>
+        <md-select ng-model="$ctrl.music.type">
+          <md-option ng-value="'smile'">スマイル</md-option>
+          <md-option ng-value="'pure'">ピュア</md-option>
+          <md-option ng-value="'cool'">クール</md-option>
+        </md-select>
+      </md-input-container>
+    <form name="form">
+      <md-input-container>
+        <label>ノーツ数</label>
+        <input required name='notesInput' type='number' step=1 ng-model='$ctrl.music.notes' ng-min="1" ng-max="2000">
+        <div ng-messages="form.notesInput.$error">
+          <div ng-message="required">ノーツ数を入力してください</div>
+          <div ng-message="min">ノーツ数が少なすぎます</div>
+          <div ng-message="max">ノーツ数が多すぎます</div>
+        </div>
+      </md-input-container>
+      <md-input-container>
+        <label>時間</label>
+        <input required name='timeInput' type='number' step=1 ng-model='$ctrl.music.time' ng-min="1" ng-max="500">
+        <div ng-messages="form.timeInput.$error">
+          <div ng-message="required">時間を入力してください</div>
+          <div ng-message="min">時間が短すぎます</div>
+          <div ng-message="max">時間が長すぎます</div>
+        </div>
+      </md-input-container>
+      <md-input-container>
+        <label>パーフェクト率</label>
+        <input required name='perfectInput' type='number' step=1 ng-model='$ctrl.music.perfect' ng-min="0" ng-max="100">
+        <div ng-messages="form.perfectInput.$error">
+          <div ng-message="required">パーフェクト率を入力してください</div>
+          <div ng-message="min">パーフェクト率が小さすぎます</div>
+          <div ng-message="max">パーフェクト率が大きすぎます</div>
+        </div>
+      </md-input-container>
+    </form>
+  </md-card-content>
+  </md-card>
+
+  <p>ユニットステータス: {{$ctrl.calcDeckStatus($ctrl.getDeck(), $ctrl.music, $ctrl.bonus).status}}</p>
+  <p>トリックステータス: {{$ctrl.calcDeckStatus($ctrl.getDeck(), $ctrl.music, $ctrl.bonus).trick_status}}</p>
+  <p>平均スコア: {{$ctrl.average}}</p>
+  <p>スコア分散: {{$ctrl.variance}}</p>
+</md-content>
