@@ -85,7 +85,11 @@ angular.module('darsein-hp', ['ngMaterial'])
           times = Math.floor(end_day / 86400000) - Math.floor(start_day / 86400000) + 1;
           if (times < 0) times = 0;
         } else if (event.frequency == "WEEKLY") {
-          // currently no weekly event
+          var event_day = new Date(event.start_date);
+          while (event_day <= end_day) {
+            if (start_day <= event_day) times++;
+            event_day.setDate(event_day.getDate() + 7);
+          }
         } else if (event.frequency == "MONTHLY") {
           var event_day = new Date(event.start_date);
           while (event_day <= end_day) {
