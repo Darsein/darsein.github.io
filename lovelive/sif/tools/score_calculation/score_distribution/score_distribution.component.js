@@ -60,6 +60,7 @@ angular.module('unitScore')
               card["skill"] = card_info.skill;
               card["skill"]["prob"] = card_info.skill.stats_list[card_params.skill_level - 1][0];
               card["skill"]["value"] = card_info.skill.stats_list[card_params.skill_level - 1][1];
+              card["skill"]["term"] = card_info.skill.stats_list[card_params.skill_level - 1][2];
 
               card["SIS"] = [];
               for (var SIS of card_params.SIS) {
@@ -207,16 +208,21 @@ angular.module('unitScore')
         }
 
         var score = 0;
-        var trick_num = 0;
+        var perfect_num = 0;
         var event_id = 0;
         var end_trick = [];
-        var perfect_num = 0;
+        var end_skill_prob = [];
+        var end_perfect_tap = [];
+        var perfect_tap_value = 0;
+        var end_param_up = [];
+
         for (var x = 1; x <= music.notes; ++x) {
           var current_time = x / music.notes * music.time;
           while (event_id < events.length && events[event_id] < current_time) {
             var event_time = events[event_id];
             for (var card of deck) {
               if (card.skill.condition === "秒" && event_time % card.skill.required === 0) {
+                // TODO: handle new skill per time (not implemented as is 2017/10/09)
                 var prob = card.skill.prob * prob_bonus;
                 if (self.success(prob)) {
                   if (card.skill.type === "スコア") {
@@ -232,8 +238,10 @@ angular.module('unitScore')
                     }
                     score += card.skill.value * ratio;
                   } else if (card.skill.type === "判定") {
-                    trick_num++;
-                    end_trick.push(event_time + card.skill.value);
+                    end_trick.push(event_time + card.skill.term);
+                    end_trick.sort(function(a, b) {
+                      return b - a;
+                    });
                   }
                 }
               }
@@ -241,8 +249,18 @@ angular.module('unitScore')
             event_id++;
           }
           while (end_trick.length > 0 && end_trick[end_trick.length - 1] < current_time) {
-            trick_num--;
             end_trick.pop();
+          }
+          while (end_skill_prob.length > 0 && end_skill_prob[end_skill_prob.length - 1] < current_time) {
+            end_skill_prob.pop();
+          }
+          while (end_perfect_tap.length > 0 && end_perfect_tap[end_perfect_tap.length - 1][0] < current_time) {
+            // TODO: this may be imcomplete handling: the skill of same member can be duplicate.
+            perfect_tap_value -= end_perfect_tap[end_perfect_tap.length - 1][1];
+            end_perfect_tap.pop();
+          }
+          while (end_param_up.length > 0 && end_param_up[end_param_up.length - 1] < current_time) {
+            end_param_up.pop();
           }
 
           // TODO: long note
@@ -255,60 +273,68 @@ angular.module('unitScore')
           position_ratio *= (deck[position].type === music.type) ? 1.1 : 1.0;
 
           var perfect_ratio = 0.88;
-          if (trick_num > 0 || self.success(music.perfect)) {
+          var is_perfect_tap = false;
+          if (end_trick.length > 0 || self.success(music.perfect)) {
             perfect_ratio = 1.0;
             perfect_num++;
+            is_perfect_tap = true;
+            if (end_perfect_tap.length > 0) {
+              score += perfect_tap_value;
+            }
           }
 
-          var tap_score = trick_num > 0 ? status.trick_status : status.status;
+          var tap_score = end_trick.length > 0 ? status.trick_status : status.status;
           tap_score *= 0.0125 * tap_bonus * perfect_ratio * long_note_ratio * position_ratio * combo_ratio;
           score += Math.floor(tap_score);
 
           for (var card of deck) {
-            if (card.skill.type === "判定") {
-              var is_skill_invoked = false;
-              if (card.skill.condition === "リズムアイコン" || card.skill.condition === "コンボ") {
-                is_skill_invoked = x % card.skill.required === 0;
-              } else if (card.skill.condition === "PERFECT") {
-                is_skill_invoked = perfect_num % card.skill.required === 0;
-              }
-
-              if (is_skill_invoked) {
-                var prob = card.skill.prob * prob_bonus;
-                if (self.success(prob)) {
-                  trick_num++;
-                  end_trick.push(current_time + card.skill.value);
-                }
-              }
+            // TODO: handle skills invoked by star icons and score
+            var is_skill_invoked = false;
+            if (card.skill.condition === "リズムアイコン" || card.skill.condition === "コンボ") {
+              is_skill_invoked = (x % card.skill.required === 0);
+            } else if (card.skill.condition === "PERFECT") {
+              is_skill_invoked = is_perfect_tap && (perfect_num % card.skill.required === 0);
             }
-          }
-        }
 
-        // calc skill score
-        // TODO: handle skills invoked by star icons and score
-        for (var card of deck) {
-          var chance_num = 0;
-          if (card.skill.condition === "リズムアイコン" || card.skill.condition === "コンボ") {
-            chance_num = Math.floor(music.notes / card.skill.required);
-          } else if (card.skill.condition === "PERFECT") {
-            chance_num = Math.floor(perfect_num / card.skill.required);
-          }
-
-          for (var i = 0; i < chance_num; ++i) {
-            var prob = card.skill.prob * prob_bonus;
-            if (self.success(prob)) {
-              if (card.skill.type === "スコア") {
-                var ratio = 1;
-                for (var SIS of card.SIS) {
-                  if (/チャーム/.test(SIS)) ratio = 2.5;
+            // TODO: handle new skill
+            if (is_skill_invoked) {
+              // TODO: reflect skill prob up
+              var prob = card.skill.prob * prob_bonus;
+              if (self.success(prob)) {
+                if (card.skill.type === "スコア") {
+                  var ratio = 1;
+                  for (var SIS of card.SIS) {
+                    if (/チャーム/.test(SIS)) ratio = 2.5;
+                  }
+                  score += card.skill.value * ratio;
+                } else if (card.skill.type === "回復") {
+                  var ratio = 0;
+                  for (var SIS of card.SIS) {
+                    if (/ヒール/.test(SIS)) ratio = 480;
+                  }
+                  score += card.skill.value * ratio;
+                } else if (card.skill.type === "判定") {
+                  end_trick.push(current_time + card.skill.term);
+                  end_trick.sort(function(a, b) {
+                    return b - a;
+                  });
+                } else if (card.skill.type === "特技") {
+                  end_skill_prob.push(current_time + card.skill.term);
+                  end_skill_prob.sort(function(a, b) {
+                    return b - a;
+                  });
+                } else if (card.skill.type === "パーフェクト") {
+                  perfect_tap_value += card.skill.value;
+                  end_perfect_tap.push([current_time + card.skill.term, card.skill.value]);
+                  end_perfect_tap.sort(function(a, b) {
+                    return b - a;
+                  });
+                } else if (card.skill.type === "パラアップ") {
+                  end_param_up.push([current_time + card.skill.term, card.skill.value]);
+                  end_param_up.sort(function(a, b) {
+                    return b - a;
+                  });
                 }
-                score += card.skill.value * ratio;
-              } else if (card.skill.type === "回復") {
-                var ratio = 0;
-                for (var SIS of card.SIS) {
-                  if (/ヒール/.test(SIS)) ratio = 480;
-                }
-                score += card.skill.value * ratio;
               }
             }
           }
@@ -344,7 +370,7 @@ angular.module('unitScore')
       };
 
       self.drawGraph = function() {
-        var times = 3000;
+        var times = 1000;
         var scores = self.getStatistics(self.deck, self.music, self.bonus, times);
         var min = scores[0];
         var max = scores[0];
