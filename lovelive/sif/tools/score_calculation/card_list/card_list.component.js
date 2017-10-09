@@ -19,7 +19,7 @@ angular.module('unitScore')
           .then(function(answer) {
             $mdToast.show(
               $mdToast.simple()
-              .textContent($rootScope.card_data.card_list[answer.id - 1].chara_name + 'を登録しました')
+              .textContent($rootScope.card_data.brief_card_list[answer.id - 1].chara_name + 'を登録しました')
               .position('bottom')
               .hideDelay(3000));
             $rootScope.user_data.own_card_list.push(answer);
