@@ -1,7 +1,7 @@
 angular.module('unitScore')
   .component('scoreDistribution', {
     templateUrl: 'score_distribution/score_distribution.template.html',
-    controller: function scoreDistributionController($scope, $rootScope, $cookies) {
+    controller: function scoreDistributionController($scope, $rootScope, $cookies, $localStorage) {
       var self = this;
       self.music = $cookies.get('music') ? JSON.parse($cookies.get('music')) : {
         "type": "smile",
@@ -45,33 +45,34 @@ angular.module('unitScore')
         for (var index of $rootScope.user_data.unit_members) {
           if (index < 0) continue;
           var card_params = $rootScope.user_data.own_card_list[index];
-          $rootScope.card_data.getCard(card_params.id).then(function(card_info) {
-            var card = {};
-            card["chara_name"] = card_info.chara_name;
-            card["type"] = card_info.type;
-            card["group"] = $rootScope.card_data.chara_info[card_info.chara_name].group;
-            for (var type of $rootScope.card_data.types) {
-              card[type] = card_info[type][card_params.level - 1];
-            }
-            card["kizuna"] = card_params.kizuna;
+          Promise.resolve(card_params).then(function(card_params) {
+            $rootScope.card_data.getCard(card_params.id).then(function(card_info) {
+              var card = {};
+              card["chara_name"] = card_info.chara_name;
+              card["type"] = card_info.type;
+              card["group"] = $rootScope.card_data.chara_info[card_info.chara_name].group;
+              for (var type of $rootScope.card_data.types) {
+                card[type] = card_info[type][card_params.level - 1];
+              }
+              card["kizuna"] = card_params.kizuna;
 
-            card["center_skill"] = card_info.center_skill;
-            card["skill"] = card_info.skill;
-            card["skill"]["prob"] = card_info.skill.stats_list[card_params.skill_level - 1][0];
-            card["skill"]["value"] = card_info.skill.stats_list[card_params.skill_level - 1][1];
+              card["center_skill"] = card_info.center_skill;
+              card["skill"] = card_info.skill;
+              card["skill"]["prob"] = card_info.skill.stats_list[card_params.skill_level - 1][0];
+              card["skill"]["value"] = card_info.skill.stats_list[card_params.skill_level - 1][1];
 
-            card["SIS"] = [];
-            for (var SIS of card_params.SIS) {
-              card["SIS"].push(SIS.name);
-            }
+              card["SIS"] = [];
+              for (var SIS of card_params.SIS) {
+                card["SIS"].push(SIS.name);
+              }
+              self.deck.push(card);
 
-            self.deck.push(card);
-
-            if (self.deck.length == 9) {
-              self.drawGraph();
-            }
+              if (self.deck.length == 9) {
+                self.drawGraph();
+              }
+            });
           });
-        };
+        }
       }
 
       self.centerSkillUp = function(val, card, LS) {
@@ -94,12 +95,15 @@ angular.module('unitScore')
         return up;
       };
 
-      self.cardStatus = function(card, type, LS, FLS, aura_num, veil_num) {
+      self.cardStatus = function(card, music_type, LS, FLS, aura_num, veil_num) {
         var Sa = {};
         for (var type of $rootScope.card_data.types) Sa[type] = card[type];
         Sa[card.type] += card.kizuna;
 
-        var Su = new Object(Sa);
+        var Su = {};
+        for (var type of $rootScope.card_data.types) {
+          Su[type] = Sa[type];
+        }
         for (SIS of card.SIS) {
           var type = "all";
           if (/スマイル/.test(SIS)) type = "smile";
@@ -138,8 +142,8 @@ angular.module('unitScore')
         }
 
         return {
-          "status": Su[type],
-          "trick_status": trick[type],
+          "status": Su[music_type],
+          "trick_status": trick[music_type],
         };
       };
 
@@ -373,12 +377,8 @@ angular.module('unitScore')
 
       // watch change by user input
       $rootScope.$watch("user_data", function(newVal, oldVal) {
-        // store in cookies
-        var expire = new Date();
-        expire.setMonth(expire.getMonth() + 3);
-        $cookies.put('user_data', JSON.stringify($rootScope.user_data), {
-          expires: expire
-        });
+        // store in local storage
+        $localStorage.user_data = $rootScope.user_data;
 
         self.updateDeck();
       }, true);
@@ -386,6 +386,7 @@ angular.module('unitScore')
       $scope.$watch(function() {
         return self.music;
       }, function(newVal, oldVal) {
+        // TODO: move it to local storage
         // store in cookies
         var expire = new Date();
         expire.setMonth(expire.getMonth() + 3);
@@ -400,6 +401,7 @@ angular.module('unitScore')
       $scope.$watch(function() {
         return self.bonus;
       }, function(newVal, oldVal) {
+        // TODO: move it to local storage
         // store in cookies
         var expire = new Date();
         expire.setMonth(expire.getMonth() + 3);
