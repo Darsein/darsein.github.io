@@ -20,17 +20,17 @@ angular.module('unitScore')
 
       $rootScope.setTypeCondition = function(ev, type) {
         var type_ja = (type === "smile") ? "スマイル" : (type === "pure") ? "ピュア" : "クール";
-        var index = $rootScope.user_data.filtering_condition.type.indexOf(type_ja);
+        var index = $rootScope.user_data.filtering_condition.type.indexOf(type);
         if (index >= 0) {
           $rootScope.user_data.filtering_condition.type.splice(index, 1);
         } else {
-          $rootScope.user_data.filtering_condition.type.push(type_ja);
+          $rootScope.user_data.filtering_condition.type.push(type);
         }
       };
 
       $rootScope.hasTypeCondition = function(type) {
         var type_ja = (type === "smile") ? "スマイル" : (type === "pure") ? "ピュア" : "クール";
-        return $rootScope.user_data.filtering_condition.type.indexOf(type_ja) >= 0;
+        return $rootScope.user_data.filtering_condition.type.indexOf(type) >= 0;
       };
 
       $rootScope.setRarityCondition = function(ev, rarity) {
