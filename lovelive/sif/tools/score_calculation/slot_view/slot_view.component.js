@@ -1,78 +1,94 @@
 angular.module('unitScore')
   .component('slotView', {
     templateUrl: 'slot_view/slot_view.template.html',
-    bindings: { member : '=' },
+    bindings: {
+      index: '='
+    },
     controller: function slotController($scope, $rootScope, rangeFilter) {
-      this.getCardParams = function() {
+      this.member = $rootScope.user_data.unit_members[this.index];
+      this.card_params = undefined;
+      this.empty_slot = 0;
+
+      this.updateCardParams = function() {
+        this.member = $rootScope.user_data.unit_members[this.index];
         this.card_params = $rootScope.user_data.own_card_list[this.member];
-        return this.card_params;
-      };
-
-      this.emptySlot = function() {
-        var slot = this.card_params.slot;
+        this.empty_slot = this.card_params.slot;
         for (var SIS of this.card_params.SIS) {
-          slot -= SIS.slot;
+          this.empty_slot -= SIS.slot;
         }
-        return slot;
+        this.updateAvailableSIS();
       };
 
-      this.availableSIS = function() {
-        var available_SIS = [];
-        var card = $rootScope.card_data.card_list[this.card_params.id-1];
-        for (var SIS of $rootScope.card_data.SIS_list) {
-          if (SIS.imageName.slice(-1) === "1") {
-            if ($rootScope.card_data.chara_info[card.chara_name].grade !== "first-year") {
+      this.available_SIS = [];
+      var self = this;
+      this.updateAvailableSIS = function() {
+        $rootScope.card_data.getCard(self.card_params.id).then(function(card) {
+          self.available_SIS = [];
+          for (var SIS of $rootScope.card_data.SIS_list) {
+            if (self.empty_slot < SIS.slot) {
               continue;
             }
-          } else if (SIS.imageName.slice(-1) === "2") {
-            if ($rootScope.card_data.chara_info[card.chara_name].grade !== "second-year") {
+            if (self.card_params.SIS.indexOf(SIS) >= 0) {
               continue;
             }
-          } else if (SIS.imageName.slice(-1) === "3") {
-            if ($rootScope.card_data.chara_info[card.chara_name].grade !== "third-year") {
-              continue;
+
+            if (SIS.imageName.slice(-1) === "1") {
+              if ($rootScope.card_data.chara_info[card.chara_name].grade !== "first-year") {
+                continue;
+              }
+            } else if (SIS.imageName.slice(-1) === "2") {
+              if ($rootScope.card_data.chara_info[card.chara_name].grade !== "second-year") {
+                continue;
+              }
+            } else if (SIS.imageName.slice(-1) === "3") {
+              if ($rootScope.card_data.chara_info[card.chara_name].grade !== "third-year") {
+                continue;
+              }
             }
+            if (SIS.name.slice(0, 5) === "プリンセス") {
+              if (card.type !== "smile") {
+                continue;
+              }
+            } else if (SIS.name.slice(0, 5) === "エンジェル") {
+              if (card.type !== "pure") {
+                continue;
+              }
+            } else if (SIS.name.slice(0, 5) === "エンプレス") {
+              if (card.type !== "cool") {
+                continue;
+              }
+            }
+            if (SIS.name.slice(-4) === "チャーム") {
+              if (card.skill.type !== "スコア") {
+                continue;
+              }
+            } else if (SIS.name.slice(-3) === "ヒール") {
+              if (card.skill.type !== "回復") {
+                continue;
+              }
+            }
+            self.available_SIS.push(SIS);
           }
-          if (SIS.name.slice(0, 5) === "プリンセス") {
-            if (card.type !== "smile") {
-              continue;
-            }
-          } else if (SIS.name.slice(0, 5) === "エンジェル") {
-            if (card.type !== "pure") {
-              continue;
-            }
-          } else if (SIS.name.slice(0, 5) === "エンプレス") {
-            if (card.type !== "cool") {
-              continue;
-            }
-          }
-          if (SIS.name.slice(-4) === "チャーム") {
-            if (card.skill.type !== "スコア") {
-              continue;
-            }
-          } else if (SIS.name.slice(-3) === "ヒール") {
-            if (card.skill.type !== "回復") {
-              continue;
-            }
-          }
-          if (this.emptySlot() < SIS.slot) {
-            continue;
-          }
-          if (this.card_params.SIS.indexOf(SIS) >= 0) {
-            continue;
-          }
-          available_SIS.push(SIS);
-        }
-        return available_SIS;
+        });
       };
 
       this.setSIS = function(SIS) {
         this.card_params.SIS.push(SIS);
+        this.empty_slot -= SIS.slot;
+        this.updateAvailableSIS();
       };
 
       this.removeSIS = function(SIS) {
         var index = this.card_params.SIS.indexOf(SIS);
-        if (index >= 0) this.card_params.SIS.splice(index, 1);
+        if (index >= 0) {
+          this.card_params.SIS.splice(index, 1);
+          this.empty_slot += SIS.slot;
+          this.updateAvailableSIS();
+        }
       };
+
+      $rootScope.$watch('user_data.unit_members', function(newVal, oldVal) {
+        self.updateCardParams();
+      }, true);
     },
   });

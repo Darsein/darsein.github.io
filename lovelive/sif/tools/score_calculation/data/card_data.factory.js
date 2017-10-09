@@ -142,15 +142,6 @@ angular.module('data')
         unit: "CYaRon！",
       };
 
-      // load card data
-      self.card_list = [];
-      for (var i = 1; i <= 100; ++i) {
-        $http.get('json/cards/' + i + '.json').then(function(response) {
-          var card = response.data;
-          self.card_list.push(card);
-        });
-      }
-
       // set SIS info
       self.SIS_list = [{
           name: "スマイルキッス",
@@ -348,6 +339,24 @@ angular.module('data')
           slot: 4,
         },
       ];
+
+      // load card data
+      self.brief_card_list = [];
+      $http.get('json/cards/brief_card_list.json').then(function(response) {
+        self.brief_card_list = response.data;
+      });
+
+      // get function for card data
+      self.card_list = {};
+      self.getCard = function(id) {
+        if (self.card_list[id - 1]) {
+          return Promise.resolve(self.card_list[id - 1]);
+        } else {
+          return $http.get('json/cards/' + id + '.json').then(function(response) {
+            return self.card_list[id - 1] = response.data;
+          });
+        }
+      }
     }
     return cardData;
   });

@@ -2,7 +2,8 @@ angular.module('unitScore')
   .component('scoreDistribution', {
     templateUrl: 'score_distribution/score_distribution.template.html',
     controller: function scoreDistributionController($scope, $rootScope, $cookies) {
-      this.music = $cookies.get('music') ? JSON.parse($cookies.get('music')) : {
+      var self = this;
+      self.music = $cookies.get('music') ? JSON.parse($cookies.get('music')) : {
         "type": "smile",
         "notes": 500,
         "group": "μ's",
@@ -11,7 +12,7 @@ angular.module('unitScore')
       };
 
       // TODO: make bonus as user input
-      this.bonus = $cookies.get('bonus') ? JSON.parse($cookies.get('bonus')) : {
+      self.bonus = $cookies.get('bonus') ? JSON.parse($cookies.get('bonus')) : {
         "LS": null,
         "arrange_tap": 1.0,
         "arrange_skill": 1.0,
@@ -22,7 +23,8 @@ angular.module('unitScore')
         "nakayoshi_tap": 1.0,
       };
 
-      this.calcComboRatio = function(x) {
+      // TODO: stop to call self function each calculation to speed up
+      self.calcComboRatio = function(x) {
         if (x <= 50) return 1.00;
         if (x <= 100) return 1.10;
         if (x <= 200) return 1.15;
@@ -32,44 +34,47 @@ angular.module('unitScore')
         return 1.35;
       };
 
-      this.success = function(prob) {
+      self.success = function(prob) {
         return Math.random() * 100 < prob;
       };
 
-      this.deck = [];
+      self.deck = [];
 
-      this.getDeck = function() {
-        this.deck.length = 0;
+      self.updateDeck = function() {
+        self.deck = [];
         for (var index of $rootScope.user_data.unit_members) {
           if (index < 0) continue;
           var card_params = $rootScope.user_data.own_card_list[index];
-          var card_info = $rootScope.card_data.card_list[card_params.id - 1];
+          $rootScope.card_data.getCard(card_params.id).then(function(card_info) {
+            var card = {};
+            card["chara_name"] = card_info.chara_name;
+            card["type"] = card_info.type;
+            card["group"] = $rootScope.card_data.chara_info[card_info.chara_name].group;
+            for (var type of $rootScope.card_data.types) {
+              card[type] = card_info[type][card_params.level - 1];
+            }
+            card["kizuna"] = card_params.kizuna;
 
-          var card = {};
-          card["chara_name"] = card_info.chara_name;
-          card["type"] = card_info.type;
-          card["group"] = $rootScope.card_data.chara_info[card_info.chara_name].group;
-          for (var type of $rootScope.card_data.types) {
-            card[type] = card_info[type][card_params.level - 1];
-          }
-          card["kizuna"] = card_params.kizuna;
+            card["center_skill"] = card_info.center_skill;
+            card["skill"] = card_info.skill;
+            card["skill"]["prob"] = card_info.skill.stats_list[card_params.skill_level - 1][0];
+            card["skill"]["value"] = card_info.skill.stats_list[card_params.skill_level - 1][1];
 
-          card["center_skill"] = card_info.center_skill;
-          card["skill"] = card_info.skill;
-          card["skill"]["prob"] = card_info.skill.stats_list[card_params.skill_level - 1][0];
-          card["skill"]["value"] = card_info.skill.stats_list[card_params.skill_level - 1][1];
+            card["SIS"] = [];
+            for (var SIS of card_params.SIS) {
+              card["SIS"].push(SIS.name);
+            }
 
-          card["SIS"] = [];
-          for (var SIS of card_params.SIS) {
-            card["SIS"].push(SIS.name);
-          }
+            self.deck.push(card);
 
-          this.deck.push(card);
-        }
-        return this.deck;
+            if (self.deck.length == 9) {
+              self.drawGraph();
+            }
+          });
+        };
       }
 
-      this.centerSkillUp = function(val, card, LS) {
+      self.centerSkillUp = function(val, card, LS) {
         var up = {
           "smile": 0,
           "pure": 0,
@@ -89,7 +94,7 @@ angular.module('unitScore')
         return up;
       };
 
-      this.cardStatus = function(card, type, LS, FLS, aura_num, veil_num) {
+      self.cardStatus = function(card, type, LS, FLS, aura_num, veil_num) {
         var Sa = {};
         for (var type of $rootScope.card_data.types) Sa[type] = card[type];
         Sa[card.type] += card.kizuna;
@@ -126,8 +131,8 @@ angular.module('unitScore')
           Su[type] += Math.ceil(Sa[type] * 0.024) * veil_num[type];
         }
 
-        var LS_up = this.centerSkillUp(Su, card, LS);
-        var FLS_up = this.centerSkillUp(Su, card, FLS);
+        var LS_up = self.centerSkillUp(Su, card, LS);
+        var FLS_up = self.centerSkillUp(Su, card, FLS);
         for (var valid_type of $rootScope.card_data.types) {
           Su[valid_type] += LS_up[valid_type] + FLS_up[valid_type];
         }
@@ -138,8 +143,8 @@ angular.module('unitScore')
         };
       };
 
-      this.status = 0;
-      this.calcDeckStatus = function(deck, music, bonus) {
+      self.status = 0;
+      self.calcDeckStatus = function(deck, music, bonus) {
         if (deck.length != 9) return {
           "status": 0,
           "trick": 0,
@@ -171,12 +176,12 @@ angular.module('unitScore')
         var status = 0;
         var trick_status = 0;
         for (var card of deck) {
-          var card_status = this.cardStatus(card, music.type, LS, bonus.LS, aura_num, veil_num);
+          var card_status = self.cardStatus(card, music.type, LS, bonus.LS, aura_num, veil_num);
           status += card_status.status;
           trick_status += card_status.status + card_status.trick_status;
         }
 
-        this.status = status;
+        self.status = status;
         return {
           "status": status,
           "trick_status": trick_status,
@@ -184,8 +189,8 @@ angular.module('unitScore')
       };
 
       // TODO: improve performance
-      this.simulatePlay = function(deck, music, bonus) {
-        var status = this.calcDeckStatus(deck, music, bonus);
+      self.simulatePlay = function(deck, music, bonus) {
+        var status = self.calcDeckStatus(deck, music, bonus);
         var tap_bonus = 1 * bonus.arrange_tap * bonus.friend_tap * bonus.student_tap;
         var prob_bonus = 1 * bonus.arrange_skill * bonus.friend_skill * bonus.student_skill;
         var events = [];
@@ -209,7 +214,7 @@ angular.module('unitScore')
             for (var card of deck) {
               if (card.skill.condition === "秒" && event_time % card.skill.required === 0) {
                 var prob = card.skill.prob * prob_bonus;
-                if (this.success(prob)) {
+                if (self.success(prob)) {
                   if (card.skill.type === "スコア") {
                     var ratio = 1;
                     for (var SIS of card.SIS) {
@@ -237,7 +242,7 @@ angular.module('unitScore')
           }
 
           // TODO: long note
-          var combo_ratio = this.calcComboRatio(x);
+          var combo_ratio = self.calcComboRatio(x);
           var long_note_ratio = (x % 10 === 0) ? 1.25 : 1.0;
 
           // TODO: note position
@@ -246,7 +251,7 @@ angular.module('unitScore')
           position_ratio *= (deck[position].type === music.type) ? 1.1 : 1.0;
 
           var perfect_ratio = 0.88;
-          if (trick_num > 0 || this.success(music.perfect)) {
+          if (trick_num > 0 || self.success(music.perfect)) {
             perfect_ratio = 1.0;
             perfect_num++;
           }
@@ -266,7 +271,7 @@ angular.module('unitScore')
 
               if (is_skill_invoked) {
                 var prob = card.skill.prob * prob_bonus;
-                if (this.success(prob)) {
+                if (self.success(prob)) {
                   trick_num++;
                   end_trick.push(current_time + card.skill.value);
                 }
@@ -287,7 +292,7 @@ angular.module('unitScore')
 
           for (var i = 0; i < chance_num; ++i) {
             var prob = card.skill.prob * prob_bonus;
-            if (this.success(prob)) {
+            if (self.success(prob)) {
               if (card.skill.type === "スコア") {
                 var ratio = 1;
                 for (var SIS of card.SIS) {
@@ -308,13 +313,13 @@ angular.module('unitScore')
         return score;
       };
 
-      this.average = 0;
-      this.variance = 0;
-      this.getStatistics = function(deck, music, bonus, times) {
+      self.average = 0;
+      self.variance = 0;
+      self.getStatistics = function(deck, music, bonus, times) {
         // TODO: ajust the number of simulations
         var scores = [];
         for (var i = 0; i < times; ++i) {
-          scores.push(this.simulatePlay(deck, music, bonus));
+          scores.push(self.simulatePlay(deck, music, bonus));
         }
 
         // calculate average
@@ -322,21 +327,21 @@ angular.module('unitScore')
         for (var i = 0; i < times; ++i) {
           sum += scores[i];
         }
-        this.average = sum / times;
+        self.average = sum / times;
 
         // calculate variance
         var squared_sum = 0;
         for (var i = 0; i < times; ++i) {
-          squared_sum += (scores[i] - this.average) * (scores[i] - this.average);
+          squared_sum += (scores[i] - self.average) * (scores[i] - self.average);
         }
-        this.variance = squared_sum / times;
+        self.variance = squared_sum / times;
 
         return scores;
       };
 
-      this.drawGraph = function() {
+      self.drawGraph = function() {
         var times = 3000;
-        var scores = this.getStatistics(this.getDeck(), this.music, this.bonus, times);
+        var scores = self.getStatistics(self.deck, self.music, self.bonus, times);
         var min = scores[0];
         var max = scores[0];
         for (var score of scores) {
@@ -362,12 +367,11 @@ angular.module('unitScore')
         }
 
         // TODO: add regular distribution
-        $scope.labels = labels;
-        $scope.data = buckets;
+        $scope.plot_labels = labels;
+        $scope.plot_data = buckets;
       }
 
       // watch change by user input
-      var self = this;
       $rootScope.$watch("user_data", function(newVal, oldVal) {
         // store in cookies
         var expire = new Date();
@@ -376,7 +380,7 @@ angular.module('unitScore')
           expires: expire
         });
 
-        self.drawGraph(self.getDeck(), self.music, self.bonus);
+        self.updateDeck();
       }, true);
 
       $scope.$watch(function() {
@@ -389,7 +393,9 @@ angular.module('unitScore')
           expires: expire
         });
 
-        self.drawGraph(self.getDeck(), self.music, self.bonus);
+        if (self.deck.length == 9) {
+          self.drawGraph();
+        }
       }, true);
       $scope.$watch(function() {
         return self.bonus;
@@ -401,7 +407,9 @@ angular.module('unitScore')
           expires: expire
         });
 
-        self.drawGraph(self.getDeck(), self.music, self.bonus);
+        if (self.deck.length == 9) {
+          self.drawGraph();
+        }
       }, true);
     }
   });

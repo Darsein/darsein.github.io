@@ -5,7 +5,7 @@
       <img ng-src="img/faces/{{member<0 ? 83 : $root.user_data.own_card_list[member].id}}.png" width="50dp"
       ng-click="$ctrl.showMemberSelection($event, $index)"/>
       <div ng-if="member>=0">
-        <slot-view member="member"></slot-view>
+        <slot-view index="$index"></slot-view>
       </div>
     </md-list-item>
   </md-list>

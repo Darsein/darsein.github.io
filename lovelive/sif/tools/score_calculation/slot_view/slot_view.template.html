@@ -1,6 +1,6 @@
 <div layout-margin>
   <div layout="row">
-    <div layout="row" ng-repeat="SIS in $ctrl.getCardParams().SIS">
+    <div layout="row" ng-repeat="SIS in $ctrl.card_params.SIS">
       <div ng-repeat="i in [] | range:SIS.slot">
         <md-menu>
           <md-button class="md-icon-button" aria-label="slot" ng-click="$mdOpenMenu()">
@@ -17,13 +17,13 @@
       </div>
     </div>
 
-    <div ng-repeat="i in [] | range:$ctrl.emptySlot()">
+    <div ng-repeat="i in [] | range:$ctrl.empty_slot">
       <md-menu>
         <md-button class="md-icon-button" aria-label="slot" ng-click="$mdOpenMenu()">
           <img ng-src="img/SISs/empty_slot.png" width="30dp" />
         </md-button>
         <md-menu-content>
-          <md-menu-item ng-repeat="SIS in $ctrl.availableSIS()">
+          <md-menu-item ng-repeat="SIS in $ctrl.available_SIS">
             <md-button layout-align="center center" ng-click="$ctrl.setSIS(SIS)">
               <img ng-src="img/SISs/{{SIS.imageName}}.png" width="20dp" /> {{SIS.name}}
             </md-button>
