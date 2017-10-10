@@ -336,7 +336,7 @@ angular.module('unitScore')
             if (card.skill.condition === "リズムアイコン" || card.skill.condition === "コンボ") {
               is_skill_invoked = (x % card.skill.required === 0);
             } else if (card.skill.condition === "PERFECT") {
-              is_skill_invoked = (perfect_num % card.skill.required === 0);
+              is_skill_invoked = is_perfect_tap && (perfect_num % card.skill.required === 0);
             }
 
             // TODO: handle new skill
@@ -375,17 +375,14 @@ angular.module('unitScore')
                       return b - a;
                     });
                   } else if (card.skill.type === "パーフェクト") {
-                    if (!is_perfect_tap) {
-                      perfect_tap_value += card.skill.value;
-                      skill_score += card.skill.value;
-                      end_perfect_tap.push({
-                        "end_time": current_time + card.skill.term,
-                        "value": card.skill.value,
-                      });
-                      end_perfect_tap.sort(function(a, b) {
-                        return b.end_time - a.end_time;
-                      });
-                    }
+                    perfect_tap_value += card.skill.value;
+                    end_perfect_tap.push({
+                      "end_time": current_time + card.skill.term,
+                      "value": card.skill.value,
+                    });
+                    end_perfect_tap.sort(function(a, b) {
+                      return b.end_time - a.end_time;
+                    });
                   } else if (card.skill.type === "パラアップ") {
                     end_param_up.push({
                       "end_time": current_time + card.skill.term,
