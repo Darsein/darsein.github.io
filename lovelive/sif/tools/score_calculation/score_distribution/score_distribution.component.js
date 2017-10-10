@@ -208,10 +208,11 @@ angular.module('unitScore')
         }
 
         var score = 0;
+        var skill_score = 0;
         var perfect_num = 0;
         var event_id = 0;
         var end_trick = [];
-        var end_skill_prob = [];
+        var skill_prob_up = undefined;
         var end_perfect_tap = [];
         var perfect_tap_value = 0;
         var end_param_up = [];
@@ -224,6 +225,9 @@ angular.module('unitScore')
               if (card.skill.condition === "秒" && event_time % card.skill.required === 0) {
                 // TODO: handle new skill per time (not implemented as is 2017/10/09)
                 var prob = card.skill.prob * prob_bonus;
+                if (skill_prob_up) {
+                  prob *= skill_prob_up.value;
+                }
                 if (self.success(prob)) {
                   if (card.skill.type === "スコア") {
                     var ratio = 1;
@@ -231,12 +235,14 @@ angular.module('unitScore')
                       if (/チャーム/.test(SIS)) ratio = 2.5;
                     }
                     score += card.skill.value * ratio;
+                    skill_score += card.skill.value * ratio;
                   } else if (card.skill.type === "回復") {
                     var ratio = 0;
                     for (var SIS of card.SIS) {
                       if (/ヒール/.test(SIS)) ratio = 480;
                     }
                     score += card.skill.value * ratio;
+                    skill_score += card.skill.value * ratio;
                   } else if (card.skill.type === "判定") {
                     end_trick.push(event_time + card.skill.term);
                     end_trick.sort(function(a, b) {
@@ -251,8 +257,8 @@ angular.module('unitScore')
           while (end_trick.length > 0 && end_trick[end_trick.length - 1] < current_time) {
             end_trick.pop();
           }
-          while (end_skill_prob.length > 0 && end_skill_prob[end_skill_prob.length - 1] < current_time) {
-            end_skill_prob.pop();
+          if (skill_prob_up && skill_prob_up.end_time < current_time) {
+            skill_prob_up = undefined;
           }
           while (end_perfect_tap.length > 0 && end_perfect_tap[end_perfect_tap.length - 1][0] < current_time) {
             // TODO: this may be imcomplete handling: the skill of same member can be duplicate.
@@ -280,6 +286,7 @@ angular.module('unitScore')
             is_perfect_tap = true;
             if (end_perfect_tap.length > 0) {
               score += perfect_tap_value;
+              skill_score += perfect_tap_value;
             }
           }
 
@@ -300,47 +307,56 @@ angular.module('unitScore')
             if (is_skill_invoked) {
               // TODO: reflect skill prob up
               var prob = card.skill.prob * prob_bonus;
-              if (self.success(prob)) {
-                if (card.skill.type === "スコア") {
-                  var ratio = 1;
-                  for (var SIS of card.SIS) {
-                    if (/チャーム/.test(SIS)) ratio = 2.5;
+              if (card.skill.type === "特技") {
+                if (!skill_prob_up && self.success(prob)) {
+                  skill_prob_up = {
+                    "end_time": current_time + card.skill.term,
+                    "value": 1.00 + 0.01 * card.skill.value,
+                  };
+                }
+              } else {
+                if (skill_prob_up) {
+                  prob *= skill_prob_up.value;
+                }
+                if (self.success(prob)) {
+                  if (card.skill.type === "スコア") {
+                    var ratio = 1;
+                    for (var SIS of card.SIS) {
+                      if (/チャーム/.test(SIS)) ratio = 2.5;
+                    }
+                    score += card.skill.value * ratio;
+                    skill_score += card.skill.value * ratio;
+                  } else if (card.skill.type === "回復") {
+                    var ratio = 0;
+                    for (var SIS of card.SIS) {
+                      if (/ヒール/.test(SIS)) ratio = 480;
+                    }
+                    score += card.skill.value * ratio;
+                    skill_score += card.skill.value * ratio;
+                  } else if (card.skill.type === "判定") {
+                    end_trick.push(current_time + card.skill.term);
+                    end_trick.sort(function(a, b) {
+                      return b - a;
+                    });
+                  } else if (card.skill.type === "パーフェクト") {
+                    perfect_tap_value += card.skill.value;
+                    end_perfect_tap.push([current_time + card.skill.term, card.skill.value]);
+                    end_perfect_tap.sort(function(a, b) {
+                      return b - a;
+                    });
+                  } else if (card.skill.type === "パラアップ") {
+                    end_param_up.push([current_time + card.skill.term, card.skill.value]);
+                    end_param_up.sort(function(a, b) {
+                      return b - a;
+                    });
                   }
-                  score += card.skill.value * ratio;
-                } else if (card.skill.type === "回復") {
-                  var ratio = 0;
-                  for (var SIS of card.SIS) {
-                    if (/ヒール/.test(SIS)) ratio = 480;
-                  }
-                  score += card.skill.value * ratio;
-                } else if (card.skill.type === "判定") {
-                  end_trick.push(current_time + card.skill.term);
-                  end_trick.sort(function(a, b) {
-                    return b - a;
-                  });
-                } else if (card.skill.type === "特技") {
-                  end_skill_prob.push(current_time + card.skill.term);
-                  end_skill_prob.sort(function(a, b) {
-                    return b - a;
-                  });
-                } else if (card.skill.type === "パーフェクト") {
-                  perfect_tap_value += card.skill.value;
-                  end_perfect_tap.push([current_time + card.skill.term, card.skill.value]);
-                  end_perfect_tap.sort(function(a, b) {
-                    return b - a;
-                  });
-                } else if (card.skill.type === "パラアップ") {
-                  end_param_up.push([current_time + card.skill.term, card.skill.value]);
-                  end_param_up.sort(function(a, b) {
-                    return b - a;
-                  });
                 }
               }
             }
           }
         }
 
-        return score;
+        return {"total_score": score, "skill_score": skill_score};
       };
 
       self.average = 0;
@@ -353,18 +369,26 @@ angular.module('unitScore')
         }
 
         // calculate average
-        var sum = 0;
+        var total_sum = 0;
+        var skill_sum = 0;
         for (var i = 0; i < times; ++i) {
-          sum += scores[i];
+          total_sum += scores[i].total_score;
+          skill_sum += scores[i].skill_score;
         }
-        self.average = sum / times;
+        self.average = total_sum / times;
+        // TODO: expose this data in UI
+        var skill_avarage = skill_sum / times;
 
         // calculate variance
-        var squared_sum = 0;
+        var total_squared_sum = 0;
+        var skill_squared_sum = 0;
         for (var i = 0; i < times; ++i) {
-          squared_sum += (scores[i] - self.average) * (scores[i] - self.average);
+          total_squared_sum += (scores[i].total_score - self.average) * (scores[i].total_score - self.average);
+          skill_squared_sum += (scores[i].skill_score - self.average) * (scores[i].skill_score - self.average);
         }
-        self.variance = squared_sum / times;
+        self.variance = total_squared_sum / times;
+        // TODO: expose this data in UI
+        var skill_variance = skill_squared_sum / times;
 
         return scores;
       };
@@ -372,11 +396,11 @@ angular.module('unitScore')
       self.drawGraph = function() {
         var times = 1000;
         var scores = self.getStatistics(self.deck, self.music, self.bonus, times);
-        var min = scores[0];
-        var max = scores[0];
+        var min = scores[0].total_score;
+        var max = scores[0].total_score;
         for (var score of scores) {
-          min = Math.min(min, score);
-          max = Math.max(max, score);
+          min = Math.min(min, score.total_score);
+          max = Math.max(max, score.total_score);
         }
 
         var width = max - min;
@@ -390,7 +414,7 @@ angular.module('unitScore')
           labels.push(min + bucket_size * i);
         }
         for (var score of scores) {
-          buckets[Math.floor((score - min) / bucket_size)]++;
+          buckets[Math.floor((score.total_score - min) / bucket_size)]++;
         }
         for (var i = 0; i < bucket_num; ++i) {
           buckets[i] /= times;
