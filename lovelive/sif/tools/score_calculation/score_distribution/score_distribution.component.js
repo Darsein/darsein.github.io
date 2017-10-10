@@ -51,6 +51,8 @@ angular.module('unitScore')
               card["chara_name"] = card_info.chara_name;
               card["type"] = card_info.type;
               card["group"] = $rootScope.card_data.chara_info[card_info.chara_name].group;
+              card["unit"] = $rootScope.card_data.chara_info[card_info.chara_name].unit;
+              card["grade"] = $rootScope.card_data.chara_info[card_info.chara_name].grade;
               for (var type of $rootScope.card_data.types) {
                 card[type] = card_info[type][card_params.level - 1];
               }
@@ -96,7 +98,7 @@ angular.module('unitScore')
         return up;
       };
 
-      self.cardStatus = function(card, music_type, LS, FLS, aura_num, veil_num) {
+      self.cardStatus = function(card, music_type, LS, FLS, aura_num, veil_num, deck) {
         var Sa = {};
         for (var type of $rootScope.card_data.types) Sa[type] = card[type];
         Sa[card.type] += card.kizuna;
@@ -142,9 +144,22 @@ angular.module('unitScore')
           Su[valid_type] += LS_up[valid_type] + FLS_up[valid_type];
         }
 
+        var skill_status = new Array(deck.length);
+        for (var i = 0; i < deck.length; ++i) {
+          skill_status[i] = 0;
+          if (deck[i].skill.type === "パラアップ") {
+            // TODO: use arbitrary effect filter
+            if (card.grade === "first-year" && card.group === "Aqours") {
+              skill_status[i] = Su[music_type] * 0.01 * deck[i].skill.value;
+            }
+          } else if (deck[i].skill.type === "判定") {
+            skill_status[i] = trick[music_type];
+          }
+        }
+
         return {
           "status": Su[music_type],
-          "trick_status": trick[music_type],
+          "skill_status": skill_status,
         };
       };
 
@@ -179,25 +194,38 @@ angular.module('unitScore')
         var LS = deck[4].center_skill;
 
         var status = 0;
-        var trick_status = 0;
+        var skill_status = new Array(deck.length);
+        for (var i = 0; i < deck.length; ++i) {
+          skill_status[i] = 0;
+        }
         for (var card of deck) {
-          var card_status = self.cardStatus(card, music.type, LS, bonus.LS, aura_num, veil_num);
+          var card_status = self.cardStatus(card, music.type, LS, bonus.LS, aura_num, veil_num, deck);
           status += card_status.status;
-          trick_status += card_status.status + card_status.trick_status;
+          for (var i = 0; i < deck.length; ++i) {
+            skill_status[i] += card_status.skill_status[i];
+          }
         }
 
         self.status = status;
         return {
           "status": status,
-          "trick_status": trick_status,
+          "skill_status": skill_status,
         };
       };
 
       // TODO: improve performance
       self.simulatePlay = function(deck, music, bonus) {
         var status = self.calcDeckStatus(deck, music, bonus);
+        var trick_status_up = 0;
+        for (var i = 0; i < deck.length; ++i) {
+          if (deck[i].skill.type === "判定") {
+            trick_status_up = status.skill_status[i];
+          }
+        }
+
         var tap_bonus = 1 * bonus.arrange_tap * bonus.friend_tap * bonus.student_tap;
         var prob_bonus = 1 * bonus.arrange_skill * bonus.friend_skill * bonus.student_skill;
+
         var events = [];
         for (var card of deck) {
           if (card.skill.condition === "秒") {
@@ -260,12 +288,12 @@ angular.module('unitScore')
           if (skill_prob_up && skill_prob_up.end_time < current_time) {
             skill_prob_up = undefined;
           }
-          while (end_perfect_tap.length > 0 && end_perfect_tap[end_perfect_tap.length - 1][0] < current_time) {
+          while (end_perfect_tap.length > 0 && end_perfect_tap[end_perfect_tap.length - 1].end_time < current_time) {
             // TODO: this may be imcomplete handling: the skill of same member can be duplicate.
-            perfect_tap_value -= end_perfect_tap[end_perfect_tap.length - 1][1];
+            perfect_tap_value -= end_perfect_tap[end_perfect_tap.length - 1].value;
             end_perfect_tap.pop();
           }
-          while (end_param_up.length > 0 && end_param_up[end_param_up.length - 1] < current_time) {
+          while (end_param_up.length > 0 && end_param_up[end_param_up.length - 1].end_time < current_time) {
             end_param_up.pop();
           }
 
@@ -290,17 +318,25 @@ angular.module('unitScore')
             }
           }
 
-          var tap_score = end_trick.length > 0 ? status.trick_status : status.status;
+          var tap_score = status.status;
+          if (end_trick.length > 0) {
+            tap_score += trick_status_up;
+          }
+          if (end_param_up.length > 0) {
+            // TODO: maybe we should get max of value and use it.
+            tap_score += end_param_up[end_param_up.length - 1].value;
+          }
           tap_score *= 0.0125 * tap_bonus * perfect_ratio * long_note_ratio * position_ratio * combo_ratio;
           score += Math.floor(tap_score);
 
-          for (var card of deck) {
+          for (var i = 0; i < deck.length; ++i) {
+            var card = deck[i];
             // TODO: handle skills invoked by star icons and score
             var is_skill_invoked = false;
             if (card.skill.condition === "リズムアイコン" || card.skill.condition === "コンボ") {
               is_skill_invoked = (x % card.skill.required === 0);
             } else if (card.skill.condition === "PERFECT") {
-              is_skill_invoked = is_perfect_tap && (perfect_num % card.skill.required === 0);
+              is_skill_invoked = (perfect_num % card.skill.required === 0);
             }
 
             // TODO: handle new skill
@@ -339,15 +375,24 @@ angular.module('unitScore')
                       return b - a;
                     });
                   } else if (card.skill.type === "パーフェクト") {
-                    perfect_tap_value += card.skill.value;
-                    end_perfect_tap.push([current_time + card.skill.term, card.skill.value]);
-                    end_perfect_tap.sort(function(a, b) {
-                      return b - a;
-                    });
+                    if (!is_perfect_tap) {
+                      perfect_tap_value += card.skill.value;
+                      skill_score += card.skill.value;
+                      end_perfect_tap.push({
+                        "end_time": current_time + card.skill.term,
+                        "value": card.skill.value,
+                      });
+                      end_perfect_tap.sort(function(a, b) {
+                        return b.end_time - a.end_time;
+                      });
+                    }
                   } else if (card.skill.type === "パラアップ") {
-                    end_param_up.push([current_time + card.skill.term, card.skill.value]);
+                    end_param_up.push({
+                      "end_time": current_time + card.skill.term,
+                      "value": status.skill_status[i],
+                    });
                     end_param_up.sort(function(a, b) {
-                      return b - a;
+                      return b.end_time - a.end_time;
                     });
                   }
                 }
@@ -356,7 +401,10 @@ angular.module('unitScore')
           }
         }
 
-        return {"total_score": score, "skill_score": skill_score};
+        return {
+          "total_score": score,
+          "skill_score": skill_score
+        };
       };
 
       self.average = 0;
