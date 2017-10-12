@@ -240,10 +240,10 @@ angular.module('unitScore')
         var perfect_num = 0;
         var event_id = 0;
         var end_trick = [];
-        var skill_prob_up = undefined;
-        var end_perfect_tap = [];
-        var perfect_tap_value = 0;
-        var end_param_up = [];
+
+        var skill_prob_queue = [];
+        var perfect_tap_end_time = new Array(deck.length);
+        var param_up_end_time = new Array(deck.length);
 
         for (var x = 1; x <= music.notes; ++x) {
           var current_time = x / music.notes * music.time;
@@ -285,16 +285,16 @@ angular.module('unitScore')
           while (end_trick.length > 0 && end_trick[end_trick.length - 1] < current_time) {
             end_trick.pop();
           }
-          if (skill_prob_up && skill_prob_up.end_time < current_time) {
-            skill_prob_up = undefined;
+          while (skill_prob_queue.length > 0 && skill_prob_queue[0].end_time < current_time) {
+            skill_prob_queue.shift();
           }
-          while (end_perfect_tap.length > 0 && end_perfect_tap[end_perfect_tap.length - 1].end_time < current_time) {
-            // TODO: this may be imcomplete handling: the skill of same member can be duplicate.
-            perfect_tap_value -= end_perfect_tap[end_perfect_tap.length - 1].value;
-            end_perfect_tap.pop();
-          }
-          while (end_param_up.length > 0 && end_param_up[end_param_up.length - 1].end_time < current_time) {
-            end_param_up.pop();
+          for (var i = 0; i < deck.length; ++i) {
+            if (perfect_tap_end_time[i] !== undefined && perfect_tap_end_time[i] < current_time) {
+              perfect_tap_end_time[i] = undefined;
+            }
+            if (param_up_end_time[i] !== undefined && param_up_end_time[i] < current_time) {
+              param_up_end_time[i] = undefined;
+            }
           }
 
           // TODO: long note
@@ -312,9 +312,9 @@ angular.module('unitScore')
             perfect_ratio = 1.0;
             perfect_num++;
             is_perfect_tap = true;
-            if (end_perfect_tap.length > 0) {
-              score += perfect_tap_value;
-              skill_score += perfect_tap_value;
+            for (var i = 0; i < deck.length; ++i) {
+              if (perfect_tap_end_time[i] !== undefined)
+              score += deck[i].skill.value;
             }
           }
 
@@ -322,9 +322,13 @@ angular.module('unitScore')
           if (end_trick.length > 0) {
             tap_score += trick_status_up;
           }
-          if (end_param_up.length > 0) {
-            // TODO: maybe we should get max of value and use it.
-            tap_score += end_param_up[end_param_up.length - 1].value;
+          {
+            var max_param_up = 0;
+            for (var i = 0; i < deck.length; ++i) {
+              if (param_up_end_time[i] !== undefined)
+              max_param_up = Math.max(max_param_up, status.skill_status[i]);
+            }
+            tap_score += max_param_up;
           }
           tap_score *= 0.0125 * tap_bonus * perfect_ratio * long_note_ratio * position_ratio * combo_ratio;
           score += Math.floor(tap_score);
@@ -344,15 +348,16 @@ angular.module('unitScore')
               // TODO: reflect skill prob up
               var prob = card.skill.prob * prob_bonus;
               if (card.skill.type === "特技") {
-                if (!skill_prob_up && self.success(prob)) {
-                  skill_prob_up = {
-                    "end_time": current_time + card.skill.term,
-                    "value": 1.00 + 0.01 * card.skill.value,
-                  };
+                if (self.success(prob)) {
+                  var end_time = (skill_prob_queue.length > 0 ? skill_prob_queue[skill_prob_queue.length - 1].end_time : current_time) + card.skill.term;
+                  skill_prob_queue.push({
+                    "end_time": end_time,
+                    "value": card.skill.value,
+                  })
                 }
               } else {
-                if (skill_prob_up) {
-                  prob *= skill_prob_up.value;
+                if (skill_prob_queue.length > 0) {
+                  prob *= skill_prob_queue[0].value;
                 }
                 if (self.success(prob)) {
                   if (card.skill.type === "スコア") {
@@ -375,22 +380,9 @@ angular.module('unitScore')
                       return b - a;
                     });
                   } else if (card.skill.type === "パーフェクト") {
-                    perfect_tap_value += card.skill.value;
-                    end_perfect_tap.push({
-                      "end_time": current_time + card.skill.term,
-                      "value": card.skill.value,
-                    });
-                    end_perfect_tap.sort(function(a, b) {
-                      return b.end_time - a.end_time;
-                    });
+                    perfect_tap_end_time[i] = (perfect_tap_end_time[i] === undefined ? current_time : perfect_tap_end_time[i]) + card.skill.term;
                   } else if (card.skill.type === "パラアップ") {
-                    end_param_up.push({
-                      "end_time": current_time + card.skill.term,
-                      "value": status.skill_status[i],
-                    });
-                    end_param_up.sort(function(a, b) {
-                      return b.end_time - a.end_time;
-                    });
+                    param_up_end_time[i] = (param_up_end_time[i] === undefined ? current_time : param_up_end_time[i]) + card.skill.term;
                   }
                 }
               }
