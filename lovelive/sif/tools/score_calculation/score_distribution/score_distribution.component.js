@@ -214,8 +214,7 @@ angular.module('unitScore')
       };
 
       // TODO: improve performance
-      self.simulatePlay = function(deck, music, bonus) {
-        var status = self.calcDeckStatus(deck, music, bonus);
+      self.simulatePlay = function(deck, music, bonus, status) {
         var trick_status_up = 0;
         for (var i = 0; i < deck.length; ++i) {
           if (deck[i].skill.type === "判定") {
@@ -400,8 +399,9 @@ angular.module('unitScore')
       self.getStatistics = function(deck, music, bonus, times) {
         // TODO: ajust the number of simulations
         var scores = [];
+        var status = self.calcDeckStatus(deck, music, bonus);
         for (var i = 0; i < times; ++i) {
-          scores.push(self.simulatePlay(deck, music, bonus));
+          scores.push(self.simulatePlay(deck, music, bonus, status));
         }
 
         // calculate average
