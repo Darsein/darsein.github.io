@@ -1,9 +1,17 @@
 <md-dialog flex layout-margin aria-label="member_selection_dialog">
   <!-- TODO: responsive height -->
   <md-dialog-content>
-    <md-grid-list md-cols=10 md-row-height="1:1">
+    <md-grid-list md-cols-xs="6" md-cols-sm="10" md-cols-md="14" md-cols-lg="18" md-cols-xl="24" md-row-height="1:1">
       <md-grid-tile ng-repeat="card in $root.user_data.own_card_list" ng-click="answer($index)">
-        <img ng-src="img/faces/{{card.id}}.png" width="100%" />
+        <div style="position: relative;">
+          <img ng-src="img/faces/{{card.id}}.png" width="100%" />
+          <div style="text-align: center; position: absolute; left: 0; top: 0; color: red; font-weight: bold; font-size: 3px; text-shadow: 2px 2px 4px #FFF;">
+           {{card.slot}}
+          </div>
+          <div style="text-align: center; position: absolute; right: 0; bottom: 0; color: red; font-weight: bold; font-size: 3px; text-shadow: -2px -2px 4px #FFF;">
+            {{card.skill_level}}
+          </div>
+        </div>
       </md-grid-tile>
     </md-grid-list>
   </md-dialog-content>

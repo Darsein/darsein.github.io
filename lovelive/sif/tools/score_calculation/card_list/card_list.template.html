@@ -45,7 +45,7 @@
 
   <!-- TODO: responsive height -->
   <div style="padding: 80px 0 0 0">
-    <md-grid-list md-cols=10 md-row-height="1:1">
+    <md-grid-list md-cols-xs="6" md-cols-sm="10" md-cols-md="14" md-cols-lg="18" md-cols-xl="24" md-row-height="1:1">
       <md-grid-tile ng-repeat="card in $root.card_data.brief_card_list | filter:$root.card_filter | orderBy:($root.user_data.orderDirection+$root.user_data.orderKey)" ng-click="$ctrl.showCardRegistration($event, card)">
         <img ng-src="img/faces/{{card.id}}.png" width="100%" />
       </md-grid-tile>
