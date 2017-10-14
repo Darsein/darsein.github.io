@@ -5,11 +5,12 @@
         <div flex>{{selected_card.chara_name}}</div>
         <div flex>{{selected_card.chara_title}}</div>
       </div>
+
       <span>
-      <img ng-src="img/faces/{{selected_card.id}}.png" width="50dp" height="50dp" />
+      <img ng-style="imageNormalStyle" ng-src="img/faces/{{selected_card.id}}.png" width="50dp" height="50dp" ng-click="onTransClick(false)"/>
       </span>
       <span>
-      <img ng-src="img/faces/{{selected_card.id}}_t.png" width="50dp" height="50dp" />
+      <img ng-style="imageTransStyle" ng-src="img/faces/{{selected_card.id}}_t.png" width="50dp" height="50dp" ng-click="onTransClick(true)"/>
       </span>
     </div>
 

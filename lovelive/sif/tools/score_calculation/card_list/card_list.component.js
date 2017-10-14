@@ -29,6 +29,7 @@ angular.module('unitScore')
       function CardRegistrationDialogController($scope, $mdDialog, selected_card) {
         $scope.selected_card = selected_card;
         $scope.selected_card_params = {
+          trans: false,
           id: $scope.selected_card.id,
           level: $rootScope.card_data.normal_max_level_table[$scope.selected_card.rarity],
           slot: $rootScope.card_data.min_slot_table[$scope.selected_card.rarity],
@@ -36,6 +37,8 @@ angular.module('unitScore')
           skill_level: 1,
           SIS: [],
         };
+        $scope.imageNormalStyle = {'filter': 'grayscale(0%)'};
+        $scope.imageTransStyle = {'filter': 'grayscale(100%)'};
         $scope.normal_max_level = $rootScope.card_data.normal_max_level_table[$scope.selected_card.rarity];
         $scope.transformed_max_level = $rootScope.card_data.transformed_max_level_table[$scope.selected_card.rarity];
         $scope.normal_kizuna_level = $rootScope.card_data.normal_max_kizuna_table[$scope.selected_card.rarity];
@@ -46,6 +49,22 @@ angular.module('unitScore')
         for (var i = $scope.min_slot; i <= $scope.max_slot; ++i) {
           $scope.slot_range.push(i);
         }
+
+        $scope.onTransClick = function(isTrans) {
+          $scope.selected_card_params.trans = isTrans;
+          if ($scope.selected_card_params.trans) {
+            $scope.selected_card_params.level = $scope.transformed_max_level;
+            $scope.selected_card_params.kizuna = $scope.transformed_kizuna_level;
+            $scope.imageNormalStyle = {'filter': 'grayscale(100%)'};
+            $scope.imageTransStyle = {'filter': 'grayscale(0%)'};
+          } else {
+            $scope.selected_card_params.level = $scope.normal_max_level;
+            $scope.selected_card_params.kizuna = $scope.normal_kizuna_level;
+            $scope.imageNormalStyle = {'filter': 'grayscale(0%)'};
+            $scope.imageTransStyle = {'filter': 'grayscale(100%)'};
+          }
+          console.log($scope.selected_card_params.trans);
+        };
 
         $scope.hide = function() {
           $mdDialog.hide();
