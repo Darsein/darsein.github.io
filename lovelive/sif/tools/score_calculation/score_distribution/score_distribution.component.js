@@ -253,8 +253,8 @@ angular.module('unitScore')
               if (card.skill.condition === "秒" && event_time % card.skill.required === 0) {
                 // TODO: handle new skill per time (not implemented as is 2017/10/09)
                 var prob = card.skill.prob * prob_bonus;
-                if (skill_prob_up) {
-                  prob *= skill_prob_up.value;
+                if (skill_prob_queue.length > 0) {
+                  prob *= skill_prob_queue[0].value;
                 }
                 if (self.success(prob)) {
                   if (card.skill.type === "スコア") {
@@ -345,14 +345,13 @@ angular.module('unitScore')
 
             // TODO: handle new skill
             if (is_skill_invoked) {
-              // TODO: reflect skill prob up
               var prob = card.skill.prob * prob_bonus;
               if (card.skill.type === "特技") {
                 if (self.success(prob)) {
                   var end_time = (skill_prob_queue.length > 0 ? skill_prob_queue[skill_prob_queue.length - 1].end_time : current_time) + card.skill.term;
                   skill_prob_queue.push({
                     "end_time": end_time,
-                    "value": card.skill.value,
+                    "value": (1 + 0.01 * card.skill.value),
                   })
                 }
               } else {
