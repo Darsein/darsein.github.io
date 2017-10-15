@@ -13,7 +13,9 @@ angular.module('unitScore')
 
       // TODO: make bonus as user input
       self.bonus = $cookies.get('bonus') ? JSON.parse($cookies.get('bonus')) : {
-        "LS": null,
+        "LS_pre": null,
+        "LS_suf": "smile",
+        "LS_sub": null,
         "arrange_tap": 1.0,
         "arrange_skill": 1.0,
         "friend_tap": 1.0,
@@ -21,6 +23,25 @@ angular.module('unitScore')
         "student_tap": 1.0,
         "student_skill": 1.0,
         "nakayoshi_tap": 1.0,
+        "arbitrary_tap": 1.0,
+        "arbitrary_skill": 1.0,
+      };
+
+      self.calcFLS = function() {
+        if (self.bonus.LS_pre !== null && self.bonus.LS_suf !== null) {
+          var fLS = new Object();
+          fLS.name = self.bonus.LS_pre + self.bonus.LS_suf;
+          fLS.type = self.bonus.LS_pre;
+          fLS.base_type = self.bonus.LS_suf;
+          fLS.ratio = (self.bonus.LS_pre === self.bonus.LS_suf) ? 9 : 12;
+          if (self.bonus.LS_sub !== null) {
+            fLS.sub_type = self.bonus.LS_pre;
+            fLS.sub_condition = self.bonus.LS_sub;
+            fLS.sub_ratio = (self.bonus.LS_sub === "μ's" || self.bonus.LS_sub === "Aqours") ? 3 : 6;
+          }
+          return fLS;
+        }
+        return null;
       };
 
       // TODO: stop to call self function each calculation to speed up
@@ -192,6 +213,7 @@ angular.module('unitScore')
         }
 
         var LS = deck[4].center_skill;
+        var FLS = self.calcFLS();
 
         var status = 0;
         var skill_status = new Array(deck.length);
@@ -199,7 +221,7 @@ angular.module('unitScore')
           skill_status[i] = 0;
         }
         for (var card of deck) {
-          var card_status = self.cardStatus(card, music.type, LS, bonus.LS, aura_num, veil_num, deck);
+          var card_status = self.cardStatus(card, music.type, LS, FLS, aura_num, veil_num, deck);
           status += card_status.status;
           for (var i = 0; i < deck.length; ++i) {
             skill_status[i] += card_status.skill_status[i];
@@ -222,8 +244,8 @@ angular.module('unitScore')
           }
         }
 
-        var tap_bonus = 1 * bonus.arrange_tap * bonus.friend_tap * bonus.student_tap;
-        var prob_bonus = 1 * bonus.arrange_skill * bonus.friend_skill * bonus.student_skill;
+        var tap_bonus = 1 * bonus.arrange_tap * bonus.friend_tap * bonus.student_tap * bonus.arbitrary_tap;
+        var prob_bonus = 1 * bonus.arrange_skill * bonus.friend_skill * bonus.student_skill * bonus.arbitrary_skill;
 
         var events = [];
         for (var card of deck) {
@@ -484,6 +506,8 @@ angular.module('unitScore')
           self.drawGraph();
         }
       }, true);
+
+
       $scope.$watch(function() {
         return self.bonus;
       }, function(newVal, oldVal) {
