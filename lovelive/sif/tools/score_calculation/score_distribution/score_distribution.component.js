@@ -465,12 +465,13 @@ angular.module('unitScore')
         return scores;
       };
 
+      self.scores = [];
       self.drawGraph = function() {
         var times = 1000;
-        var scores = self.getStatistics(self.deck, self.music, self.bonus, times);
-        var min = scores[0].total_score;
-        var max = scores[0].total_score;
-        for (var score of scores) {
+        self.scores = self.getStatistics(self.deck, self.music, self.bonus, times);
+        var min = self.scores[0].total_score;
+        var max = self.scores[0].total_score;
+        for (var score of self.scores) {
           min = Math.min(min, score.total_score);
           max = Math.max(max, score.total_score);
         }
@@ -485,7 +486,7 @@ angular.module('unitScore')
           buckets.push(0);
           labels.push(min + bucket_size * i);
         }
-        for (var score of scores) {
+        for (var score of self.scores) {
           buckets[Math.floor((score.total_score - min) / bucket_size)]++;
         }
         for (var i = 0; i < bucket_num; ++i) {
@@ -495,7 +496,31 @@ angular.module('unitScore')
         // TODO: add regular distribution
         $scope.plot_labels = labels;
         $scope.plot_data = buckets;
+        self.calcTargetProb();
       }
+
+      self.detail = $cookies.get('detail') ? JSON.parse($cookies.get('detail')) : {
+        "try_num": 10,
+        "target_score": 300000,
+      };
+      self.over_prob = 0;
+      self.calcTargetProb = function() {
+        var times = self.scores.length;
+        var border = times;
+        for (var i = 0; i < times; ++i) {
+          if (self.detail.target_score <= self.scores[i].total_score) {
+            border = i;
+            break;
+          }
+        }
+
+        var success_prob_per_play = (times - border) / times;
+        var fail_prob = 1;
+        for (var i = 0; i < self.detail.try_num; ++i) {
+          fail_prob *= (1 - success_prob_per_play);
+        }
+        self.over_prob = (100 - fail_prob * 100).toFixed(2);
+      };
 
       // watch change by user input
       $rootScope.$watch("user_data", function(newVal, oldVal) {
@@ -536,6 +561,20 @@ angular.module('unitScore')
         if (self.deck.length == 9) {
           self.drawGraph();
         }
+      }, true);
+
+      $scope.$watch(function() {
+        return self.detail;
+      }, function(newVal, oldVal) {
+        // TODO: move it to local storage
+        // store in cookies
+        var expire = new Date();
+        expire.setMonth(expire.getMonth() + 3);
+        $cookies.put('detail', JSON.stringify(self.detail), {
+          expires: expire
+        });
+
+        self.calcTargetProb();
       }, true);
     }
   });
