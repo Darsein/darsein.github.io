@@ -109,8 +109,8 @@
   </md-card>
 
   <p>ユニットステータス: {{$ctrl.status}}</p>
-  <p>平均スコア: {{$ctrl.average}}</p>
-  <p>スコア分散: {{$ctrl.variance}}</p>
+  <p>平均スコア: {{$ctrl.average}} (95%区間: {{$ctrl.lower}} - {{$ctrl.upper}})</p>
+  <p>スコア標準偏差: {{$ctrl.deviation}}</p>
 
   <canvas id="line" class="chart chart-line" chart-data="plot_data" chart-labels="plot_labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
 </canvas>

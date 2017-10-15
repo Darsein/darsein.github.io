@@ -424,7 +424,9 @@ angular.module('unitScore')
       };
 
       self.average = 0;
-      self.variance = 0;
+      self.deviation = 0;
+      self.lower = 0;
+      self.upper = 0;
       self.getStatistics = function(deck, music, bonus, times) {
         // TODO: ajust the number of simulations
         var scores = [];
@@ -432,6 +434,11 @@ angular.module('unitScore')
         for (var i = 0; i < times; ++i) {
           scores.push(self.simulatePlay(deck, music, bonus, status));
         }
+        scores.sort(function(a, b) {
+          return a.total_score - b.total_score;
+        });
+        self.lower = scores[times*2.5/100].total_score;
+        self.upper = scores[times*97.5/100].total_score;
 
         // calculate average
         var total_sum = 0;
@@ -440,7 +447,7 @@ angular.module('unitScore')
           total_sum += scores[i].total_score;
           skill_sum += scores[i].skill_score;
         }
-        self.average = total_sum / times;
+        self.average = (total_sum / times).toFixed(2);
         // TODO: expose this data in UI
         var skill_avarage = skill_sum / times;
 
@@ -451,7 +458,7 @@ angular.module('unitScore')
           total_squared_sum += (scores[i].total_score - self.average) * (scores[i].total_score - self.average);
           skill_squared_sum += (scores[i].skill_score - self.average) * (scores[i].skill_score - self.average);
         }
-        self.variance = total_squared_sum / times;
+        self.deviation = Math.sqrt(total_squared_sum / times).toFixed(2);
         // TODO: expose this data in UI
         var skill_variance = skill_squared_sum / times;
 
