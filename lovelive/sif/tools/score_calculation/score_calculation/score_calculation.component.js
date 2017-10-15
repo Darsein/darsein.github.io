@@ -4,10 +4,13 @@ angular.module('unitScore')
     controller: function scoreCalculationController($rootScope, $cookies, $localStorage, cardData, userData) {
       $rootScope.card_data = new cardData();
       $rootScope.user_data = $localStorage.user_data ? $localStorage.user_data : new userData();
+      // for cookies of beta users
+      if ($rootScope.user_data.filtering_condition.rarity.indexOf("X") < 0) {
+        $rootScope.user_data.filtering_condition.rarity.push("X");
+      }
 
       // for filtering
       $rootScope.card_filter = function(card, index) {
-        if (card.role === "サポート") return false;
         for (var type of $rootScope.user_data.filtering_condition.type) {
           if (card.type === type) return false;
         }

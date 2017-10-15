@@ -48,7 +48,6 @@ angular.module('unitScore')
           targetEvent: ev,
           clickOutsideToClose: true,
         }).then(function(answer) {
-          console.log(answer);
           answer.empty_slot = answer.slot;
           for (var SIS of answer.SIS) {
             answer.empty_slot -= SIS.slot;
@@ -57,7 +56,6 @@ angular.module('unitScore')
             answer.empty_slot += answer.SIS[answer.SIS.length - 1].slot;
             answer.SIS.pop();
           }
-          console.log(answer);
           $rootScope.user_data.own_card_list[member] = answer;
         });
       };
