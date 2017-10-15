@@ -45,6 +45,11 @@ angular.module('unitScore')
         $scope.transformed_kizuna_level = $rootScope.card_data.transformed_max_kizuna_table[$scope.selected_card.rarity];
         $scope.min_slot = $rootScope.card_data.min_slot_table[$scope.selected_card.rarity];
         $scope.max_slot = $rootScope.card_data.max_slot_table[$scope.selected_card.rarity];
+        if ($scope.selected_card.rarity === "UR" && /パワー/.test($scope.selected_card.center_skill_name)) {
+          $scope.min_slot = 2;
+          $scope.max_slot = 2;
+          $scope.selected_card_params.slot = 2;
+        }
         $scope.slot_range = [];
         for (var i = $scope.min_slot; i <= $scope.max_slot; ++i) {
           $scope.slot_range.push(i);
