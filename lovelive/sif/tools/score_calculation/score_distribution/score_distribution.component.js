@@ -71,19 +71,27 @@ angular.module('unitScore')
               var card = {};
               card["chara_name"] = card_info.chara_name;
               card["type"] = card_info.type;
-              card["group"] = $rootScope.card_data.chara_info[card_info.chara_name].group;
-              card["unit"] = $rootScope.card_data.chara_info[card_info.chara_name].unit;
-              card["grade"] = $rootScope.card_data.chara_info[card_info.chara_name].grade;
+              if ($rootScope.card_data.chara_info[card_info.chara_name]) {
+                card["group"] = $rootScope.card_data.chara_info[card_info.chara_name].group;
+                card["unit"] = $rootScope.card_data.chara_info[card_info.chara_name].unit;
+                card["grade"] = $rootScope.card_data.chara_info[card_info.chara_name].grade;
+              }
               for (var type of $rootScope.card_data.types) {
                 card[type] = card_info[type][card_params.level - 1];
               }
               card["kizuna"] = card_params.kizuna;
 
               card["center_skill"] = card_info.center_skill;
-              card["skill"] = card_info.skill;
-              card["skill"]["prob"] = card_info.skill.stats_list[card_params.skill_level - 1][0];
-              card["skill"]["value"] = card_info.skill.stats_list[card_params.skill_level - 1][1];
-              card["skill"]["term"] = card_info.skill.stats_list[card_params.skill_level - 1][2];
+              if (card_info.skill) {
+                card["skill"] = card_info.skill;
+                card["skill"]["prob"] = card_info.skill.stats_list[card_params.skill_level - 1][0];
+                card["skill"]["value"] = card_info.skill.stats_list[card_params.skill_level - 1][1];
+                card["skill"]["term"] = card_info.skill.stats_list[card_params.skill_level - 1][2];
+              } else {
+                card["skill"] = {
+                  "type": null,
+                }
+              }
 
               card["SIS"] = [];
               for (var SIS of card_params.SIS) {
@@ -108,10 +116,9 @@ angular.module('unitScore')
         if (LS) {
           up[LS.type] += Math.ceil(0.01 * LS.ratio * val[LS.base_type]);
           if (LS.sub_type) {
-            if ($rootScope.card_data.chara_info[card.chara_name].group === LS.sub_condition ||
-              $rootScope.card_data.chara_info[card.chara_name].grade === LS.sub_condition ||
-              $rootScope.card_data.chara_info[card.chara_name].unit === LS.sub_condition) {
-
+            if (card.group === LS.sub_condition ||
+              card.grade === LS.sub_condition ||
+              card.unit === LS.sub_condition) {
               up[LS.sub_type] += Math.ceil(0.01 * LS.sub_ratio * val[LS.sub_type]);
             }
           }
