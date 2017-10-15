@@ -1,7 +1,9 @@
 <md-content layout-fill>
-<div style="height:450px">
+<div>
   <md-list>
     <md-list-item ng-repeat="member in $root.user_data.unit_members track by $index">
+      <div ng-show="$index===4" style="writing-mode: vertical-rl; font-size: x-small;">センター</div>
+      <div ng-show="$index!==4" style="writing-mode: vertical-rl; font-size: x-small;">　</div>
       <div style="position: relative;">
         <img ng-src="img/faces/{{member<0 ? 83 : $root.user_data.own_card_list[member].id}}{{$root.user_data.own_card_list[member].trans ? '_t' : ''}}.png" width="50dp"
         ng-click="$ctrl.showMemberSelection($event, $index)" style="margin: 0px 8px"/>
