@@ -12,6 +12,9 @@
           SLv. {{$root.user_data.own_card_list[member].skill_level}}
         </div>
       </div>
+      <md-button class="md-accent md-raised" md-ripple-size="fill" ng-click="$ctrl.showCardModification($event, member)">
+        <b>ステ修正</b>
+      </md-button>
       <div ng-if="member>=0">
         <slot-view index="$index"></slot-view>
       </div>

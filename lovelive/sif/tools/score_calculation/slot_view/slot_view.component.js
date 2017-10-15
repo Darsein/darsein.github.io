@@ -90,5 +90,8 @@ angular.module('unitScore')
       $rootScope.$watch('user_data.unit_members', function(newVal, oldVal) {
         self.updateCardParams();
       }, true);
+      $rootScope.$watch('user_data.own_card_list', function(newVal, oldVal) {
+        self.updateCardParams();
+      }, true);
     },
   });

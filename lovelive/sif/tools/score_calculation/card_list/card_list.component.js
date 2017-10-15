@@ -63,7 +63,6 @@ angular.module('unitScore')
             $scope.imageNormalStyle = {'filter': 'grayscale(0%)'};
             $scope.imageTransStyle = {'filter': 'grayscale(100%)'};
           }
-          console.log($scope.selected_card_params.trans);
         };
 
         $scope.hide = function() {
