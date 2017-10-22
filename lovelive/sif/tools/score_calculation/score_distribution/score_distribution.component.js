@@ -81,9 +81,9 @@ angular.module('unitScore')
               }
               card["kizuna"] = card_params.kizuna;
 
-              card["center_skill"] = card_info.center_skill;
+              card["center_skill"] = Object.assign({}, card_info.center_skill);
               if (card_info.skill) {
-                card["skill"] = card_info.skill;
+                card["skill"] = Object.assign({}, card_info.skill);
                 card["skill"]["prob"] = card_info.skill.stats_list[card_params.skill_level - 1][0];
                 card["skill"]["value"] = card_info.skill.stats_list[card_params.skill_level - 1][1];
                 card["skill"]["term"] = card_info.skill.stats_list[card_params.skill_level - 1][2];
