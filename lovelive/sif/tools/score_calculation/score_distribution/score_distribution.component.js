@@ -176,8 +176,11 @@ angular.module('unitScore')
         for (var i = 0; i < deck.length; ++i) {
           skill_status[i] = 0;
           if (deck[i].skill.type === "パラアップ") {
-            // TODO: use arbitrary effect filter
-            if (card.grade === "first-year" && card.group === "Aqours") {
+            var target = deck[i].skill.target.split(' ');
+            var target_grade = target[0], target_group = target[1];
+            console.log(target_grade, target_group);
+            // TODO: handle unit
+            if (card.grade === target_grade && card.group === target_group) {
               skill_status[i] = Su[music_type] * 0.01 * deck[i].skill.value;
             }
           } else if (deck[i].skill.type === "判定") {
