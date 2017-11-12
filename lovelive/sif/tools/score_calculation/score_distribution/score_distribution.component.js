@@ -55,6 +55,11 @@ angular.module('unitScore')
         return 1.35;
       };
 
+      self.getTargetMembers = function(card) {
+        // TODO: this func currently handles only new Riko.
+        return new Set(["高海千歌", "渡辺曜"]);
+      };
+
       self.success = function(prob) {
         return Math.random() * 100 < prob;
       };
@@ -176,10 +181,9 @@ angular.module('unitScore')
         for (var i = 0; i < deck.length; ++i) {
           skill_status[i] = 0;
           if (deck[i].skill.type === "パラアップ") {
+            // TODO: handle unit
             var target = deck[i].skill.target.split(' ');
             var target_grade = target[0], target_group = target[1];
-            console.log(target_grade, target_group);
-            // TODO: handle unit
             if (card.grade === target_grade && card.group === target_group) {
               skill_status[i] = Su[music_type] * 0.01 * deck[i].skill.value;
             }
@@ -271,10 +275,13 @@ angular.module('unitScore')
         var perfect_num = 0;
         var event_id = 0;
         var end_trick = [];
+        var triggered_members = new Set();
 
         var skill_prob_queue = [];
         var perfect_tap_end_time = new Array(deck.length);
         var param_up_end_time = new Array(deck.length);
+        var last_skill = undefined;
+        var last_SIS = undefined
 
         for (var x = 1; x <= music.notes; ++x) {
           var current_time = x / music.notes * music.time;
@@ -282,32 +289,37 @@ angular.module('unitScore')
             var event_time = events[event_id];
             for (var card of deck) {
               if (card.skill.condition === "秒" && event_time % card.skill.required === 0) {
-                // TODO: handle new skill per time (not implemented as is 2017/10/09)
+                // TODO: handle new skill per time (not implemented as is 2017/11/05)
                 var prob = card.skill.prob * prob_bonus;
                 if (skill_prob_queue.length > 0) {
                   prob *= skill_prob_queue[0].value;
                 }
                 if (self.success(prob)) {
-                  if (card.skill.type === "スコア") {
+                  triggered_members.add(card.chara_name);
+                  var activated_skill = card.skill;
+                  var activated_SIS = card.SIS;
+                  if (activated_skill.type === "スコア") {
                     var ratio = 1;
-                    for (var SIS of card.SIS) {
+                    for (var SIS of activated_SIS) {
                       if (/チャーム/.test(SIS)) ratio = 2.5;
                     }
-                    score += card.skill.value * ratio;
-                    skill_score += card.skill.value * ratio;
-                  } else if (card.skill.type === "回復") {
+                    score += activated_skill.value * ratio;
+                    skill_score += activated_skill.value * ratio;
+                  } else if (activated_skill.type === "回復") {
                     var ratio = 0;
-                    for (var SIS of card.SIS) {
+                    for (var SIS of activated_SIS) {
                       if (/ヒール/.test(SIS)) ratio = 480;
                     }
-                    score += card.skill.value * ratio;
-                    skill_score += card.skill.value * ratio;
-                  } else if (card.skill.type === "判定") {
-                    end_trick.push(event_time + card.skill.term);
+                    score += activated_skill.value * ratio;
+                    skill_score += activated_skill.value * ratio;
+                  } else if (activated_skill.type === "判定") {
+                    end_trick.push(event_time + activated_skill.term);
                     end_trick.sort(function(a, b) {
                       return b - a;
                     });
                   }
+                  last_skill = activated_skill;
+                  last_SIS = activated_SIS;
                 }
               }
             }
@@ -366,55 +378,76 @@ angular.module('unitScore')
 
           for (var i = 0; i < deck.length; ++i) {
             var card = deck[i];
-            // TODO: handle skills invoked by star icons and score
+            // TODO: handle skills invoked by chain, star icons and score
             var is_skill_invoked = false;
             if (card.skill.condition === "リズムアイコン" || card.skill.condition === "コンボ") {
               is_skill_invoked = (x % card.skill.required === 0);
             } else if (card.skill.condition === "PERFECT") {
               is_skill_invoked = is_perfect_tap && (perfect_num % card.skill.required === 0);
+            } else if (card.skill.condition === "チェイン") {
+              // TODO: move the getTargetMembers logic to initialization for speeding up.
+              required_members = self.getTargetMembers(card);
+              is_skill_invoked = true;
+              for (var required_member of required_members) {
+                is_skill_invoked &= triggered_members.has(required_member);
+              }
+              if (is_skill_invoked) {
+                for (var required_member of required_members) {
+                  triggered_members.delete(required_member);
+                }
+              }
             }
 
-            // TODO: handle new skill
+            // TODO: handle new skills (syncro)
             if (is_skill_invoked) {
-              var prob = card.skill.prob * prob_bonus;
-              if (card.skill.type === "特技") {
-                if (self.success(prob)) {
-                  var end_time = (skill_prob_queue.length > 0 ? skill_prob_queue[skill_prob_queue.length - 1].end_time : current_time) + card.skill.term;
-                  skill_prob_queue.push({
-                    "end_time": end_time,
-                    "value": (1 + 0.01 * card.skill.value),
-                  })
-                }
-              } else {
-                if (skill_prob_queue.length > 0) {
-                  prob *= skill_prob_queue[0].value;
-                }
-                if (self.success(prob)) {
-                  if (card.skill.type === "スコア") {
-                    var ratio = 1;
-                    for (var SIS of card.SIS) {
-                      if (/チャーム/.test(SIS)) ratio = 2.5;
-                    }
-                    score += card.skill.value * ratio;
-                    skill_score += card.skill.value * ratio;
-                  } else if (card.skill.type === "回復") {
-                    var ratio = 0;
-                    for (var SIS of card.SIS) {
-                      if (/ヒール/.test(SIS)) ratio = 480;
-                    }
-                    score += card.skill.value * ratio;
-                    skill_score += card.skill.value * ratio;
-                  } else if (card.skill.type === "判定") {
-                    end_trick.push(current_time + card.skill.term);
-                    end_trick.sort(function(a, b) {
-                      return b - a;
-                    });
-                  } else if (card.skill.type === "パーフェクト") {
-                    perfect_tap_end_time[i] = (perfect_tap_end_time[i] === undefined ? current_time : perfect_tap_end_time[i]) + card.skill.term;
-                  } else if (card.skill.type === "パラアップ") {
-                    param_up_end_time[i] = (param_up_end_time[i] === undefined ? current_time : param_up_end_time[i]) + card.skill.term;
+              var activated_skill = card.skill;
+              var activated_SIS = card.SIS;
+              var prob = activated_skill.prob * prob_bonus;
+              if (activated_skill.type !== "特技" && skill_prob_queue.length > 0) {
+                prob *= skill_prob_queue[0].value;
+              }
+
+              if (self.success(prob)) {
+                triggered_members.add(card.chara_name);
+                if (activated_skill.type === "リピート") {
+                  if (last_skill !== undefined && last_skill.type !== "リピート") {
+                    activated_skill = last_skill;
+                    activated_SIS = last_SIS;
                   }
                 }
+
+                if (activated_skill.type === "スコア") {
+                  var ratio = 1;
+                  for (var SIS of activated_SIS) {
+                    if (/チャーム/.test(SIS)) ratio = 2.5;
+                  }
+                  score += activated_skill.value * ratio;
+                  skill_score += activated_skill.value * ratio;
+                } else if (activated_skill.type === "回復") {
+                  var ratio = 0;
+                  for (var SIS of activated_SIS) {
+                    if (/ヒール/.test(SIS)) ratio = 480;
+                  }
+                  score += activated_skill.value * ratio;
+                  skill_score += activated_skill.value * ratio;
+                } else if (activated_skill.type === "判定") {
+                  end_trick.push(current_time + activated_skill.term);
+                  end_trick.sort(function(a, b) {
+                    return b - a;
+                  });
+                } else if (activated_skill.type === "パーフェクト") {
+                  perfect_tap_end_time[i] = (perfect_tap_end_time[i] === undefined ? current_time : perfect_tap_end_time[i]) + activated_skill.term;
+                } else if (activated_skill.type === "パラアップ") {
+                  param_up_end_time[i] = (param_up_end_time[i] === undefined ? current_time : param_up_end_time[i]) + activated_skill.term;
+                } else if (activated_skill.type === "特技") {
+                  var end_time = (skill_prob_queue.length > 0 ? skill_prob_queue[skill_prob_queue.length - 1].end_time : current_time) + activated_skill.term;
+                  skill_prob_queue.push({
+                    "end_time": end_time,
+                    "value": (1 + 0.01 * activated_skill.value),
+                  })
+                }
+                last_skill = activated_skill;
+                last_SIS = activated_SIS;
               }
             }
           }
