@@ -67,11 +67,12 @@ angular.module('unitScore')
       self.deck = [];
 
       self.updateDeck = function() {
-        self.deck = [];
-        for (var index of $rootScope.user_data.unit_members) {
-          if (index < 0) continue;
-          var card_params = $rootScope.user_data.own_card_list[index];
-          Promise.resolve(card_params).then(function(card_params) {
+        self.deck = new Array(9);
+        for (var i in $rootScope.user_data.unit_members) {
+          Promise.resolve(i).then(function(i) {
+            var index = $rootScope.user_data.unit_members[i];
+            if (index < 0) return;
+            var card_params = $rootScope.user_data.own_card_list[index];
             $rootScope.card_data.getCard(card_params.id).then(function(card_info) {
               var card = {};
               card["chara_name"] = card_info.chara_name;
@@ -102,11 +103,9 @@ angular.module('unitScore')
               for (var SIS of card_params.SIS) {
                 card["SIS"].push(SIS.name);
               }
-              self.deck.push(card);
+              self.deck[i] = card;
 
-              if (self.deck.length == 9) {
-                self.drawGraph();
-              }
+              self.drawGraph();
             });
           });
         }
@@ -503,6 +502,9 @@ angular.module('unitScore')
 
       self.scores = [];
       self.drawGraph = function() {
+        for (var card of self.deck) {
+          if (card === undefined) return;
+        }
         var times = 1000;
         self.scores = self.getStatistics(self.deck, self.music, self.bonus, times);
         var min = self.scores[0].total_score;
@@ -577,11 +579,8 @@ angular.module('unitScore')
           expires: expire
         });
 
-        if (self.deck.length == 9) {
-          self.drawGraph();
-        }
+        self.drawGraph();
       }, true);
-
 
       $scope.$watch(function() {
         return self.bonus;
@@ -594,9 +593,7 @@ angular.module('unitScore')
           expires: expire
         });
 
-        if (self.deck.length == 9) {
-          self.drawGraph();
-        }
+        self.drawGraph();
       }, true);
 
       $scope.$watch(function() {
