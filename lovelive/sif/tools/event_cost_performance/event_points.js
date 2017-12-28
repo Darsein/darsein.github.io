@@ -33,16 +33,16 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       } else {
         var points = this.event_type[this.event_name].base_points[this.difficulty];
         points *= this.event_type[this.event_name].score_bonus[this.score];
-        if (this.event_name == 'score_match') {
+        if (this.event_name === 'score_match') {
           points *= this.event_type[this.event_name].ranking_bonus[this.ranking];
         }
-        if (this.event_name == 'medley_festival') {
+        if (this.event_name === 'medley_festival') {
           points = this.event_type[this.event_name].base_points[this.difficulty][this.rounds-1];
           points *= this.event_type[this.event_name].combo_bonus[this.combo];
           points *= this.event_type[this.event_name].score_bonus[this.score];
           points *= this.event_type[this.event_name].arrange_bonus[this.pt_arrange];
         }
-        if (this.event_name == 'challenge_festival') {
+        if (this.event_name === 'challenge_festival') {
           points = 0;
           for (var i = 0; i < this.rounds; ++i) {
             var point_per_round = this.event_type[this.event_name].base_points[this.difficulty][i]
@@ -52,11 +52,11 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
             points += Math.ceil(point_per_round);
           }
         }
-        if (this.event_name == 'osanpo_rally') {
+        if (this.event_name === 'osanpo_rally') {
           points *= this.event_type[this.event_name].combo_bonus[this.combo];
           points *= this.normal_LP_ratio;
         }
-        if (this.event_name == 'nakayoshi_match') {
+        if (this.event_name === 'nakayoshi_match') {
           points *= this.event_type[this.event_name].combo_bonus[this.combo];
           points *= this.event_type[this.event_name].contribution_bonus[this.contribution];
           points *= this.event_type[this.event_name].mission_bonus[this.mission];
@@ -67,7 +67,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         this.average_points = Number($cookies.get('average_points'));
       }
 
-      if (this.event_name == 'osanpo_rally') {
+      if (this.event_name === 'osanpo_rally') {
         points = this.event_type[this.event_name].base_points[this.secret_difficulty];
         points *= this.event_type[this.event_name].score_bonus[this.secret_score];
         points *= this.event_type[this.event_name].combo_bonus[this.secret_combo];
@@ -127,7 +127,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         exp_per_play = Math.ceil(exp_per_play * this.rounds
           * this.event_type[this.event_name].arrange_bonus[this.exp_arrange]);
       }
-      if (this.event_name == 'challenge_festival') {
+      if (this.event_name === 'challenge_festival') {
         exp_per_play = 0;
         for (var i = 0; i < this.rounds; ++i) {
           exp_per_play += Math.floor((this.event_type[this.event_name].exp[this.difficulty] +
@@ -174,15 +174,15 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
             this.final_exp -= this.next_exp;
             this.final_rank++;
             this.next_exp = this.rank.rankTable[this.final_rank];
-            if (this.final_rank <= 300 && this.final_rank % 2 === 0) this.max_LP++;
-            if (this.final_rank > 300 && this.final_rank % 3 === 0) this.max_LP++;
+            if (this.final_rank <= 300 && this.final_rank % 2 == 0) this.max_LP++;
+            if (this.final_rank > 300 && this.final_rank % 3 == 0) this.max_LP++;
             this.final_LP += this.max_LP;
           }
         }
       } else {
         while (true) {
           var play_num = Math.floor(this.final_LP / LP_per_play);
-          if (play_num === 0) break;
+          if (play_num == 0) break;
 
           if (this.event_name === 'macaron') {
             this.final_points += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num;
@@ -208,8 +208,8 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
             this.final_exp -= this.next_exp;
             this.final_rank++;
             this.next_exp = this.rank.rankTable[this.final_rank];
-            if (this.final_rank <= 300 && this.final_rank % 2 === 0) this.max_LP++;
-            if (this.final_rank > 300 && this.final_rank % 3 === 0) this.max_LP++;
+            if (this.final_rank <= 300 && this.final_rank % 2 == 0) this.max_LP++;
+            if (this.final_rank > 300 && this.final_rank % 3 == 0) this.max_LP++;
             this.final_LP += this.max_LP;
           }
         }
@@ -421,21 +421,21 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       'event.mission',
     ], function(newVal, oldVal) {
       // Score: S, Ranking: 2nd
-      if ($scope.event.event_name == 'macaron') {
+      if ($scope.event.event_name === 'macaron') {
         $scope.event.average_points = $scope.event.event_type[$scope.event.event_name].get_points[$scope.event.task_difficulty][$scope.event.score][$scope.event.combo];
       } else {
         var points = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty];
         points *= $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.score];
-        if ($scope.event.event_name == 'score_match') {
+        if ($scope.event.event_name === 'score_match') {
           points *= $scope.event.event_type[$scope.event.event_name].ranking_bonus[$scope.event.ranking];
         }
-        if ($scope.event.event_name == 'medley_festival') {
+        if ($scope.event.event_name === 'medley_festival') {
           points = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty][$scope.event.rounds-1];
           points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
           points *= $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.score];
           points *= $scope.event.event_type[$scope.event.event_name].arrange_bonus[$scope.event.pt_arrange];
         }
-        if ($scope.event.event_name == 'challenge_festival') {
+        if ($scope.event.event_name === 'challenge_festival') {
           points = 0;
           for (var i = 0; i < $scope.event.rounds; ++i) {
             var point_per_round = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty][i]
@@ -445,18 +445,18 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
             points += Math.round(point_per_round);
           }
         }
-        if ($scope.event.event_name == 'osanpo_rally') {
+        if ($scope.event.event_name === 'osanpo_rally') {
           points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
           points *= $scope.event.normal_LP_ratio;
         }
-        if ($scope.event.event_name == 'nakayoshi_match') {
+        if ($scope.event.event_name === 'nakayoshi_match') {
           points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
           points *= $scope.event.event_type[$scope.event.event_name].contribution_bonus[$scope.event.contribution];
           points *= $scope.event.event_type[$scope.event.event_name].mission_bonus[$scope.event.mission];
         }
         $scope.event.average_points = Math.ceil(points);
 
-        if ($scope.event.event_name == 'osanpo_rally') {
+        if ($scope.event.event_name === 'osanpo_rally') {
           points = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.secret_difficulty];
           points *= $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.secret_score];
           points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.secret_combo];
@@ -484,7 +484,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
     ], function(newVal, oldVal) {
       // TODO: revisit after introducing validation
       if ($scope.event.average_points > 0) {
-        $scope.event.calcTarget();
+        if ($scope.event.event_name !== 'osanpo_rally' || $scope.event.secret_average_points > 0) {
+          $scope.event.calcTarget();
+        }
       }
       $scope.event.setCookies();
     });
@@ -492,7 +494,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
     $scope.$watchCollection('event.border', function(newVal, oldVal) {
       // TODO: revisit after introducing validation
       if ($scope.event.average_points > 0) {
-        $scope.event.calcTarget();
+        if ($scope.event.event_name !== 'osanpo_rally' || $scope.event.secret_average_points > 0) {
+          $scope.event.calcTarget();
+        }
       }
       $scope.event.setCookies();
     });
