@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>スクフェス イベント効率計算</title>
-  <meta name="keywords" content="ラブライブ, スクフェス, イベント, スコマ, マカロン, メドフェス, チャレフェス, なかよし, 石効率">
+  <meta name="keywords" content="ラブライブ, スクフェス, イベント, スコマ, マカロン, メドフェス, チャレフェス, おさんぽラリー, なかよしマッチ, 石効率">
   <meta name="description" content="
   ラブライブ！スクールアイドルフェスティバルのイベントの効率を計算します。
   現在のランクや目標イベントptなどから消費石の個数や報酬を計算します。">
@@ -46,7 +46,7 @@
 
 <body ng-cloak ng-controller='eventPointsController'>
   <md-content flex layout-padding>
-    スクフェスのイベント効率を計算できます。Rankや目標イベントptなどを入力すると石の消費や報酬の見積もりが得られます。<br> ※現在とりあえずスコアマッチとマカロン (HARD, EX) のみ、Rank 500まで対応です<br><br>
+    スクフェスのイベント効率を計算できます。Rankや目標イベントptなどを入力すると石の消費や報酬の見積もりが得られます。<br> ※現在マカロンは (HARD, EX) のみ、Rank 500まで対応です<br><br>
 
     <md-toolbar class="md-accent" md-whiteframe="5" ng-click="event_input=!event_input">
       <div class="md-toolbar-tools">
@@ -84,16 +84,17 @@
               <md-radio-button value="macaron">マカロン</md-radio-button>
               <md-radio-button value="medley_festival">メドレーフェスティバル</md-radio-button>
               <md-radio-button value="challenge_festival">チャレンジフェスティバル</md-radio-button>
+              <md-radio-button value="osanpo_rally">おさんぽラリー</md-radio-button>
               <md-radio-button value="nakayoshi_match">なかよしマッチ</md-radio-button>
             </md-radio-group>
-          </md-card-actions>
+          </md-card-actions>　
         </md-card>
 
         <md-card style="width: 180px;">
           <md-card-header>
             <md-card-header-text>
               <span class='md-title'>
-            <span ng-if="event.event_name==='macaron'">周回曲</span>難易度
+                <span ng-if="event.event_name==='macaron' || event.event_name==='osanpo_rally'">周回曲</span>難易度
               </span>
             </md-card-header-text>
           </md-card-header>
@@ -103,6 +104,22 @@
               <md-radio-button value="normal">NORMAL</md-radio-button>
               <md-radio-button value="hard">HARD</md-radio-button>
               <md-radio-button value="expert">EXPERT</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;" ng-if="event.event_name==='osanpo_rally'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>周回曲LP消費倍率</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.normal_LP_ratio">
+              <md-radio-button value=1>1倍</md-radio-button>
+              <md-radio-button value=2>2倍</md-radio-button>
+              <md-radio-button value=3>3倍</md-radio-button>
+              <md-radio-button value=4>4倍</md-radio-button>
             </md-radio-group>
           </md-card-actions>
         </md-card>
@@ -143,7 +160,9 @@
         <md-card style="width: 100px;">
           <md-card-header>
             <md-card-header-text>
-              <span class='md-title'>スコア</span>
+              <span class='md-title'>
+                <span ng-if="event.event_name==='osanpo_rally'">周回曲</span>スコア
+              </span>
             </md-card-header-text>
           </md-card-header>
           <md-card-actions>
@@ -160,7 +179,9 @@
         <md-card style="width: 100px;" ng-if="event.event_name!=='score_match'">
           <md-card-header>
             <md-card-header-text>
-              <span class='md-title'>コンボ</span>
+              <span class='md-title'>
+                <span ng-if="event.event_name==='osanpo_rally'">周回曲</span>コンボ
+              </span>
             </md-card-header-text>
           </md-card-header>
           <md-card-actions>
@@ -252,6 +273,72 @@
             </md-radio-group>
           </md-card-actions>
         </md-card>
+
+        <md-card style="width: 180px;" ng-if="event.event_name==='osanpo_rally'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>シークレット曲難易度</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.secret_difficulty">
+              <md-radio-button value="easy">EASY</md-radio-button>
+              <md-radio-button value="normal">NORMAL</md-radio-button>
+              <md-radio-button value="hard">HARD</md-radio-button>
+              <md-radio-button value="expert">EXPERT</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;" ng-if="event.event_name==='osanpo_rally'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>シークレット曲LP消費倍率</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.secret_LP_ratio">
+              <md-radio-button value=1>1倍</md-radio-button>
+              <md-radio-button value=2>2倍</md-radio-button>
+              <md-radio-button value=3>3倍</md-radio-button>
+              <md-radio-button value=4>4倍</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;" ng-if="event.event_name==='osanpo_rally'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>シークレット曲スコア</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.secret_score">
+              <md-radio-button value=0>S</md-radio-button>
+              <md-radio-button value=1>A</md-radio-button>
+              <md-radio-button value=2>B</md-radio-button>
+              <md-radio-button value=3>C</md-radio-button>
+              <md-radio-button value=4>なし</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;" ng-if="event.event_name==='osanpo_rally'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>シークレット曲コンボ</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.secret_combo">
+              <md-radio-button value=0>S</md-radio-button>
+              <md-radio-button value=1>A</md-radio-button>
+              <md-radio-button value=2>B</md-radio-button>
+              <md-radio-button value=3>C</md-radio-button>
+              <md-radio-button value=4>なし</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
       </div>
 
       <div class='md-padding' layout="row" layout-wrap>
@@ -267,8 +354,12 @@
               <input type='number' ng-model='event.macaron'>
             </md-input-container>
             <md-input-container>
-              <label>平均獲得ポイント</label>
+              <label><span ng-if="event.event_name==='osanpo_rally'">周回曲</span>平均獲得ポイント</label>
               <input type='number' step=0.01 ng-model='event.average_points'>
+            </md-input-container>
+            <md-input-container ng-if="event.event_name==='osanpo_rally'">
+              <label>シクレ曲平均獲得ポイント</label>
+              <input type='number' step=0.01 ng-model='event.secret_average_points'>
             </md-input-container>
             <md-input-container>
               <label>現在の獲得ポイント</label>
@@ -321,6 +412,10 @@
             <md-input-container>
               <label>これまでに使った石の数</label>
               <input type='number' step=1 ng-model='event.used_stone'>
+            </md-input-container>
+            <md-input-container ng-if="event.event_name==='osanpo_rally'">
+              <label>現在のおみやげ (4種)</label>
+              <input type='number' step=1 ng-model='event.current_omiyage'>
             </md-input-container>
           </md-card-actions>
         </md-card>
@@ -376,6 +471,7 @@
       <md-card flex layout-margin>
         <md-card-content>
           <span>最終ポイント: {{ event.final_points | number }}</span><br>
+          <span ng-if="event.event_name==='osanpo_rally'">最終おみやげ個数 (4種総和): {{ event.final_omiyage | number }}</span><br>
           <span>使用予定の石個数: {{ event.required_stone | number }}</span><br>
           <span>石収支: {{ event.stone_diff | number }}</span>
         </md-card-content>
@@ -423,8 +519,9 @@
           </md-card-header-text>
         </md-card-header>
         <md-card-content>
-          <span><span ng-if="event.event_name==='macaron'">周回曲</span>プレイ回数: {{ event.final_play_num | number }}</span><br>
-          <span ng-if="event.event_name==='macaron'">課題曲プレイ回数: {{ event.final_task_play_num | number }}</span><br>
+          <span><span ng-if="event.event_name==='macaron' || event.event_name==='osanpo_rally'">周回曲</span>プレイ回数: {{ event.final_play_num | number }}</span><br>
+          <span ng-if="event.event_name==='macaron'">課題曲プレイ回数: {{ event.final_task_play_num | number }}<br></span>
+          <span ng-if="event.event_name==='osanpo_rally'">シークレット曲プレイ回数: {{ event.final_secret_play_num | number }}<br></span>
           <span>予想プレイ時間 (1回{{event.min_per_play}}分と仮定): {{ event.required_day | number }} 日 {{ event.required_hour | number }} 時間 {{ event.required_min | number }} 分</span><br>
           <span ng-if="event.event_name==='macaron'">残りマカロン数: {{ event.final_macaron | number }}</span>
         </md-card-content>
@@ -433,6 +530,9 @@
 
     <h2> 更新履歴 </h2>
     <md-list>
+      <md-list-item>
+        2017/12/29: おさんぽラリーにちょっと対応
+      </md-list-item>
       <md-list-item>
         2017/09/20: メドレーフェスティバルに対応
       </md-list-item>

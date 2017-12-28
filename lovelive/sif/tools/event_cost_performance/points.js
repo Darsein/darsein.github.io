@@ -572,4 +572,122 @@ angular.module('points', [])
         ];
       }
       return medleyFestival;
+    })
+  .service("OsanpoRally",
+    function() {
+      var osanpo = function() {
+        this.required_LP = {};
+        this.required_LP["easy"] = 5;
+        this.required_LP["normal"] = 10;
+        this.required_LP["hard"] = 15;
+        this.required_LP["expert"] = 25;
+
+        this.exp = {};
+        this.exp["easy"] = 12;
+        this.exp["normal"] = 26;
+        this.exp["hard"] = 46;
+        this.exp["expert"] = 83;
+
+        this.get_omiyage = {};
+        this.get_omiyage["easy"] = 8;
+        this.get_omiyage["normal"] = 24;
+        this.get_omiyage["hard"] = 40;
+        this.get_omiyage["expert"] = 80;
+
+        this.base_points = {};
+        this.base_points["easy"] = 42;
+        this.base_points["normal"] = 99;
+        this.base_points["hard"] = 173;
+        this.base_points["expert"] = 343;
+
+        this.score_bonus = {};
+        this.score_bonus[0] = 1.20;
+        this.score_bonus[1] = 1.15;
+        this.score_bonus[2] = 1.10;
+        this.score_bonus[3] = 1.05;
+        this.score_bonus[4] = 1.00;
+
+        this.combo_bonus = {};
+        this.combo_bonus[0] = 1.08;
+        this.combo_bonus[1] = 1.06;
+        this.combo_bonus[2] = 1.04;
+        this.combo_bonus[3] = 1.02;
+        this.combo_bonus[4] = 1.00;
+
+        // TODO: use distributions, not expected values.
+        this.secret_pt_exp = 1.46;
+        this.secret_LP_exp = 0.79;
+        this.secret_omiyage_exp = 1.46;
+
+        // (required points, categories, amount)
+        this.event_rewards = [
+          {required_points: 20, category: "G", number: 5000},
+          {required_points: 30, category: "背景1", number: 1},
+          {required_points: 50, category: "友情pt", number: 50},
+          {required_points: 100, category: "G", number: 5500},
+          {required_points: 250, category: "友情pt", number: 100},
+          {required_points: 500, category: "ラブカストーン", number: 1},
+          {required_points: 750, category: "G", number: 6000},
+          {required_points: 1000, category: "友情pt", number: 150},
+          {required_points: 1250, category: "G", number: 6500},
+          {required_points: 1500, category: "友情pt", number: 200},
+          {required_points: 2000, category: "G", number: 7000},
+          {required_points: 2500, category: "ラブカストーン", number: 1},
+          {required_points: 3000, category: "友情pt", number: 250},
+          {required_points: 3500, category: "G", number: 7500},
+          {required_points: 4000, category: "友情pt", number: 300},
+          {required_points: 4500, category: "N部員", number: 1},
+          {required_points: 5000, category: "ラブカストーン", number: 1},
+          {required_points: 5750, category: "友情pt", number: 350},
+          {required_points: 6500, category: "G", number: 10000},
+          {required_points: 7250, category: "友情pt", number: 400},
+          {required_points: 8000, category: "G", number: 12500},
+          {required_points: 8750, category: "友情pt", number: 450},
+          {required_points: 9500, category: "G", number: 15000},
+          {required_points: 11000, category: "ラブカストーン", number: 1},
+          {required_points: 12500, category: "Rアニマル", number: 1},
+          {required_points: 15000, category: "友情pt", number: 500},
+          {required_points: 17500, category: "R先生", number: 1},
+          {required_points: 20000, category: "ラブカストーン", number: 1},
+          {required_points: 22500, category: "友情pt", number: 550},
+          {required_points: 25000, category: "SR部員1", number: 1},
+          {required_points: 27500, category: "友情pt", number: 600},
+          {required_points: 30000, category: "G", number: 20000},
+          {required_points: 32500, category: "ラブカストーン", number: 2},
+          {required_points: 35000, category: "友情pt", number: 700},
+          {required_points: 37500, category: "G", number: 25000},
+          {required_points: 40000, category: "友情pt", number: 800},
+          {required_points: 42500, category: "R先生", number: 1},
+          {required_points: 45000, category: "G", number: 30000},
+          {required_points: 47500, category: "ラブカストーン", number: 2},
+          {required_points: 50000, category: "友情pt", number: 900},
+          {required_points: 52500, category: "G", number: 40000},
+          {required_points: 55000, category: "友情pt", number: 1000},
+          {required_points: 57500, category: "G", number: 50000},
+          {required_points: 62500, category: "ラブカストーン", number: 2},
+          {required_points: 65000, category: "友情pt", number: 1100},
+          {required_points: 67500, category: "G", number: 75000},
+          {required_points: 70000, category: "友情pt", number: 1200},
+          {required_points: 75000, category: "コラボSSR交換チケ", number: 1},
+          {required_points: 80000, category: "ラブカストーン", number: 2},
+          {required_points: 90000, category: "友情pt", number: 1300},
+          {required_points: 100000, category: "SR部員1", number: 1},
+          {required_points: 110000, category: "ラブカストーン", number: 3},
+          {required_points: 120000, category: "友情pt", number: 1400},
+          {required_points: 130000, category: "コラボSSR交換チケ", number: 1},
+          {required_points: 140000, category: "友情pt", number: 1500},
+          {required_points: 150000, category: "G", number: 100000},
+          {required_points: 160000, category: "ラブカストーン", number: 4},
+        ];
+
+        this.ranking_rewards = [
+          {border: 10000, category: "SR部員2", number: 1},
+          {border: 10000, category: "勧誘チケット", number: 1},
+          {border: 50000, category: "SR部員2", number: 1},
+          {border: 120000, category: "SR部員2", number: 1},
+          {border: 120000, category: "勧誘チケット", number: 1},
+          {border: 700000, category: "N部員", number: 1},
+        ];
+      }
+      return osanpo;
     });

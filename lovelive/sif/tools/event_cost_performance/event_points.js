@@ -1,5 +1,5 @@
 angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
-  .service('Event', function($cookies, Rank, ScoreMatch, Macaron, MedleyFestival, ChallengeFestival, NakayoshiMatch) {
+  .service('Event', function($cookies, Rank, ScoreMatch, Macaron, MedleyFestival, ChallengeFestival, OsanpoRally, NakayoshiMatch) {
 
     var event = function() {
       this.rank = new Rank();
@@ -8,13 +8,19 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.event_type['macaron'] = new Macaron();
       this.event_type['medley_festival'] = new MedleyFestival();
       this.event_type['challenge_festival'] = new ChallengeFestival();
+      this.event_type['osanpo_rally'] = new OsanpoRally();
       this.event_type['nakayoshi_match'] = new NakayoshiMatch();
 
-      this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'medley_festival';
+      this.event_name = $cookies.get('event_name') ? $cookies.get('event_name') : 'osanpo_rally';
       this.difficulty = $cookies.get('difficulty') ? $cookies.get('difficulty') : 'expert';
+      this.secret_difficulty = $cookies.get('secret_difficulty') ? $cookies.get('secret_difficulty') : 'expert';
       this.task_difficulty = $cookies.get('task_difficulty') ? $cookies.get('task_difficulty') : 'expert';
       this.score = $cookies.get('score') ? $cookies.get('score') : 0;
       this.combo = $cookies.get('combo') ? $cookies.get('combo') : 0;
+      this.normal_LP_ratio = $cookies.get('normal_LP_ratio') ? $cookies.get('normal_LP_ratio') : 1;
+      this.secret_score = $cookies.get('ssecret_core') ? $cookies.get('secret_score') : 0;
+      this.secret_combo = $cookies.get('secret_combo') ? $cookies.get('secret_combo') : 0;
+      this.secret_LP_ratio = $cookies.get('secret_LP_ratio') ? $cookies.get('secret_LP_ratio') : 1;
       this.ranking = $cookies.get('ranking') ? $cookies.get('ranking') : 1;
       this.rounds = $cookies.get('rounds') ? $cookies.get('rounds') : this.event_name === 'medley_festival' ? 3 : 5;
       this.pt_arrange = $cookies.get('pt_arrange') ? $cookies.get('pt_arrange') : 1;
@@ -29,11 +35,6 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         points *= this.event_type[this.event_name].score_bonus[this.score];
         if (this.event_name == 'score_match') {
           points *= this.event_type[this.event_name].ranking_bonus[this.ranking];
-        }
-        if (this.event_name == 'nakayoshi_match') {
-          points *= this.event_type[this.event_name].combo_bonus[this.combo];
-          points *= this.event_type[this.event_name].contribution_bonus[this.contribution];
-          points *= this.event_type[this.event_name].mission_bonus[this.mission];
         }
         if (this.event_name == 'medley_festival') {
           points = this.event_type[this.event_name].base_points[this.difficulty][this.rounds-1];
@@ -51,10 +52,31 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
             points += Math.ceil(point_per_round);
           }
         }
+        if (this.event_name == 'osanpo_rally') {
+          points *= this.event_type[this.event_name].combo_bonus[this.combo];
+          points *= this.normal_LP_ratio;
+        }
+        if (this.event_name == 'nakayoshi_match') {
+          points *= this.event_type[this.event_name].combo_bonus[this.combo];
+          points *= this.event_type[this.event_name].contribution_bonus[this.contribution];
+          points *= this.event_type[this.event_name].mission_bonus[this.mission];
+        }
         this.average_points = Math.ceil(points);
       }
       if ($cookies.get('average_points')) {
         this.average_points = Number($cookies.get('average_points'));
+      }
+
+      if (this.event_name == 'osanpo_rally') {
+        points = this.event_type[this.event_name].base_points[this.secret_difficulty];
+        points *= this.event_type[this.event_name].score_bonus[this.secret_score];
+        points *= this.event_type[this.event_name].combo_bonus[this.secret_combo];
+        points *= this.event_type[this.event_name].secret_pt_exp;
+        points *= this.secret_LP_ratio;
+        this.secret_average_points = Math.ceil(points)
+      }
+      if ($cookies.get('secret_average_points')) {
+        this.secret_average_points = Number($cookies.get('secret_average_points'));
       }
 
       this.border = {}
@@ -66,6 +88,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.current_rank = $cookies.get('current_rank') ? Number($cookies.get('current_rank')) : 100;
       this.current_exp = $cookies.get('current_exp') ? Number($cookies.get('current_exp')) : 0;
       this.current_LP = $cookies.get('current_LP') ? Number($cookies.get('current_LP')) : 0;
+      this.current_omiyage = $cookies.get('current_omiyage') ? Number($cookies.get('current_omiyage')) : 0;
       this.used_stone = $cookies.get('used_stone') ? Number($cookies.get('used_stone')) : 0;
       this.macaron = $cookies.get('macaron') ? Number($cookies.get('macaron')) : 0;
 
@@ -112,38 +135,83 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
             this.event_type[this.event_name].arrange_bonus[this.exp_arrange]);
         }
       }
+      if (this.event_name === 'osanpo_rally') {
+        // TODO: allow users to input this parameter.
+        var secret_required_play = 5;
 
-      while (true) {
-        var play_num = Math.floor(this.final_LP / LP_per_play);
-        if (play_num === 0) break;
+        LP_per_play *= this.normal_LP_ratio;
+        exp_per_play *= this.normal_LP_ratio;
+        var omiyage_per_play = this.event_type[this.event_name].get_omiyage[this.difficulty];
+        omiyage_per_play *= this.normal_LP_ratio;
 
-        if (this.event_name === 'macaron') {
-          this.final_points += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num;
-          this.final_macaron += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num;
-        } else {
-          this.final_points += this.average_points * play_num;
+        var LP_per_secret_play = this.event_type[this.event_name].required_LP[this.secret_difficulty];
+        LP_per_secret_play *= this.event_type[this.event_name].secret_LP_exp;
+        LP_per_secret_play *= this.secret_LP_ratio;
+        var exp_per_secret_play = this.event_type[this.event_name].exp[this.secret_difficulty];
+        exp_per_secret_play *= this.secret_LP_ratio;
+        var omiyage_per_secret_play = this.event_type[this.event_name].get_omiyage[this.secret_difficulty] * 2.5;
+        omiyage_per_secret_play *= this.event_type[this.event_name].secret_omiyage_exp;
+        omiyage_per_secret_play *= this.secret_LP_ratio;
+
+        while (true) {
+          if (this.final_play_num % secret_required_play == 0 && this.final_secret_play_num * secret_required_play < this.final_play_num) {
+            if (this.final_LP < LP_per_secret_play) break;
+            this.final_LP -= LP_per_secret_play;
+            this.final_exp += exp_per_secret_play;
+            this.final_secret_play_num += 1;
+            this.final_points += this.secret_average_points;
+            this.final_omiyage += omiyage_per_secret_play;
+          } else {
+            if (this.final_LP < LP_per_play) break;
+            this.final_LP -= LP_per_play;
+            this.final_exp += exp_per_play;
+            this.final_play_num += 1;
+            this.final_points += this.average_points;
+            this.final_omiyage += omiyage_per_play;
+          }
+
+          while (this.next_exp <= this.final_exp) {
+            this.final_exp -= this.next_exp;
+            this.final_rank++;
+            this.next_exp = this.rank.rankTable[this.final_rank];
+            if (this.final_rank <= 300 && this.final_rank % 2 === 0) this.max_LP++;
+            if (this.final_rank > 300 && this.final_rank % 3 === 0) this.max_LP++;
+            this.final_LP += this.max_LP;
+          }
         }
-        this.final_LP -= LP_per_play * play_num;
-        this.final_exp += exp_per_play * play_num;
-        this.final_play_num += play_num;
+      } else {
+        while (true) {
+          var play_num = Math.floor(this.final_LP / LP_per_play);
+          if (play_num === 0) break;
 
-        if (this.event_name === 'macaron') {
-          var macaron_per_task_play = this.event_type[this.event_name].required_macarons[this.task_difficulty];
-          var exp_per_task_play = this.event_type[this.event_name].exp[this.task_difficulty];
-          var task_play_num = Math.floor(this.final_macaron / macaron_per_task_play);
-          this.final_macaron -= macaron_per_task_play * task_play_num;
-          this.final_exp += exp_per_task_play * task_play_num;
-          this.final_task_play_num += task_play_num;
-          this.final_points += this.average_points * task_play_num;
-        }
+          if (this.event_name === 'macaron') {
+            this.final_points += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num;
+            this.final_macaron += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num;
+          } else {
+            this.final_points += this.average_points * play_num;
+          }
+          this.final_LP -= LP_per_play * play_num;
+          this.final_exp += exp_per_play * play_num;
+          this.final_play_num += play_num;
 
-        while (this.next_exp <= this.final_exp) {
-          this.final_exp -= this.next_exp;
-          this.final_rank++;
-          this.next_exp = this.rank.rankTable[this.final_rank];
-          if (this.final_rank <= 300 && this.final_rank % 2 === 0) this.max_LP++;
-          if (this.final_rank > 300 && this.final_rank % 3 === 0) this.max_LP++;
-          this.final_LP += this.max_LP;
+          if (this.event_name === 'macaron') {
+            var macaron_per_task_play = this.event_type[this.event_name].required_macarons[this.task_difficulty];
+            var exp_per_task_play = this.event_type[this.event_name].exp[this.task_difficulty];
+            var task_play_num = Math.floor(this.final_macaron / macaron_per_task_play);
+            this.final_macaron -= macaron_per_task_play * task_play_num;
+            this.final_exp += exp_per_task_play * task_play_num;
+            this.final_task_play_num += task_play_num;
+            this.final_points += this.average_points * task_play_num;
+          }
+
+          while (this.next_exp <= this.final_exp) {
+            this.final_exp -= this.next_exp;
+            this.final_rank++;
+            this.next_exp = this.rank.rankTable[this.final_rank];
+            if (this.final_rank <= 300 && this.final_rank % 2 === 0) this.max_LP++;
+            if (this.final_rank > 300 && this.final_rank % 3 === 0) this.max_LP++;
+            this.final_LP += this.max_LP;
+          }
         }
       }
     }
@@ -158,8 +226,10 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.final_LP = this.current_LP;
       this.final_points = this.current_points;
       this.final_play_num = 0;
+      this.final_secret_play_num = 0;
       this.final_task_play_num = 0;
       this.final_macaron = this.macaron;
+      this.final_omiyage = this.current_omiyage;
       this.required_stone = 0;
       this.next_exp = this.rank.rankTable[this.final_rank];
 
@@ -217,7 +287,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         this.consumeLP();
       }
 
-      var required_time = (this.final_play_num + this.final_task_play_num) * this.min_per_play * 60;
+      var required_time = (this.final_play_num + this.final_task_play_num + this.final_secret_play_num) * this.min_per_play * 60;
       [this.required_day, this.required_hour, this.required_min] =
       this.secToDateTuple(required_time);
 
@@ -234,6 +304,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $cookies.put('difficulty', this.difficulty, {
         expires: expire
       });
+      $cookies.put('secret_difficulty', this.secret_difficulty, {
+        expires: expire
+      });
       $cookies.put('task_difficulty', this.task_difficulty, {
         expires: expire
       });
@@ -241,6 +314,18 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         expires: expire
       });
       $cookies.put('combo', this.combo, {
+        expires: expire
+      });
+      $cookies.put('normal_LP_ratio', this.normal_LP_ratio, {
+        expires: expire
+      });
+      $cookies.put('secret_score', this.secret_score, {
+        expires: expire
+      });
+      $cookies.put('secret_combo', this.secret_combo, {
+        expires: expire
+      });
+      $cookies.put('secret_LP_ratio', this.secret_LP_ratio, {
         expires: expire
       });
       $cookies.put('ranking', this.ranking, {
@@ -288,6 +373,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $cookies.put('current_LP', this.current_LP, {
         expires: expire
       });
+      $cookies.put('current_omiyage', this.current_omiyage, {
+        expires: expire
+      });
       $cookies.put('used_stone', this.used_stone, {
         expires: expire
       });
@@ -317,9 +405,14 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
     $scope.$watchGroup([
       'event.event_name',
       'event.difficulty',
+      'event.secret_difficulty',
       'event.task_difficulty',
       'event.score',
       'event.combo',
+      'event.normal_LP_ratio',
+      'event.secret_score',
+      'event.secret_combo',
+      'event.secret_LP_ratio',
       'event.ranking',
       'event.rounds',
       'event.pt_arrange',
@@ -335,11 +428,6 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         points *= $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.score];
         if ($scope.event.event_name == 'score_match') {
           points *= $scope.event.event_type[$scope.event.event_name].ranking_bonus[$scope.event.ranking];
-        }
-        if ($scope.event.event_name == 'nakayoshi_match') {
-          points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
-          points *= $scope.event.event_type[$scope.event.event_name].contribution_bonus[$scope.event.contribution];
-          points *= $scope.event.event_type[$scope.event.event_name].mission_bonus[$scope.event.mission];
         }
         if ($scope.event.event_name == 'medley_festival') {
           points = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty][$scope.event.rounds-1];
@@ -357,7 +445,26 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
             points += Math.round(point_per_round);
           }
         }
+        if ($scope.event.event_name == 'osanpo_rally') {
+          points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
+          points *= $scope.event.normal_LP_ratio;
+        }
+        if ($scope.event.event_name == 'nakayoshi_match') {
+          points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
+          points *= $scope.event.event_type[$scope.event.event_name].contribution_bonus[$scope.event.contribution];
+          points *= $scope.event.event_type[$scope.event.event_name].mission_bonus[$scope.event.mission];
+        }
         $scope.event.average_points = Math.ceil(points);
+
+        if ($scope.event.event_name == 'osanpo_rally') {
+          points = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.secret_difficulty];
+          points *= $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.secret_score];
+          points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.secret_combo];
+          points *= $scope.event.event_type[$scope.event.event_name].secret_pt_exp;
+          points *= $scope.event.secret_LP_ratio;
+          $scope.event.secret_average_points = Math.ceil(points)
+        }
+
       }
     });
 
@@ -365,8 +472,10 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       'event.current_rank',
       'event.current_exp',
       'event.current_LP',
+      'event.current_omiyage',
       'event.current_points',
       'event.average_points',
+      'event.secret_average_points',
       'event.target',
       'event.target_points',
       'event.target_stone',
