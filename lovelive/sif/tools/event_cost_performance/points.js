@@ -671,7 +671,6 @@ angular.module('points', [])
           {required_points: 75000, category: "コラボSSR交換チケ", number: 1},
           {required_points: 80000, category: "ラブカストーン", number: 2},
           {required_points: 90000, category: "友情pt", number: 1300},
-          {required_points: 100000, category: "SR部員1", number: 1},
           {required_points: 110000, category: "ラブカストーン", number: 3},
           {required_points: 120000, category: "友情pt", number: 1400},
           {required_points: 130000, category: "コラボSSR交換チケ", number: 1},
