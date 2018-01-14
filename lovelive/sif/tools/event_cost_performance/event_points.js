@@ -468,7 +468,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
 
       $scope.event.min_per_play = 2.5;
       if ($scope.event.event_name === 'score_match' || $scope.event.event_name === 'nakayoshi_match') {
-        this.min_per_play = 3;
+        $scope.event.min_per_play = 3;
       }
       if ($scope.event.event_name === 'challenge_festival' || $scope.event.event_name === 'medley_festival') {
         $scope.event.min_per_play *= $scope.event.rounds;
