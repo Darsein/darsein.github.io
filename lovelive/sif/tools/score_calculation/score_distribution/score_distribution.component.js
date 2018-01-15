@@ -356,7 +356,7 @@ angular.module('unitScore')
             is_perfect_tap = true;
             for (var i = 0; i < deck.length; ++i) {
               if (perfect_tap_end_time[i] !== undefined)
-              score += deck[i].skill.value;
+              score += deck[i].skill.value * tap_bonus;
             }
           }
 
