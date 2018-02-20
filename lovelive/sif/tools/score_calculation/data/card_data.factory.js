@@ -338,6 +338,201 @@ angular.module('data')
           imageName: "cool_trick",
           slot: 4,
         },
+        {
+          name: "スマイルウィンク",
+          imageName: "smile_wink",
+          slot: 5,
+        },
+        {
+          name: "ピュアウィンク",
+          imageName: "pure_wink",
+          slot: 5,
+        },
+        {
+          name: "クールウィンク",
+          imageName: "cool_wink",
+          slot: 5,
+        },
+        {
+          name: "スマイルトリル1年生",
+          imageName: "smile_trill1",
+          slot: 5,
+        },
+        {
+          name: "ピュアトリル1年生",
+          imageName: "pure_trill1",
+          slot: 5,
+        },
+        {
+          name: "クールトリル1年生",
+          imageName: "cool_trill1",
+          slot: 5,
+        },
+        {
+          name: "スマイルトリル2年生",
+          imageName: "smile_trill2",
+          slot: 5,
+        },
+        {
+          name: "ピュアトリル2年生",
+          imageName: "pure_trill2",
+          slot: 5,
+        },
+        {
+          name: "クールトリル2年生",
+          imageName: "cool_trill2",
+          slot: 5,
+        },
+        {
+          name: "スマイルトリル3年生",
+          imageName: "smile_trill3",
+          slot: 5,
+        },
+        {
+          name: "ピュアトリル3年生",
+          imageName: "pure_trill3",
+          slot: 5,
+        },
+        {
+          name: "クールトリル3年生",
+          imageName: "cool_trill3",
+          slot: 5,
+        },
+        {
+          name: "スマイルブルーム",
+          imageName: "smile_bloom",
+          slot: 6,
+        },
+        {
+          name: "ピュアブルーム",
+          imageName: "pure_bloom",
+          slot: 6,
+        },
+        {
+          name: "クールブルーム",
+          imageName: "cool_bloom",
+          slot: 6,
+        },
+        {
+          name: "スマイルパワフル",
+          imageName: "smile_powerful",
+          slot: 4,
+        },
+        {
+          name: "クールプリマ",
+          imageName: "cool_prima",
+          slot: 4,
+        },
+        {
+          name: "ピュアチャープ",
+          imageName: "pure_chirp",
+          slot: 4,
+        },
+        {
+          name: "クールシューター",
+          imageName: "cool_shooter",
+          slot: 4,
+        },
+        {
+          name: "スマイルキティ",
+          imageName: "smile_kitty",
+          slot: 4,
+        },
+        {
+          name: "クールディーバ",
+          imageName: "cool_diva",
+          slot: 4,
+        },
+        {
+          name: "ピュアフォーチュン",
+          imageName: "pure_fortune",
+          slot: 4,
+        },
+        {
+          name: "ピュアフラワー",
+          imageName: "pure_flower",
+          slot: 4,
+        },
+        {
+          name: "スマイルギャラクシー",
+          imageName: "smile_galaxy",
+          slot: 4,
+        },
+        {
+          name: "スマイルオレンジ",
+          imageName: "smile_orange",
+          slot: 4,
+        },
+        {
+          name: "クールブロッサム",
+          imageName: "cool_blossom",
+          slot: 4,
+        },
+        {
+          name: "ピュアドルフィン",
+          imageName: "pure_dolphin",
+          slot: 4,
+        },
+        {
+          name: "クールプラム",
+          imageName: "cool_plum",
+          slot: 4,
+        },
+        {
+          name: "ピュアボヤージュ",
+          imageName: "pure_voyage",
+          slot: 4,
+        },
+        {
+          name: "クールリトルデーモン",
+          imageName: "cool_little_demon",
+          slot: 4,
+        },
+        {
+          name: "スマイルフューチャー",
+          imageName: "smile_future",
+          slot: 4,
+        },
+        {
+          name: "スマイルシャイニー",
+          imageName: "smile_shiny",
+          slot: 4,
+        },
+        {
+          name: "ピュアロリポップ",
+          imageName: "pure_lolipop",
+          slot: 4,
+        },
+        {
+          name: "スマイルノネットμ's",
+          imageName: "smile_nonet_muse",
+          slot: 4,
+        },
+        {
+          name: "ピュアノネットμ's",
+          imageName: "pure_nonet_muse",
+          slot: 4,
+        },
+        {
+          name: "クールノネットμ's",
+          imageName: "cool_nonet_muse",
+          slot: 4,
+        },
+        {
+          name: "スマイルノネットAqours",
+          imageName: "smile_nonet_aqours",
+          slot: 4,
+        },
+        {
+          name: "ピュアノネットAqours",
+          imageName: "pure_nonet_aqours",
+          slot: 4,
+        },
+        {
+          name: "クールノネットAqours",
+          imageName: "cool_nonet_aqours",
+          slot: 4,
+        },
       ];
 
       // load card data

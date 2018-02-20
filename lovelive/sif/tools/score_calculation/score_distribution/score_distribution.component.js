@@ -130,7 +130,7 @@ angular.module('unitScore')
         return up;
       };
 
-      self.cardStatus = function(card, music_type, LS, FLS, aura_num, veil_num, deck) {
+      self.cardStatus = function(card, music_type, LS, FLS, aura_num, veil_num, bloom_num, nonet_num, deck) {
         var Sa = {};
         for (var type of $rootScope.card_data.types) Sa[type] = card[type];
         Sa[card.type] += card.kizuna;
@@ -149,6 +149,28 @@ angular.module('unitScore')
           if (/パフューム/.test(SIS)) Su[type] += 450;
           if (/リング/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.10);
           if (/クロス/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.16);
+          if (/ウィンク/.test(SIS)) Su[type] += 1400;
+          if (/トリル/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.28);
+
+          if (/パワフル/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/プリマ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/チャープ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/シューター/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/キティ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/ディーバ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/フォーチュン/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/フラワー/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/ギャラクシー/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+
+          if (/オレンジ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/ブロッサム/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/ドルフィン/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/プラム/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/ボヤージュ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/リトルデーモン/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/フューチャー/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/シャイニー/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/ロリポップ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
         }
 
         var trick = {
@@ -168,6 +190,8 @@ angular.module('unitScore')
         for (var type of $rootScope.card_data.types) {
           Su[type] += Math.ceil(Sa[type] * 0.018) * aura_num[type];
           Su[type] += Math.ceil(Sa[type] * 0.024) * veil_num[type];
+          Su[type] += Math.ceil(Sa[type] * 0.040) * bloom_num[type];
+          Su[type] += Math.ceil(Sa[type] * 0.042) * nonet_num[type];
         }
 
         var LS_up = self.centerSkillUp(Su, card, LS);
@@ -213,6 +237,17 @@ angular.module('unitScore')
           "pure": 0,
           "cool": 0
         };
+        var bloom_num = {
+          "smile": 0,
+          "pure": 0,
+          "cool": 0
+        };
+        var nonet_num = {
+          "smile": 0,
+          "pure": 0,
+          "cool": 0
+        };
+
         for (var card of deck) {
           for (var SIS of card.SIS) {
             var type = "all";
@@ -222,6 +257,22 @@ angular.module('unitScore')
 
             if (/オーラ/.test(SIS)) ++aura_num[type];
             if (/ヴェール/.test(SIS)) ++veil_num[type];
+            if (/ブルーム/.test(SIS)) ++bloom_num[type];
+            if (/ノネット/.test(SIS)) {
+              ok = true;
+              if (/Aqours/.test(SIS)) {
+                for (var card of deck) {
+                  ok &= (card.group == "Aqours");
+                }
+              } else {
+                for (var card of deck) {
+                  ok &= (card.group == "μ's");
+                }
+              }
+              if (ok) {
+                ++nonet_num[type];
+              }
+            }
           }
         }
 
@@ -234,7 +285,7 @@ angular.module('unitScore')
           skill_status[i] = 0;
         }
         for (var card of deck) {
-          var card_status = self.cardStatus(card, music.type, LS, FLS, aura_num, veil_num, deck);
+          var card_status = self.cardStatus(card, music.type, LS, FLS, aura_num, veil_num, bloom_num, nonet_num, deck);
           status += card_status.status;
           for (var i = 0; i < deck.length; ++i) {
             skill_status[i] += card_status.skill_status[i];

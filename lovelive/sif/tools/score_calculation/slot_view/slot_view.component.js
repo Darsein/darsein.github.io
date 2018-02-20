@@ -58,6 +58,80 @@ angular.module('unitScore')
                 continue;
               }
             }
+            if (SIS.name.slice(-4) === "パワフル") {
+              if (card.chara_name !== "高坂穂乃果") {
+                continue;
+              }
+            } else if (SIS.name.slice(-3) === "プリマ") {
+              if (card.chara_name !== "絢瀬絵里") {
+                continue;
+              }
+            } else if (SIS.name.slice(-4) === "チャープ") {
+              if (card.chara_name !== "南ことり") {
+                continue;
+              }
+            } else if (SIS.name.slice(-5) === "シューター") {
+              if (card.chara_name !== "園田海未") {
+                continue;
+              }
+            } else if (SIS.name.slice(-3) === "キティ") {
+              if (card.chara_name !== "星空凛") {
+                continue;
+              }
+            } else if (SIS.name.slice(-4) === "ディーバ") {
+              if (card.chara_name !== "西木野真姫") {
+                continue;
+              }
+            } else if (SIS.name.slice(-6) === "フォーチュン") {
+              if (card.chara_name !== "東條希") {
+                continue;
+              }
+            } else if (SIS.name.slice(-4) === "フラワー") {
+              if (card.chara_name !== "小泉花陽") {
+                continue;
+              }
+            } else if (SIS.name.slice(-6) === "ギャラクシー") {
+              if (card.chara_name !== "矢澤にこ") {
+                continue;
+              }
+            }
+            if (SIS.name.slice(-4) === "オレンジ") {
+              if (card.chara_name !== "高海千歌") {
+                continue;
+              }
+            } else if (SIS.name.slice(-5) === "ブロッサム") {
+              if (card.chara_name !== "桜内梨子") {
+                continue;
+              }
+            } else if (SIS.name.slice(-5) === "ドルフィン") {
+              if (card.chara_name !== "松浦果南") {
+                continue;
+              }
+            } else if (SIS.name.slice(-3) === "プラム") {
+              if (card.chara_name !== "黒澤ダイヤ") {
+                continue;
+              }
+            } else if (SIS.name.slice(-5) === "ボヤージュ") {
+              if (card.chara_name !== "渡辺曜") {
+                continue;
+              }
+            } else if (SIS.name.slice(-7) === "リトルデーモン") {
+              if (card.chara_name !== "津島善子") {
+                continue;
+              }
+            } else if (SIS.name.slice(-6) === "フューチャー") {
+              if (card.chara_name !== "国木田花丸") {
+                continue;
+              }
+            } else if (SIS.name.slice(-5) === "シャイニー") {
+              if (card.chara_name !== "小原鞠莉") {
+                continue;
+              }
+            } else if (SIS.name.slice(-5) === "ロリポップ") {
+              if (card.chara_name !== "黒澤ルビィ") {
+                continue;
+              }
+            }
             if (SIS.name.slice(-4) === "チャーム") {
               if (card.skill.type !== "スコア") {
                 continue;
