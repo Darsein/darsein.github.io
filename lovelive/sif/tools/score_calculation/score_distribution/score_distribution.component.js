@@ -503,13 +503,13 @@ angular.module('unitScore')
                     return b - a;
                   });
                 } else if (activated_skill.type === "パーフェクト") {
-                  var end_time = (perfect_tap_queues[i].length > 0 ? perfect_tap_queue[i][0].end_time : current_time) + activated_skill.term;
+                  var end_time = (perfect_tap_queues[i].length > 0 ? perfect_tap_queues[i][0].end_time : current_time) + activated_skill.term;
                   perfect_tap_queues[i].push({
                     "end_time": end_time,
                     "value": activated_skill.value,
                   });
                 } else if (activated_skill.type === "パラアップ") {
-                  var end_time = (param_up_queues[i].length > 0 ? param_up_queue[i][0].end_time : current_time) + activated_skill.term;
+                  var end_time = (param_up_queues[i].length > 0 ? param_up_queues[i][0].end_time : current_time) + activated_skill.term;
                   param_up_queues[i].push({
                     "end_time": end_time,
                     "value": activated_skill.value,
