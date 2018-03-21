@@ -465,7 +465,7 @@ angular.module('unitScore')
 
           for (var i = 0; i < deck.length; ++i) {
             var card = deck[i];
-            // TODO: handle skills invoked by chain, star icons and score
+            // TODO: handle skills invoked by star icons and score
             var is_skill_invoked = false;
             var skill_required = card.skill.stats_list[card.skill_level - 1][3];
             if (card.skill.condition === "リズムアイコン" || card.skill.condition === "コンボ") {
@@ -473,7 +473,6 @@ angular.module('unitScore')
             } else if (card.skill.condition === "PERFECT") {
               is_skill_invoked = is_perfect_tap && (perfect_num % skill_required === 0);
             } else if (card.skill.condition === "チェイン") {
-              // TODO: move the getTargetMembers logic to initialization for speeding up.
               required_members = card.skill.required_members;
               is_skill_invoked = true;
               for (var required_member of required_members) {
