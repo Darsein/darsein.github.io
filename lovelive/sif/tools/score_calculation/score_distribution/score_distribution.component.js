@@ -313,7 +313,8 @@ angular.module('unitScore')
         var events = [];
         for (var card of deck) {
           if (card.skill.condition === "秒") {
-            for (var sec = card.skill.required; sec <= music.time; sec += card.skill.required) {
+            var skill_required = card.skill.stats_list[card.skill_level - 1][3];
+            for (var sec = skill_required; sec <= music.time; sec += skill_required) {
               events.push(sec);
             }
           }
@@ -343,20 +344,21 @@ angular.module('unitScore')
             }
 
             for (var card of deck) {
-              if (card.skill.condition === "秒" && event_time % card.skill.required === 0) {
+              var skill_required = card.skill.stats_list[card.skill_level - 1][3];
+              if (card.skill.condition === "秒" && event_time % skill_required === 0) {
                 // TODO: handle new skill per time (not implemented as is 2017/11/05)
                 var skill = {};
                 skill.type = card.skill.type;
-                skill.prob = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost)][0];
-                skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost)][1];
-                skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost)][2];
-                skill_boost = 0;
+                skill.prob = card.skill.stats_list[card.skill_level - 1][0];
+                skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][1];
+                skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][2];
 
                 var prob = skill.prob * prob_bonus;
                 if (skill_prob_queue.length > 0) {
                   prob *= skill_prob_queue[0].value;
                 }
                 if (self.success(prob)) {
+                  skill_boost = 0;
                   triggered_members.add(card.chara_name);
                   if (skill.type === "スコア") {
                     var ratio = 1;
@@ -440,10 +442,11 @@ angular.module('unitScore')
             var card = deck[i];
             // TODO: handle skills invoked by chain, star icons and score
             var is_skill_invoked = false;
+            var skill_required = card.skill.stats_list[card.skill_level - 1][3];
             if (card.skill.condition === "リズムアイコン" || card.skill.condition === "コンボ") {
-              is_skill_invoked = (x % card.skill.required === 0);
+              is_skill_invoked = (x % skill_required === 0);
             } else if (card.skill.condition === "PERFECT") {
-              is_skill_invoked = is_perfect_tap && (perfect_num % card.skill.required === 0);
+              is_skill_invoked = is_perfect_tap && (perfect_num % skill_required === 0);
             } else if (card.skill.condition === "チェイン") {
               // TODO: move the getTargetMembers logic to initialization for speeding up.
               required_members = self.getTargetMembers(card);
@@ -462,10 +465,9 @@ angular.module('unitScore')
             if (is_skill_invoked) {
               var skill = {};
               skill.type = card.skill.type;
-              skill.prob = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][0];
+              skill.prob = card.skill.stats_list[card.skill_level - 1][0];
               skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][1];
               skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][2];
-              skill_boost = 0;
 
               var activated_skill = skill;
               var activated_SIS = card.SIS;
@@ -475,6 +477,7 @@ angular.module('unitScore')
               }
 
               if (self.success(prob)) {
+                skill_boost = 0;
                 triggered_members.add(card.chara_name);
                 if (activated_skill.type === "リピート") {
                   if (last_skill !== undefined && last_skill.type !== "リピート") {
