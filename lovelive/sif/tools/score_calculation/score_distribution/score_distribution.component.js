@@ -354,6 +354,7 @@ angular.module('unitScore')
         var skill_prob_queue = [];
         var perfect_tap_queues = Array.from(new Array(deck.length), () => new Array());
         var param_up_queues = Array.from(new Array(deck.length), () => new Array());
+        var combo_fever_queues = Array.from(new Array(deck.length), () => new Array());
         var last_skill = undefined;
         var last_SIS = undefined;
 
@@ -375,6 +376,7 @@ angular.module('unitScore')
                 skill.prob = card.skill.stats_list[card.skill_level - 1][0];
                 skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][1];
                 skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][2];
+                skill.required = card.skill.stats_list[card.skill_level - 1][3];
 
                 var prob = skill.prob * prob_bonus;
                 if (skill_prob_queue.length > 0) {
@@ -425,6 +427,9 @@ angular.module('unitScore')
             while (param_up_queues[i].length > 0 && param_up_queues[i][0].end_time < current_time) {
               param_up_queues[i].shift();
             }
+            while (combo_fever_queues[i].length > 0 && combo_fever_queues[i][0].end_time < current_time) {
+              combo_fever_queues[i].shift();
+            }
           }
 
           // TODO: long note
@@ -460,6 +465,15 @@ angular.module('unitScore')
             }
             tap_score += max_param_up;
           }
+          {
+            var combo_fever_up = 0;
+            for (var i = 0; i < deck.length; ++i) {
+              if (combo_fever_queues[i].length > 0) {
+                combo_fever_up += combo_fever_queues[i][0].value;
+              }
+            }
+            score += Math.min(combo_fever_up, 1000) * tap_bonus;
+          }
           tap_score *= 0.0125 * tap_bonus * perfect_ratio * long_note_ratio * position_ratio * combo_ratio;
           score += Math.floor(tap_score);
 
@@ -492,6 +506,7 @@ angular.module('unitScore')
               skill.prob = card.skill.stats_list[card.skill_level - 1][0];
               skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][1];
               skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][2];
+              skill.required = card.skill.stats_list[card.skill_level - 1][3];
 
               var activated_skill = skill;
               var activated_SIS = card.SIS;
@@ -542,6 +557,12 @@ angular.module('unitScore')
                   param_up_queues[i].push({
                     "end_time": end_time,
                     "value": activated_skill.value,
+                  });
+                } else if (activated_skill.type === "FEVER") {
+                  var end_time = (combo_fever_queues[i].length > 0 ? combo_fever_queues[i][0].end_time : current_time) + activated_skill.term;
+                  combo_fever_queues[i].push({
+                    "end_time": end_time,
+                    "value": activated_skill.value * Math.min(10, Math.floor(x / activated_skill.required)),
                   });
                 } else if (activated_skill.type === "特技") {
                   var end_time = (skill_prob_queue.length > 0 ? skill_prob_queue[skill_prob_queue.length - 1].end_time : current_time) + activated_skill.term;
