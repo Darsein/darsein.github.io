@@ -56,8 +56,27 @@ angular.module('unitScore')
       };
 
       self.getTargetMembers = function(card) {
-        // TODO: this func currently handles only new Riko.
-        return new Set(["高海千歌", "渡辺曜"]);
+        var required_members = new Set();
+        for (var name in $rootScope.card_data.chara_info) {
+          affiliation = $rootScope.card_data.chara_info[name];
+          var in_group = false;
+          if (card.skill.target.indexOf(affiliation.group) !== -1) {
+            in_group = true;
+          }
+          var in_grade = false;
+          if (card.skill.target.indexOf(affiliation.grade) !== -1) {
+            in_grade = true;
+          }
+          var in_unit = false;
+          if (card.skill.target.indexOf(affiliation.unit) !== -1) {
+            in_unit = true;
+          }
+          if ( (in_group && in_grade) || (in_unit) ) {
+            required_members.add(name);
+          }
+        }
+        required_members.delete(card.chara_name);
+        return required_members;
       };
 
       self.success = function(prob) {
@@ -95,6 +114,9 @@ angular.module('unitScore')
                 card["skill"] = {
                   "type": null,
                 }
+              }
+              if (card.skill.condition === "チェイン") {
+                card["skill"]["required_members"] = self.getTargetMembers(card);
               }
 
               card["SIS"] = [];
@@ -326,7 +348,7 @@ angular.module('unitScore')
         var perfect_num = 0;
         var event_id = 0;
         var end_trick = [];
-        var triggered_members = new Set();
+        var triggered_members = Array.from(new Array(deck.length), () => new Set());
 
         var skill_boost = 0;
         var skill_prob_queue = [];
@@ -343,7 +365,8 @@ angular.module('unitScore')
               skill_prob_queue.shift();
             }
 
-            for (var card of deck) {
+            for (var i = 0; i < deck.length; ++i) {
+              var card = deck[i];
               var skill_required = card.skill.stats_list[card.skill_level - 1][3];
               if (card.skill.condition === "秒" && event_time % skill_required === 0) {
                 // TODO: handle new skill per time (not implemented as is 2017/11/05)
@@ -359,7 +382,9 @@ angular.module('unitScore')
                 }
                 if (self.success(prob)) {
                   skill_boost = 0;
-                  triggered_members.add(card.chara_name);
+                  for (var j = 0; j < deck.length; ++j) {
+                    triggered_members[j].add(card.chara_name);
+                  }
                   if (skill.type === "スコア") {
                     var ratio = 1;
                     for (var SIS of card.SIS) {
@@ -449,14 +474,14 @@ angular.module('unitScore')
               is_skill_invoked = is_perfect_tap && (perfect_num % skill_required === 0);
             } else if (card.skill.condition === "チェイン") {
               // TODO: move the getTargetMembers logic to initialization for speeding up.
-              required_members = self.getTargetMembers(card);
+              required_members = card.skill.required_members;
               is_skill_invoked = true;
               for (var required_member of required_members) {
-                is_skill_invoked &= triggered_members.has(required_member);
+                is_skill_invoked &= triggered_members[i].has(required_member);
               }
               if (is_skill_invoked) {
                 for (var required_member of required_members) {
-                  triggered_members.delete(required_member);
+                  triggered_members[i].delete(required_member);
                 }
               }
             }
@@ -478,7 +503,9 @@ angular.module('unitScore')
 
               if (self.success(prob)) {
                 skill_boost = 0;
-                triggered_members.add(card.chara_name);
+                for (var j = 0; j < deck.length; ++j) {
+                  triggered_members[j].add(card.chara_name);
+                }
                 if (activated_skill.type === "リピート") {
                   if (last_skill !== undefined && last_skill.type !== "リピート") {
                     activated_skill = last_skill;
