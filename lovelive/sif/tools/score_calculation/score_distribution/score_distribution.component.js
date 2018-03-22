@@ -352,6 +352,10 @@ angular.module('unitScore')
 
         var skill_boost = 0;
         var skill_prob_queue = [];
+        var score_consumed = new Array(deck.length);
+        for (var i = 0; i < deck.length; ++i) {
+          score_consumed[i] = 0;
+        }
         var perfect_tap_queues = Array.from(new Array(deck.length), () => new Array());
         var param_up_queues = Array.from(new Array(deck.length), () => new Array());
         var combo_fever_queues = Array.from(new Array(deck.length), () => new Array());
@@ -412,11 +416,54 @@ angular.module('unitScore')
                 }
               }
             }
+
+            var is_updated = true;
+            while (is_updated) {
+              is_updated = false;
+              for (var i = 0; i < deck.length; ++i) {
+                var card = deck[i];
+                var skill_required = card.skill.stats_list[card.skill_level - 1][3];
+                if (card.skill.condition === "スコア" && score - score_consumed[i] >= skill_required) {
+                  score_consumed[i] += skill_required;
+                  // TODO: handle new skill per time (not implemented as is 2017/11/05)
+                  var skill = {};
+                  skill.type = card.skill.type;
+                  skill.prob = card.skill.stats_list[card.skill_level - 1][0];
+                  skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][1];
+                  skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][2];
+                  skill.required = card.skill.stats_list[card.skill_level - 1][3];
+
+                  var prob = skill.prob * prob_bonus;
+                  if (skill_prob_queue.length > 0) {
+                    prob *= skill_prob_queue[0].value;
+                  }
+                  if (self.success(prob)) {
+                    skill_boost = 0;
+                    for (var j = 0; j < deck.length; ++j) {
+                      triggered_members[j].add(card.chara_name);
+                    }
+                    if (skill.type === "スコア") {
+                      var ratio = 1;
+                      for (var SIS of card.SIS) {
+                        if (/チャーム/.test(SIS)) ratio = 2.5;
+                      }
+                      score += skill.value * ratio;
+                      skill_score += skill.value * ratio;
+                      is_updated = true;
+                    }
+                    last_skill = skill;
+                    last_SIS = card.SIS;
+                  }
+                }
+              }
+            }
+
             event_id++;
           }
           while (end_trick.length > 0 && end_trick[end_trick.length - 1] < current_time) {
             end_trick.pop();
           }
+          // TODO: move it in the above loop, which is for clock count
           while (skill_prob_queue.length > 0 && skill_prob_queue[0].end_time < current_time) {
             skill_prob_queue.shift();
           }
@@ -576,6 +623,47 @@ angular.module('unitScore')
 
                 last_skill = activated_skill;
                 last_SIS = activated_SIS;
+              }
+            }
+          }
+
+          var is_updated = true;
+          while (is_updated) {
+            is_updated = false;
+            for (var i = 0; i < deck.length; ++i) {
+              var card = deck[i];
+              var skill_required = card.skill.stats_list[card.skill_level - 1][3];
+              if (card.skill.condition === "スコア" && score - score_consumed[i] >= skill_required) {
+                score_consumed[i] += skill_required;
+                // TODO: handle new skill per time (not implemented as is 2017/11/05)
+                var skill = {};
+                skill.type = card.skill.type;
+                skill.prob = card.skill.stats_list[card.skill_level - 1][0];
+                skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][1];
+                skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][2];
+                skill.required = card.skill.stats_list[card.skill_level - 1][3];
+
+                var prob = skill.prob * prob_bonus;
+                if (skill_prob_queue.length > 0) {
+                  prob *= skill_prob_queue[0].value;
+                }
+                if (self.success(prob)) {
+                  skill_boost = 0;
+                  for (var j = 0; j < deck.length; ++j) {
+                    triggered_members[j].add(card.chara_name);
+                  }
+                  if (skill.type === "スコア") {
+                    var ratio = 1;
+                    for (var SIS of card.SIS) {
+                      if (/チャーム/.test(SIS)) ratio = 2.5;
+                    }
+                    score += skill.value * ratio;
+                    skill_score += skill.value * ratio;
+                    is_updated = true;
+                  }
+                  last_skill = skill;
+                  last_SIS = card.SIS;
+                }
               }
             }
           }
