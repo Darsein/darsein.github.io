@@ -514,9 +514,10 @@ angular.module('unitScore')
           }
           {
             var combo_fever_up = 0;
+            var ratio = Math.min(Math.floor((x - 1) / 10), 30);
             for (var i = 0; i < deck.length; ++i) {
               if (combo_fever_queues[i].length > 0) {
-                combo_fever_up += combo_fever_queues[i][0].value;
+                combo_fever_up += Math.ceil(combo_fever_queues[i][0].value + ratio * ratio * combo_fever_queues[i][0].value / 100);
               }
             }
             score += Math.min(combo_fever_up, 1000) * tap_bonus;
@@ -609,7 +610,7 @@ angular.module('unitScore')
                   var end_time = (combo_fever_queues[i].length > 0 ? combo_fever_queues[i][0].end_time : current_time) + activated_skill.term;
                   combo_fever_queues[i].push({
                     "end_time": end_time,
-                    "value": activated_skill.value * Math.min(10, Math.floor(x / activated_skill.required)),
+                    "value": activated_skill.value,
                   });
                 } else if (activated_skill.type === "特技") {
                   var end_time = (skill_prob_queue.length > 0 ? skill_prob_queue[skill_prob_queue.length - 1].end_time : current_time) + activated_skill.term;
