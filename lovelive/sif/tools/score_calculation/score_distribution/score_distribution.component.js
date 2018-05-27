@@ -11,6 +11,15 @@ angular.module('unitScore')
         "perfect": 90,
       };
 
+      // TODO: move these ceil and floor functions into a util file.
+      self.ceil = function(val) {
+        return Math.ceil(val - 0.000001);
+      }
+
+      self.floor = function(val) {
+        return Math.floor(val + 0.000001);
+      }
+
       // TODO: make bonus as user input
       self.bonus = $cookies.get('bonus') ? JSON.parse($cookies.get('bonus')) : {
         "LS_pre": null,
@@ -138,12 +147,12 @@ angular.module('unitScore')
           "cool": 0
         };
         if (LS) {
-          up[LS.type] += Math.ceil(0.01 * LS.ratio * val[LS.base_type]);
+          up[LS.type] += self.ceil(0.01 * LS.ratio * val[LS.base_type]);
           if (LS.sub_type) {
             if (card.group === LS.sub_condition ||
               card.grade === LS.sub_condition ||
               card.unit === LS.sub_condition) {
-              up[LS.sub_type] += Math.ceil(0.01 * LS.sub_ratio * val[LS.sub_type]);
+              up[LS.sub_type] += self.ceil(0.01 * LS.sub_ratio * val[LS.sub_type]);
             }
           }
         }
@@ -167,30 +176,30 @@ angular.module('unitScore')
 
           if (/キッス/.test(SIS)) Su[type] += 200;
           if (/パフューム/.test(SIS)) Su[type] += 450;
-          if (/リング/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.10);
-          if (/クロス/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.16);
+          if (/リング/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.10);
+          if (/クロス/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.16);
           if (/ウィンク/.test(SIS)) Su[type] += 1400;
-          if (/トリル/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.28);
+          if (/トリル/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.28 - 0.000001);
 
-          if (/パワフル/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/プリマ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/チャープ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/シューター/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/キティ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/ディーバ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/フォーチュン/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/フラワー/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/ギャラクシー/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/パワフル/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/プリマ/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/チャープ/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/シューター/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/キティ/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/ディーバ/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/フォーチュン/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/フラワー/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/ギャラクシー/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
 
-          if (/オレンジ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/ブロッサム/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/ドルフィン/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/プラム/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/ボヤージュ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/リトルデーモン/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/フューチャー/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/シャイニー/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
-          if (/ロリポップ/.test(SIS)) Su[type] += Math.ceil(Sa[type] * 0.29);
+          if (/オレンジ/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/ブロッサム/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/ドルフィン/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/プラム/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/ボヤージュ/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/リトルデーモン/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/フューチャー/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/シャイニー/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
+          if (/ロリポップ/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
         }
 
         var trick = {
@@ -204,14 +213,14 @@ angular.module('unitScore')
           if (/エンジェル/.test(SIS)) type = "pure";
           if (/エンプレス/.test(SIS)) type = "cool";
 
-          if (/トリック/.test(SIS)) trick[type] = Math.ceil(Su[type] * 0.33);
+          if (/トリック/.test(SIS)) trick[type] = self.ceil(Su[type] * 0.33);
         }
 
         for (var type of $rootScope.card_data.types) {
-          Su[type] += Math.ceil(Sa[type] * 0.018) * aura_num[type];
-          Su[type] += Math.ceil(Sa[type] * 0.024) * veil_num[type];
-          Su[type] += Math.ceil(Sa[type] * 0.040) * bloom_num[type];
-          Su[type] += Math.ceil(Sa[type] * 0.042) * nonet_num[type];
+          Su[type] += self.ceil(Sa[type] * 0.018) * aura_num[type];
+          Su[type] += self.ceil(Sa[type] * 0.024) * veil_num[type];
+          Su[type] += self.ceil(Sa[type] * 0.040) * bloom_num[type];
+          Su[type] += self.ceil(Sa[type] * 0.042) * nonet_num[type];
         }
 
         var LS_up = self.centerSkillUp(Su, card, LS);
@@ -306,6 +315,7 @@ angular.module('unitScore')
         }
         for (var card of deck) {
           var card_status = self.cardStatus(card, music.type, LS, FLS, aura_num, veil_num, bloom_num, nonet_num, deck);
+          console.log(card_status);
           status += card_status.status;
           for (var i = 0; i < deck.length; ++i) {
             // TODO: this doesn't round float to integer and thus yield error.
@@ -508,22 +518,22 @@ angular.module('unitScore')
             var max_param_up = 0;
             for (var i = 0; i < deck.length; ++i) {
               if (param_up_queues[i].length > 0)
-              max_param_up = Math.max(max_param_up, Math.ceil(status.skill_status[i] * param_up_queues[i][0].value));
+              max_param_up = Math.max(max_param_up, self.ceil(status.skill_status[i] * param_up_queues[i][0].value));
             }
             tap_score += max_param_up;
           }
           {
             var combo_fever_up = 0;
-            var ratio = Math.min(Math.floor((x - 1) / 10), 30);
+            var ratio = Math.min(self.floor((x - 1) / 10), 30);
             for (var i = 0; i < deck.length; ++i) {
               if (combo_fever_queues[i].length > 0) {
-                combo_fever_up += Math.ceil(combo_fever_queues[i][0].value + ratio * ratio * combo_fever_queues[i][0].value / 100);
+                combo_fever_up += self.ceil(combo_fever_queues[i][0].value + ratio * ratio * combo_fever_queues[i][0].value / 100);
               }
             }
             score += Math.min(combo_fever_up, 1000) * tap_bonus;
           }
           tap_score *= 0.0125 * tap_bonus * perfect_ratio * long_note_ratio * position_ratio * combo_ratio;
-          score += Math.floor(tap_score);
+          score += self.floor(tap_score);
 
           for (var i = 0; i < deck.length; ++i) {
             var card = deck[i];
@@ -734,7 +744,7 @@ angular.module('unitScore')
 
         var width = max - min;
         var bucket_num = 30;
-        var bucket_size = Math.ceil(width / bucket_num);
+        var bucket_size = self.ceil(width / bucket_num);
 
         var buckets = [];
         var labels = [];
@@ -743,7 +753,7 @@ angular.module('unitScore')
           labels.push(min + bucket_size * i);
         }
         for (var score of self.scores) {
-          buckets[Math.floor((score.total_score - min) / bucket_size)]++;
+          buckets[self.floor((score.total_score - min) / bucket_size)]++;
         }
         for (var i = 0; i < bucket_num; ++i) {
           buckets[i] /= times;
