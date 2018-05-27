@@ -18,7 +18,8 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.score = $cookies.get('score') ? $cookies.get('score') : 0;
       this.combo = $cookies.get('combo') ? $cookies.get('combo') : 0;
       this.normal_LP_ratio = $cookies.get('normal_LP_ratio') ? $cookies.get('normal_LP_ratio') : 1;
-      this.secret_score = $cookies.get('ssecret_core') ? $cookies.get('secret_score') : 0;
+      this.task_LP_ratio = $cookies.get('task_LP_ratio') ? $cookies.get('task_LP_ratio') : 1;
+      this.secret_score = $cookies.get('secret_core') ? $cookies.get('secret_score') : 0;
       this.secret_combo = $cookies.get('secret_combo') ? $cookies.get('secret_combo') : 0;
       this.secret_LP_ratio = $cookies.get('secret_LP_ratio') ? $cookies.get('secret_LP_ratio') : 1;
       this.ranking = $cookies.get('ranking') ? $cookies.get('ranking') : 1;
@@ -29,7 +30,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       this.mission = $cookies.get('mission') ? $cookies.get('mission') : 0;
       this.current_points = $cookies.get('current_points') ? Number($cookies.get('current_points')) : 0;
       if (this.event_name === 'macaron') {
-        this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo];
+        this.average_points = this.event_type[this.event_name].get_points[this.task_difficulty][this.score][this.combo] * this.task_LP_ratio;
       } else {
         var points = this.event_type[this.event_name].base_points[this.difficulty];
         points *= this.event_type[this.event_name].score_bonus[this.score];
@@ -60,6 +61,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
           points *= this.event_type[this.event_name].combo_bonus[this.combo];
           points *= this.event_type[this.event_name].contribution_bonus[this.contribution];
           points *= this.event_type[this.event_name].mission_bonus[this.mission];
+          points *= this.normal_LP_ratio;
         }
         this.average_points = Math.ceil(points);
       }
@@ -123,6 +125,10 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         LP_per_play *= this.rounds;
       }
       var exp_per_play = this.event_type[this.event_name].exp[this.difficulty];
+      if (this.event_name === 'macaron' || this.event_name == 'nakayoshi_match') {
+        LP_per_play *= this.normal_LP_ratio;
+        exp_per_play *= this.normal_LP_ratio;
+      }
       if (this.event_name === 'medley_festival') {
         exp_per_play = Math.ceil(exp_per_play * this.rounds
           * this.event_type[this.event_name].arrange_bonus[this.exp_arrange]);
@@ -185,8 +191,8 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
           if (play_num == 0) break;
 
           if (this.event_name === 'macaron') {
-            this.final_points += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num;
-            this.final_macaron += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num;
+            this.final_points += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num * this.normal_LP_ratio;
+            this.final_macaron += this.event_type[this.event_name].get_macarons[this.difficulty] * play_num * this.normal_LP_ratio;
           } else {
             this.final_points += this.average_points * play_num;
           }
@@ -195,8 +201,8 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
           this.final_play_num += play_num;
 
           if (this.event_name === 'macaron') {
-            var macaron_per_task_play = this.event_type[this.event_name].required_macarons[this.task_difficulty];
-            var exp_per_task_play = this.event_type[this.event_name].exp[this.task_difficulty];
+            var macaron_per_task_play = this.event_type[this.event_name].required_macarons[this.task_difficulty] * this.task_LP_ratio;
+            var exp_per_task_play = this.event_type[this.event_name].exp[this.task_difficulty] * this.task_LP_ratio;
             var task_play_num = Math.floor(this.final_macaron / macaron_per_task_play);
             this.final_macaron -= macaron_per_task_play * task_play_num;
             this.final_exp += exp_per_task_play * task_play_num;
@@ -319,6 +325,9 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       $cookies.put('normal_LP_ratio', this.normal_LP_ratio, {
         expires: expire
       });
+      $cookies.put('task_LP_ratio', this.task_LP_ratio, {
+        expires: expire
+      });
       $cookies.put('secret_score', this.secret_score, {
         expires: expire
       });
@@ -410,6 +419,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       'event.score',
       'event.combo',
       'event.normal_LP_ratio',
+      'event.task_LP_ratio',
       'event.secret_score',
       'event.secret_combo',
       'event.secret_LP_ratio',
@@ -420,9 +430,8 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       'event.contribution',
       'event.mission',
     ], function(newVal, oldVal) {
-      // Score: S, Ranking: 2nd
       if ($scope.event.event_name === 'macaron') {
-        $scope.event.average_points = $scope.event.event_type[$scope.event.event_name].get_points[$scope.event.task_difficulty][$scope.event.score][$scope.event.combo];
+        $scope.event.average_points = $scope.event.event_type[$scope.event.event_name].get_points[$scope.event.task_difficulty][$scope.event.score][$scope.event.combo] * $scope.event.task_LP_ratio;
       } else {
         var points = $scope.event.event_type[$scope.event.event_name].base_points[$scope.event.difficulty];
         points *= $scope.event.event_type[$scope.event.event_name].score_bonus[$scope.event.score];
@@ -453,6 +462,7 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
           points *= $scope.event.event_type[$scope.event.event_name].combo_bonus[$scope.event.combo];
           points *= $scope.event.event_type[$scope.event.event_name].contribution_bonus[$scope.event.contribution];
           points *= $scope.event.event_type[$scope.event.event_name].mission_bonus[$scope.event.mission];
+          points *= $scope.event.normal_LP_ratio;
         }
         $scope.event.average_points = Math.ceil(points);
 
@@ -473,6 +483,16 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
       if ($scope.event.event_name === 'challenge_festival' || $scope.event.event_name === 'medley_festival') {
         $scope.event.min_per_play *= $scope.event.rounds;
       }
+    });
+
+    $scope.$watchGroup([
+      'event.difficulty',
+      'event.normal_LP_ratio',
+    ], function(newVal, oldVal) {
+      if ($scope.event.event_name === 'macaron') {
+          $scope.event.calcTarget();
+      }
+      $scope.event.setCookies();
     });
 
     $scope.$watchGroup([
