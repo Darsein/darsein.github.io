@@ -2,6 +2,7 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
 
   <title>スクフェス イベント効率計算</title>
   <meta name="keywords" content="ラブライブ, スクフェス, イベント, スコマ, マカロン, メドフェス, チャレフェス, おさんぽラリー, なかよしマッチ, 石効率">
@@ -110,10 +111,12 @@
           </md-card-actions>
         </md-card>
 
-        <md-card style="width: 100px;" ng-if="event.event_name==='osanpo_rally'">
+        <md-card style="width: 100px;" ng-if="event.event_name==='macaron' || event.event_name==='nakayoshi_match' || event.event_name==='osanpo_rally'">
           <md-card-header>
             <md-card-header-text>
-              <span class='md-title'>周回曲LP消費倍率</span>
+              <span class='md-title'>
+                <span ng-if="event.event_name==='macaron' || event.event_name==='osanpo_rally'">周回曲</span>LP消費倍率
+              </span>
             </md-card-header-text>
           </md-card-header>
           <md-card-actions>
@@ -138,6 +141,22 @@
               <md-radio-button value="normal" ng-if="event.event_name!=='macaron'">NORMAL</md-radio-button>
               <md-radio-button value="hard">HARD</md-radio-button>
               <md-radio-button value="expert">EXPERT</md-radio-button>
+            </md-radio-group>
+          </md-card-actions>
+        </md-card>
+
+        <md-card style="width: 100px;" ng-if="event.event_name==='macaron'">
+          <md-card-header>
+            <md-card-header-text>
+              <span class='md-title'>課題曲LP消費倍率</span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-actions>
+            <md-radio-group ng-model="event.task_LP_ratio">
+              <md-radio-button value=1>1倍</md-radio-button>
+              <md-radio-button value=2>2倍</md-radio-button>
+              <md-radio-button value=3>3倍</md-radio-button>
+              <md-radio-button value=4>4倍</md-radio-button>
             </md-radio-group>
           </md-card-actions>
         </md-card>
