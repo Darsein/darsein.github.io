@@ -81,11 +81,13 @@ angular.module('darsein-hp', ['ngMaterial', 'ngCookies', 'rank', 'points'])
         this.secret_average_points = Number($cookies.get('secret_average_points'));
       }
 
+      // TODO: allow users to input border points for rank 30000 and 250000.
       this.border = {}
       this.border[10000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 110000;
+      this.border[30000] = $cookies.get('border_10000') ? Number($cookies.get('border_10000')) : 50000;
       this.border[50000] = $cookies.get('border_50000') ? Number($cookies.get('border_50000')) : 50000;
       this.border[120000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 25000;
-      this.border[700000] = 0;
+      this.border[250000] = $cookies.get('border_120000') ? Number($cookies.get('border_120000')) : 25000;
 
       this.current_rank = $cookies.get('current_rank') ? Number($cookies.get('current_rank')) : 100;
       this.current_exp = $cookies.get('current_exp') ? Number($cookies.get('current_exp')) : 0;
