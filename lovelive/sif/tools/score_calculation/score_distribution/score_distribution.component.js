@@ -315,7 +315,6 @@ angular.module('unitScore')
         }
         for (var card of deck) {
           var card_status = self.cardStatus(card, music.type, LS, FLS, aura_num, veil_num, bloom_num, nonet_num, deck);
-          console.log(card_status);
           status += card_status.status;
           for (var i = 0; i < deck.length; ++i) {
             // TODO: this doesn't round float to integer and thus yield error.
