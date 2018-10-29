@@ -33,18 +33,22 @@ angular.module('unitScore')
             }
 
             if (SIS.imageName.slice(-1) === "1") {
-              if ($rootScope.card_data.chara_info[card.chara_name].grade !== "first-year") {
+              if ($rootScope.card_data.chara_info[card.chara_name] == undefined ||
+                  $rootScope.card_data.chara_info[card.chara_name].grade !== "first-year") {
                 continue;
               }
             } else if (SIS.imageName.slice(-1) === "2") {
-              if ($rootScope.card_data.chara_info[card.chara_name].grade !== "second-year") {
+              if ($rootScope.card_data.chara_info[card.chara_name] == undefined ||
+                  $rootScope.card_data.chara_info[card.chara_name].grade !== "second-year") {
                 continue;
               }
             } else if (SIS.imageName.slice(-1) === "3") {
-              if ($rootScope.card_data.chara_info[card.chara_name].grade !== "third-year") {
+              if ($rootScope.card_data.chara_info[card.chara_name] == undefined ||
+                  $rootScope.card_data.chara_info[card.chara_name].grade !== "third-year") {
                 continue;
               }
             }
+
             if (SIS.name.slice(0, 5) === "プリンセス") {
               if (card.type !== "smile") {
                 continue;
