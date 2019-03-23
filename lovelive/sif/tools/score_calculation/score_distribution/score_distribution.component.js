@@ -202,6 +202,19 @@ angular.module('unitScore')
           if (/ロリポップ/.test(SIS)) Su[type] += self.ceil(Sa[type] * 0.29);
         }
 
+        for (var type of $rootScope.card_data.types) {
+          Su[type] += self.ceil(Sa[type] * 0.018) * aura_num[type];
+          Su[type] += self.ceil(Sa[type] * 0.024) * veil_num[type];
+          Su[type] += self.ceil(Sa[type] * 0.040) * bloom_num[type];
+          Su[type] += self.ceil(Sa[type] * 0.042) * nonet_num[type];
+        }
+
+        var LS_up = self.centerSkillUp(Su, card, LS);
+        var FLS_up = self.centerSkillUp(Su, card, FLS);
+        for (var valid_type of $rootScope.card_data.types) {
+          Su[valid_type] += LS_up[valid_type] + FLS_up[valid_type];
+        }
+
         var trick = {
           "smile": 0,
           "pure": 0,
@@ -214,19 +227,6 @@ angular.module('unitScore')
           if (/エンプレス/.test(SIS)) type = "cool";
 
           if (/トリック/.test(SIS)) trick[type] = self.ceil(Su[type] * 0.33);
-        }
-
-        for (var type of $rootScope.card_data.types) {
-          Su[type] += self.ceil(Sa[type] * 0.018) * aura_num[type];
-          Su[type] += self.ceil(Sa[type] * 0.024) * veil_num[type];
-          Su[type] += self.ceil(Sa[type] * 0.040) * bloom_num[type];
-          Su[type] += self.ceil(Sa[type] * 0.042) * nonet_num[type];
-        }
-
-        var LS_up = self.centerSkillUp(Su, card, LS);
-        var FLS_up = self.centerSkillUp(Su, card, FLS);
-        for (var valid_type of $rootScope.card_data.types) {
-          Su[valid_type] += LS_up[valid_type] + FLS_up[valid_type];
         }
 
         var skill_status = new Array(deck.length);
@@ -501,6 +501,9 @@ angular.module('unitScore')
           var is_perfect_tap = false;
           if (end_trick.length > 0 || self.success(music.perfect)) {
             perfect_ratio = 1.0;
+            if (end_trick.length > 0 && self.success(music.perfect)) {
+              perfect_ratio = 1.08;
+            }
             perfect_num++;
             is_perfect_tap = true;
             for (var i = 0; i < deck.length; ++i) {
