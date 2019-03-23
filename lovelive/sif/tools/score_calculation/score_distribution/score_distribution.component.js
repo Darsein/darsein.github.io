@@ -498,10 +498,10 @@ angular.module('unitScore')
           position_ratio *= (deck[position].type === music.type) ? 1.1 : 1.0;
 
           var perfect_ratio = 0.88;
-          var is_perfect_tap = false;
-          if (end_trick.length > 0 || self.success(music.perfect)) {
+          var is_perfect_tap = self.success(music.perfect);
+          if (end_trick.length > 0 || is_perfect_tap) {
             perfect_ratio = 1.0;
-            if (end_trick.length > 0 && self.success(music.perfect)) {
+            if (end_trick.length > 0 && is_perfect_tap) {
               perfect_ratio = 1.08;
             }
             perfect_num++;
