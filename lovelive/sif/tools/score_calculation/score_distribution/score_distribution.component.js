@@ -387,8 +387,10 @@ angular.module('unitScore')
                 var skill = {};
                 skill.type = card.skill.type;
                 skill.prob = card.skill.stats_list[card.skill_level - 1][0];
-                skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][1];
-                skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][2];
+                var max_skill_level = card.skill.stats_list.length;
+                var current_skill_level = Math.min(max_skill_level, card.skill_level + skill_boost);
+                skill.value = card.skill.stats_list[current_skill_level - 1][1];
+                skill.term = card.skill.stats_list[current_skill_level - 1][2];
                 skill.required = card.skill.stats_list[card.skill_level - 1][3];
 
                 var prob = skill.prob * prob_bonus;
@@ -439,8 +441,9 @@ angular.module('unitScore')
                   skill.type = card.skill.type;
                   skill.prob = card.skill.stats_list[card.skill_level - 1][0];
                   var max_skill_level = card.skill.stats_list.length;
-                  skill.value = card.skill.stats_list[Math.min(max_skill_level, card.skill_level + skill_boost) - 1][1];
-                  skill.term = card.skill.stats_list[Math.min(max_skill_level, card.skill_level + skill_boost) - 1][2];
+                  var current_skill_level = Math.min(max_skill_level, card.skill_level + skill_boost);
+                  skill.value = card.skill.stats_list[current_skill_level - 1][1];
+                  skill.term = card.skill.stats_list[current_skill_level - 1][2];
                   skill.required = card.skill.stats_list[card.skill_level - 1][3];
 
                   var prob = skill.prob * prob_bonus;
@@ -565,8 +568,10 @@ angular.module('unitScore')
               var skill = {};
               skill.type = card.skill.type;
               skill.prob = card.skill.stats_list[card.skill_level - 1][0];
-              skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][1];
-              skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][2];
+              var max_skill_level = card.skill.stats_list.length;
+              var current_skill_level = Math.min(max_skill_level, card.skill_level + skill_boost);
+              skill.value = card.skill.stats_list[current_skill_level - 1][1];
+              skill.term = card.skill.stats_list[current_skill_level - 1][2];
               skill.required = card.skill.stats_list[card.skill_level - 1][3];
 
               var activated_skill = skill;
@@ -653,8 +658,10 @@ angular.module('unitScore')
                 var skill = {};
                 skill.type = card.skill.type;
                 skill.prob = card.skill.stats_list[card.skill_level - 1][0];
-                skill.value = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][1];
-                skill.term = card.skill.stats_list[Math.min(8, card.skill_level + skill_boost) - 1][2];
+                var max_skill_level = card.skill.stats_list.length;
+                var current_skill_level = Math.min(max_skill_level, card.skill_level + skill_boost);
+                skill.value = card.skill.stats_list[current_skill_level - 1][1];
+                skill.term = card.skill.stats_list[current_skill_level - 1][2];
                 skill.required = card.skill.stats_list[card.skill_level - 1][3];
 
                 var prob = skill.prob * prob_bonus;
