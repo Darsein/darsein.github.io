@@ -561,6 +561,7 @@ angular.module('unitScore')
             score += Math.min(combo_fever_up, 1000) * tap_bonus;
           }
 
+          // TODO: indentify the limit of recover_bonus_ratio, and implement it here.
           var recover_bonus_ratio = 1 + current_hp_hearts * self.recover_ratio[max_total_hp] / 100;
 
           tap_score *= 0.0125 * tap_bonus * perfect_ratio * long_note_ratio * position_ratio * combo_ratio * recover_bonus_ratio;
