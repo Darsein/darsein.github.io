@@ -36,6 +36,14 @@ angular.module('unitScore')
         "arbitrary_skill": 1.0,
       };
 
+      self.recover_ratio = [
+        0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+        0.00, 0.31, 0.34, 0.37, 0.40, 0.43, 0.46, 0.49, 0.51, 0.59,
+        0.63, 0.66, 0.70, 0.73, 0.77, 0.80, 0.84, 0.88, 0.91, 0.95,
+        0.99, 1.02, 1.06, 1.10, 1.14, 1.18, 1.21, 1.76, 1.83, 1.90,
+        1.97, 2.04, 2.11, 2.18, 2.25, 2.33, 2.64, 2.73, 2.82, 2.91,
+        3.00, 3.09, 3.19, 3.28, 3.38];
+
       self.calcFLS = function() {
         if (self.bonus.LS_pre !== null && self.bonus.LS_suf !== null) {
           var fLS = new Object();
@@ -114,6 +122,7 @@ angular.module('unitScore')
                 card[type] = card_info[type][card_params.level - 1];
               }
               card["kizuna"] = card_params.kizuna;
+              card["hp"] =  card_info.hp[card_params.level - 1];
 
               card["skill_level"] = card_params.skill_level;
               card["center_skill"] = Object.assign({}, card_info.center_skill);
@@ -338,6 +347,13 @@ angular.module('unitScore')
           }
         }
 
+        var max_total_hp = 0;
+        for (var i = 0; i < deck.length; ++i) {
+          max_total_hp += deck[i].hp;
+        }
+        var current_hp_stocks = 0;
+        var current_hp_hearts = 0;
+
         var tap_bonus = 1 * bonus.arrange_tap * bonus.friend_tap * bonus.student_tap * bonus.arbitrary_tap;
         var prob_bonus = 1 * bonus.arrange_skill * bonus.friend_skill * bonus.student_skill * bonus.arbitrary_skill;
 
@@ -416,6 +432,12 @@ angular.module('unitScore')
                     }
                     score += skill.value * ratio;
                     skill_score += skill.value * ratio;
+
+                    current_hp_stocks += skill.value;
+                    if (current_hp_stocks >= max_total_hp) {
+                      current_hp_stocks = 0;
+                      ++current_hp_hearts;
+                    }
                   } else if (skill.type === "判定") {
                     end_trick.push(event_time + skill.term);
                     end_trick.sort(function(a, b) {
@@ -538,7 +560,10 @@ angular.module('unitScore')
             }
             score += Math.min(combo_fever_up, 1000) * tap_bonus;
           }
-          tap_score *= 0.0125 * tap_bonus * perfect_ratio * long_note_ratio * position_ratio * combo_ratio;
+
+          var recover_bonus_ratio = 1 + current_hp_hearts * self.recover_ratio[max_total_hp] / 100;
+
+          tap_score *= 0.0125 * tap_bonus * perfect_ratio * long_note_ratio * position_ratio * combo_ratio * recover_bonus_ratio;
           score += self.floor(tap_score);
 
           for (var i = 0; i < deck.length; ++i) {
@@ -607,6 +632,12 @@ angular.module('unitScore')
                   }
                   score += activated_skill.value * ratio;
                   skill_score += activated_skill.value * ratio;
+
+                  current_hp_stocks += activated_skill.value;
+                  if (current_hp_stocks >= max_total_hp) {
+                    current_hp_stocks = 0;
+                    ++current_hp_hearts;
+                  }
                 } else if (activated_skill.type === "判定") {
                   end_trick.push(current_time + activated_skill.term);
                   end_trick.sort(function(a, b) {
