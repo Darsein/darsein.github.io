@@ -57,6 +57,90 @@ angular.module('darsein-hp')
         self.overwrite_character = id;
       };
 
+      self.validateNums = function(list) {
+        var freq = new Map();
+        for (var i of list) {
+          freq.set(i, freq.has(i) ? freq.get(i) + 1 : 1);
+        }
+        if (freq.size == 9 && !freq.has(0)) {
+          return "complete";
+        }
+        for (var [key, value] of freq.entries()) {
+          if (key !== 0 && value > 1) {
+            return "invalid";
+          }
+        }
+        return "valid";
+      };
+
+      self.validateBoard = function() {
+        var validation_result = {
+          "is_complete": true,
+          "error_list": [],
+        };
+
+        // validate rows
+        for (var i = 0; i < 9; ++i) {
+          var nums = [];
+          for (var j = 0; j < 9; ++j) {
+            nums.push(self.getCellValue(i, j));
+          }
+          var result = self.validateNums(nums);
+          if (result !== "complete") {
+            validation_result["is_complete"] = false;
+          }
+          if (result === "invalid") {
+            validation_result["error_list"].push({
+              "error_position_type": "行",
+              "error_position_index": i,
+            });
+          }
+        }
+
+        // validate columns
+        for (var i = 0; i < 9; ++i) {
+          var nums = [];
+          for (var j = 0; j < 9; ++j) {
+            nums.push(self.getCellValue(j, i));
+          }
+          var result = self.validateNums(nums);
+          if (result !== "complete") {
+            validation_result["is_complete"] = false;
+          }
+          if (result === "invalid") {
+            validation_result["error_list"].push({
+              "error_position_type": "列",
+              "error_position_index": i,
+            });
+          }
+        }
+
+        // validate blocks
+        for (var i = 0; i < 9; ++i) {
+          var nums = [];
+          for (var j = 0; j < 9; ++j) {
+            nums.push(self.getCellValue(Math.floor(i/3)*3 + Math.floor(j/3), (i%3)*3 + j%3));
+          }
+          var result = self.validateNums(nums);
+          if (result !== "complete") {
+            validation_result["is_complete"] = false;
+          }
+          if (result === "invalid") {
+            validation_result["error_list"].push({
+              "error_position_type": "ブロック",
+              "error_position_index": i,
+            });
+          }
+        }
+
+        self.validation = validation_result;
+      };
+
+      self.resetValidation = function() {
+        self.validation = {
+        };
+      }
+
       self.resetState = function() {
         for (var i = 0; i < 9; ++i) {
           for (var j = 0; j < 9; ++j) {
@@ -68,6 +152,7 @@ angular.module('darsein-hp')
       $scope.$watch(function() {
         return self.current_board;
       }, function(newVal, oldVal) {
+        self.resetValidation();
         var expire = new Date();
         expire.setMonth(expire.getMonth() + 3);
         $cookies.put('board' + self.selected_puzzle.id,

@@ -53,9 +53,27 @@
     </div>
 
     <div layout-align="center center">
+      <md-button class="md-accent md-raised" md-ripple-size="fill" ng-click="$ctrl.validateBoard()">
+        <b>盤面が正しかチェック</b>
+      </md-button>
+    </div>
+    <div layout-align="center center">
+      <div ng-show="$ctrl.validation.is_complete">
+        完成！
+      </div>
+      <div ng-show="!$ctrl.validation.is_complete && $ctrl.validation.error_list.length === 0">
+        OK
+      </div>
+      <div ng-show="$ctrl.validation.error_list.length > 0">
+        {{$ctrl.validation.error_list[0].error_position_index + 1}}
+        {{$ctrl.validation.error_list[0].error_position_type}}目に重複があります
+      </div>
+    </div>
+
+    <div layout-align="center center">
       <md-button class="md-accent md-raised" md-ripple-size="fill" ng-click="$ctrl.resetState()">
         <b>盤面をリセット</b>
-      <md-button>
+      </md-button>
     </div>
   </div>
 </md-content>
