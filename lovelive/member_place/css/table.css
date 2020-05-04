@@ -14,6 +14,12 @@ img {
   height: 50px;
 }
 
+.locked {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+
 .muse table {
   border: 5px solid #e2077e;
 }

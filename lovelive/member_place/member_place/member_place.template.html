@@ -5,28 +5,57 @@
     </div>
   </md-toolbar>
 
-  <md-input-container>
-    <md-select ng-model="$ctrl.selected_puzzle" placeholder="メンバープレイスを選ぶ">
-      <md-option ng-value="puzzle" ng-repeat="puzzle in $ctrl.board_data.puzzles">
-        {{puzzle.label}}
-      </md-option>
-    </md-select>
-  </md-input-container>
+  <div layout-padding layout="column">
+    <div layout-align="center center">
+      <md-input-container>
+        <md-select ng-model="$ctrl.selected_puzzle" placeholder="メンバープレイスを選ぶ">
+          <md-option ng-value="puzzle" ng-repeat="puzzle in $ctrl.board_data.puzzles">
+            {{puzzle.label}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </div>
 
-  <div class="{{$ctrl.getCurrentGroup()}}">
-    <table cellspacing="0">
-      <tr ng-repeat="row in [0, 1, 2, 3, 4, 5, 6, 7, 8]">
-        <td ng-repeat="column in [0, 1, 2, 3, 4, 5, 6, 7, 8]"
-          ng-click="$ctrl.incrementCell(row, column)">
-          <div ng-if="$ctrl.getCellValue(row, column) > 0">
-            <img src="img/{{$ctrl.getCurrentGroup()}}{{$ctrl.getCellValue(row, column)}}.jpg">
-          </div>
-        </td>
-      </tr>
-    </table>
+    <div layout-align="center center" class="{{$ctrl.getCurrentGroup()}}">
+      <table cellspacing="0">
+        <tr ng-repeat="row in [0, 1, 2, 3, 4, 5, 6, 7, 8]">
+          <td ng-repeat="column in [0, 1, 2, 3, 4, 5, 6, 7, 8]"
+            ng-click="$ctrl.changeCellValue(row, column)">
+            <div ng-if="$ctrl.getCellValue(row, column) > 0"  style="position: relative">
+              <img src="img/{{$ctrl.getCurrentGroup()}}{{$ctrl.getCellValue(row, column)}}.jpg">
+              <div class="locked" ng-show="$ctrl.isDefaultCell(row, column)">
+                <img src="img/locked.png">
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div layout-align="center center">
+      <md-input-container>
+        <label>編集モード切替</label>
+        <md-select ng-model="$ctrl.overwrite_character" placeholder="メンバープレイスを選ぶ">
+          <md-option ng-value="id" ng-repeat="id in [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
+            <div ng-if="id === -1">
+              <b>クリックで次のキャラへ変更</b>
+            </div>
+            <div ng-if="id === 0">
+              <b>マスをクリア</b>
+            </div>
+            <div ng-if="id > 0">
+              <img src="img/{{$ctrl.getCurrentGroup()}}{{id}}.jpg" align="middle">
+              <b>で上書き</b>
+            </div>
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+
+    <div layout-align="center center">
+      <md-button class="md-accent md-raised" md-ripple-size="fill" ng-click="$ctrl.resetState()">
+        <b>盤面をリセット</b>
+      <md-button>
+    </div>
   </div>
-
-  <md-button class="md-accent md-raised" md-ripple-size="fill" ng-click="$ctrl.resetState()">
-    <b>リセット</b>
-  <md-button>
 </md-content>
