@@ -1,0 +1,41 @@
+table {
+  margin: 30px;
+}
+
+table tr td {
+  text-align: center;
+  width: 50px;
+  height: 50px;
+}
+
+.muse table {
+  border: 5px solid #e2077e;
+}
+
+.muse table tr td {
+  border: 1px solid #e2077e;
+}
+
+.muse table tr:nth-child(3n) td {
+  border-bottom: 4px solid #e2077e;
+}
+
+.muse table tr td:nth-child(3n) {
+  border-right: 4px solid #e2077e;
+}
+
+.aqours table {
+  border: 5px solid #3699fe;
+}
+
+.aqours table tr td {
+  border: 1px solid #3699fe;
+}
+
+.aqours table tr:nth-child(3n) td {
+  border-bottom: 4px solid #3699fe;
+}
+
+.aqours table tr td:nth-child(3n) {
+  border-right: 4px solid #3699fe;
+}
