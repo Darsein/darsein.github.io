@@ -19,12 +19,12 @@
         <td ng-repeat="column in [0, 1, 2, 3, 4, 5, 6, 7, 8]"
           ng-click="$ctrl.incrementCell(row, column)">
           <div ng-if="$ctrl.getCellValue(row, column) > 0">
-            <img src="img/{{$ctrl.getCurrentGroup()}}{{$ctrl.getCellValue(row, column)}}.jpg" width=50 height=50>
+            <img src="img/{{$ctrl.getCurrentGroup()}}{{$ctrl.getCellValue(row, column)}}.jpg">
           </div>
         </td>
       </tr>
     </table>
-  <div class="aqours">
+  </div>
 
   <md-button class="md-accent md-raised" md-ripple-size="fill" ng-click="$ctrl.resetState()">
     <b>リセット</b>

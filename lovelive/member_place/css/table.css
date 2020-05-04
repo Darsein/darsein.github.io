@@ -6,14 +6,16 @@ table tr td {
   text-align: center;
   width: 50px;
   height: 50px;
+  border: 1px solid #888888;
+}
+
+img {
+  width: 50px;
+  height: 50px;
 }
 
 .muse table {
   border: 5px solid #e2077e;
-}
-
-.muse table tr td {
-  border: 1px solid #e2077e;
 }
 
 .muse table tr:nth-child(3n) td {
@@ -28,14 +30,52 @@ table tr td {
   border: 5px solid #3699fe;
 }
 
-.aqours table tr td {
-  border: 1px solid #3699fe;
-}
-
 .aqours table tr:nth-child(3n) td {
   border-bottom: 4px solid #3699fe;
 }
 
 .aqours table tr td:nth-child(3n) {
   border-right: 4px solid #3699fe;
+}
+
+@media screen and (max-width:600px) {
+  table {
+    margin: 10px;
+  }
+
+  table tr td {
+    text-align: center;
+    width: 25px;
+    height: 25px;
+    border: 1px solid #888888;
+  }
+
+  img {
+    width: 25px;
+    height: 25px;
+  }
+
+  .muse table {
+    border: 3px solid #e2077e;
+  }
+
+  .muse table tr:nth-child(3n) td {
+    border-bottom: 2px solid #e2077e;
+  }
+
+  .muse table tr td:nth-child(3n) {
+    border-right: 2px solid #e2077e;
+  }
+
+  .aqours table {
+    border: 3px solid #3699fe;
+  }
+
+  .aqours table tr:nth-child(3n) td {
+    border-bottom: 2px solid #3699fe;
+  }
+
+  .aqours table tr td:nth-child(3n) {
+    border-right: 2px solid #3699fe;
+  }
 }
