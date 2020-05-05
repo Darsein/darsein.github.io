@@ -37,7 +37,7 @@ angular.module('data')
         },
         {
           id: 2,
-          label: "ニジガク編 初級 (5/4公開)",
+          label: "ニジガク編 初級 (5/5公開)",
           group: "nijigaku",
           board: [
             [0, 3, 0, 0, 0, 2, 0, 0, 0],
