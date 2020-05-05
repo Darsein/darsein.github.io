@@ -44,6 +44,18 @@ img {
   border-right: 4px solid #3699fe;
 }
 
+.nijigaku table {
+  border: 5px solid #fac902;
+}
+
+.nijigaku table tr:nth-child(3n) td {
+  border-bottom: 4px solid #fac902;
+}
+
+.nijigaku table tr td:nth-child(3n) {
+  border-right: 4px solid #fac902;
+}
+
 @media screen and (max-width:600px) {
   table {
     margin: 10px;
@@ -83,5 +95,17 @@ img {
 
   .aqours table tr td:nth-child(3n) {
     border-right: 2px solid #3699fe;
+  }
+
+  .nijigaku table {
+    border: 3px solid #fac902;
+  }
+
+  .nijigaku table tr:nth-child(3n) td {
+    border-bottom: 2px solid #fac902;
+  }
+
+  .nijigaku table tr td:nth-child(3n) {
+    border-right: 2px solid #fac902;
   }
 }
