@@ -15,16 +15,27 @@ angular.module('darsein-hp')
           : Array.from(new Array(9), () => new Array(9).fill(0));
       };
 
+      self.getStoredMemo = function (id) {
+        return $cookies.get('memo' + id)
+          ? JSON.parse($cookies.get('memo' + id))
+          : Array.from(new Array(9),
+              () => Array.from(new Array(9), () => new Array(9).fill(0))
+            );
+      };
+
       self.board_data = new boardData();
 
       self.selected_puzzle = self.board_data.puzzles[self.getStoredSelectedPuzzleId()];
       self.current_board = self.getStoredBoard(self.selected_puzzle.id);
+      self.current_memo = self.getStoredMemo(self.selected_puzzle.id);
       self.overwrite_character = -1;
+      self.is_memo_mode = false;
 
       self.changeSelectedPuzzle = function() {
         self.selected_group = self.board_data.puzzles[self.selected_puzzle.id].group;
         self.selected_board = self.board_data.puzzles[self.selected_puzzle.id].board;
         self.current_board = self.getStoredBoard(self.selected_puzzle.id);
+        self.current_memo = self.getStoredMemo(self.selected_puzzle.id);
       }
 
       self.getCurrentGroup = function() {
@@ -39,17 +50,37 @@ angular.module('darsein-hp')
 
       self.isDefaultCell = function(row, col) {
         return self.selected_board[row][col] !== 0;
-      }
+      };
+
+      self.isCellFilled = function(row, col) {
+        return self.getCellValue(row, col) !== 0;
+      };
 
       self.changeCellValue = function(row, col) {
-        if (self.isDefaultCell(row, col)) {
-          return;
-        }
-        if (self.overwrite_character === -1) {
-          self.current_board[row][col]++;
-          self.current_board[row][col] %= 10;
+        if (self.is_memo_mode) {
+          if (self.isCellFilled(row, col)) {
+            return;
+          }
+          if (self.overwrite_character === 0) {
+            self.current_memo[row][col] = new Array(9).fill(0);
+          } else if (self.overwrite_character !== -1) {
+            self.current_memo[row][col][self.overwrite_character - 1]
+              = 1 - self.current_memo[row][col][self.overwrite_character - 1];
+          }
         } else {
-          self.current_board[row][col] = self.overwrite_character;
+          if (self.isDefaultCell(row, col)) {
+            return;
+          }
+          if (self.overwrite_character === -1) {
+            self.current_board[row][col]++;
+            self.current_board[row][col] %= 10;
+          } else {
+            if (self.current_board[row][col] === self.overwrite_character) {
+              self.current_board[row][col] = 0;
+            } else {
+              self.current_board[row][col] = self.overwrite_character;
+            }
+          }
         }
       };
 
@@ -137,17 +168,26 @@ angular.module('darsein-hp')
       };
 
       self.resetValidation = function() {
-        self.validation = {
-        };
-      }
+        self.validation = {};
+      };
 
       self.resetState = function() {
-        for (var i = 0; i < 9; ++i) {
-          for (var j = 0; j < 9; ++j) {
-            self.current_board[i][j] = 0;
-          }
-        }
+        self.current_board = Array.from(new Array(9), () => new Array(9).fill(0));
+        self.current_memo = Array.from(new Array(9),
+            () => Array.from(new Array(9), () => new Array(9).fill(0))
+          );
       };
+
+      $scope.$watch(function() {
+        return self.selected_puzzle;
+      }, function(newVal, oldVal) {
+        var expire = new Date();
+        expire.setMonth(expire.getMonth() + 3);
+        $cookies.put('selected_puzzle_id', JSON.stringify(self.selected_puzzle.id), {
+          expires: expire
+        });
+        self.changeSelectedPuzzle();
+      }, true);
 
       $scope.$watch(function() {
         return self.current_board;
@@ -162,14 +202,14 @@ angular.module('darsein-hp')
       }, true);
 
       $scope.$watch(function() {
-        return self.selected_puzzle;
+        return self.current_memo;
       }, function(newVal, oldVal) {
         var expire = new Date();
         expire.setMonth(expire.getMonth() + 3);
-        $cookies.put('selected_puzzle_id', JSON.stringify(self.selected_puzzle.id), {
-          expires: expire
-        });
-        self.changeSelectedPuzzle();
+        $cookies.put('memo' + self.selected_puzzle.id,
+          JSON.stringify(self.current_memo), {
+            expires: expire
+          });
       }, true);
     }
   });

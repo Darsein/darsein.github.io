@@ -14,6 +14,11 @@ img {
   height: 50px;
 }
 
+.memo {
+  width: 15px;
+  height: 15px;
+}
+
 .locked {
   position: absolute;
   left: 0px;
@@ -71,6 +76,11 @@ img {
   img {
     width: 25px;
     height: 25px;
+  }
+
+  .memo {
+    width: 7.5px;
+    height: 7.5px;
   }
 
   .muse table {

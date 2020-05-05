@@ -21,11 +21,18 @@
         <tr ng-repeat="row in [0, 1, 2, 3, 4, 5, 6, 7, 8]">
           <td ng-repeat="column in [0, 1, 2, 3, 4, 5, 6, 7, 8]"
             ng-click="$ctrl.changeCellValue(row, column)">
-            <div ng-if="$ctrl.getCellValue(row, column) > 0"  style="position: relative">
+            <div ng-if="$ctrl.isCellFilled(row, column)"  style="position: relative">
               <img src="img/{{$ctrl.getCurrentGroup()}}{{$ctrl.getCellValue(row, column)}}.jpg">
               <div class="locked" ng-show="$ctrl.isDefaultCell(row, column)">
                 <img src="img/locked.png">
               </div>
+            </div>
+            <div ng-if="$ctrl.is_memo_mode && !$ctrl.isCellFilled(row, column)"  style="position: relative">
+              <md-grid-list md-cols="3" md-row-height="1:1">
+                <md-grid-tile ng-repeat="id in [0, 1, 2, 3, 4, 5, 6, 7, 8]" ng-show="$ctrl.current_memo[row][column][id]">
+                  <img class="memo" src="img/color-{{$ctrl.getCurrentGroup()}}{{$index + 1}}.jpg">
+                </md-grid-tile>
+              </md-grid-list>
             </div>
           </td>
         </tr>
@@ -50,6 +57,12 @@
           </md-option>
         </md-select>
       </md-input-container>
+    </div>
+
+    <div layout-align="center center">
+      <md-switch ng-model="$ctrl.is_memo_mode" md-invert>
+        <b>メモモード</b>
+      </md-switch>
     </div>
 
     <div layout-align="center center">
