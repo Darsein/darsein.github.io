@@ -22,7 +22,7 @@
           <td ng-repeat="column in [0, 1, 2, 3, 4, 5, 6, 7, 8]"
             ng-click="$ctrl.changeCellValue(row, column)">
             <div ng-if="$ctrl.isCellFilled(row, column)"  style="position: relative">
-              <img src="img/{{$ctrl.getCurrentGroup()}}{{$ctrl.getCellValue(row, column)}}.jpg">
+              <img src="{{$ctrl.getImageUrl($ctrl.getCellValue(row, column))}}">
               <div class="locked" ng-show="$ctrl.isDefaultCell(row, column)">
                 <img src="img/locked.png">
               </div>
@@ -30,7 +30,7 @@
             <div ng-if="$ctrl.is_memo_mode && !$ctrl.isCellFilled(row, column)"  style="position: relative">
               <md-grid-list md-cols="3" md-row-height="1:1">
                 <md-grid-tile ng-repeat="id in [0, 1, 2, 3, 4, 5, 6, 7, 8]" ng-show="$ctrl.current_memo[row][column][id]">
-                  <img class="memo" src="img/color-{{$ctrl.getCurrentGroup()}}{{$index + 1}}.jpg">
+                  <img class="memo" src="{{$ctrl.getColorImageUrl($index + 1)}}">
                 </md-grid-tile>
               </md-grid-list>
             </div>
@@ -51,7 +51,7 @@
               <b>マスをクリア</b>
             </div>
             <div ng-if="id > 0">
-              <img src="img/{{$ctrl.getCurrentGroup()}}{{id}}.jpg" align="middle">
+              <img src="{{$ctrl.getImageUrl(id)}}" align="middle">
               <b>で上書き</b>
             </div>
           </md-option>

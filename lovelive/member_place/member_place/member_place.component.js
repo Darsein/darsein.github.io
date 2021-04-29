@@ -36,7 +36,7 @@ angular.module('darsein-hp')
         self.selected_board = self.board_data.puzzles[self.selected_puzzle.id].board;
         self.current_board = self.getStoredBoard(self.selected_puzzle.id);
         self.current_memo = self.getStoredMemo(self.selected_puzzle.id);
-      }
+      };
 
       self.getCurrentGroup = function() {
         return self.selected_group;
@@ -46,6 +46,15 @@ angular.module('darsein-hp')
         return self.selected_board[row][col] !== 0
                    ? self.selected_board[row][col]
                    : self.current_board[row][col];
+      };
+
+      self.getImageUrl = function(id) {
+        const image_id = self.selected_puzzle.offset + self.selected_puzzle.member_perm[id - 1]
+        return "img/" + self.getCurrentGroup() + image_id + ".jpg"
+      };
+
+      self.getColorImageUrl = function(id) {
+        return "img/color-" + self.getCurrentGroup() + self.selected_puzzle.member_perm[id - 1] + ".jpg"
       };
 
       self.isDefaultCell = function(row, col) {
