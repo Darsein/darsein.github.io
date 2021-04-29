@@ -5,7 +5,7 @@ angular.module('data')
       self.puzzles = [
         {
           id: 0,
-          label: "μ's編 初級 (5/3公開)",
+          label: "μ's編 初級 (2020/05/03公開)",
           group: "muse",
           board: [
             [0, 4, 0, 0, 5, 0, 2, 0, 0],
@@ -21,7 +21,7 @@ angular.module('data')
         },
         {
           id: 1,
-          label: "Aqours編 初級 (5/4公開)",
+          label: "Aqours編 初級 (2020/05/04公開)",
           group: "aqours",
           board: [
             [0, 0, 6, 0, 3, 0, 0, 5, 0],
@@ -37,7 +37,7 @@ angular.module('data')
         },
         {
           id: 2,
-          label: "ニジガク編 初級 (5/5公開)",
+          label: "ニジガク編 初級 (2020/05/05公開)",
           group: "nijigaku",
           board: [
             [0, 3, 0, 0, 0, 2, 0, 0, 0],
@@ -53,7 +53,7 @@ angular.module('data')
         },
         {
           id: 3,
-          label: "μ's編 中級 (5/6公開)",
+          label: "μ's編 中級 (2020/05/06公開)",
           group: "muse",
           board: [
             [1, 0, 3, 0, 0, 6, 0, 9, 0],
@@ -69,7 +69,7 @@ angular.module('data')
         },
         {
           id: 4,
-          label: "Aqours編 中級 (5/7公開)",
+          label: "Aqours編 中級 (2020/05/07公開)",
           group: "aqours",
           board: [
             [0, 0, 4, 0, 6, 0, 0, 0, 0],
@@ -85,7 +85,7 @@ angular.module('data')
         },
         {
           id: 5,
-          label: "ニジガク編 中級 (5/8公開)",
+          label: "ニジガク編 中級 (2020/05/08公開)",
           group: "nijigaku",
           board: [
             [0, 0, 2, 7, 0, 0, 0, 0, 4],
@@ -101,7 +101,7 @@ angular.module('data')
         },
         {
           id: 6,
-          label: "μ's編 上級 (5/9公開)",
+          label: "μ's編 上級 (2020/05/09公開)",
           group: "muse",
           board: [
             [9, 0, 0, 8, 0, 0, 0, 3, 0],
@@ -117,7 +117,7 @@ angular.module('data')
         },
         {
           id: 7,
-          label: "Aqours編 上級 (5/10公開)",
+          label: "Aqours編 上級 (2020/05/10公開)",
           group: "aqours",
           board: [
             [8, 0, 0, 5, 0, 2, 0, 0, 9],
@@ -133,7 +133,7 @@ angular.module('data')
         },
         {
           id: 8,
-          label: "ニジガク編 上級 (5/11公開)",
+          label: "ニジガク編 上級 (2020/05/11公開)",
           group: "nijigaku",
           board: [
             [0, 0, 0, 0, 0, 4, 0, 0, 0],
@@ -145,6 +145,22 @@ angular.module('data')
             [0, 0, 0, 6, 0, 0, 0, 0, 0],
             [6, 0, 0, 0, 0, 2, 8, 0, 0],
             [0, 0, 9, 5, 0, 0, 0, 0, 1],
+          ],
+        },
+        {
+          id: 9,
+          label: "ニジガク編 (2021/04/29公開)",
+          group: "nijigaku",
+          board: [
+            [0, 8, 4, 0, 0, 0, 3, 7, 0],
+            [1, 0, 0, 8, 0, 2, 0, 0, 5],
+            [9, 0, 0, 0, 4, 0, 0, 0, 1],
+            [0, 7, 0, 0, 6, 0, 0, 8, 0],
+            [0, 0, 8, 4, 0, 5, 2, 0, 0],
+            [0, 5, 0, 0, 2, 0, 0, 1, 0],
+            [7, 0, 0, 0, 5, 0, 0, 0, 8],
+            [2, 0, 0, 3, 0, 1, 0, 0, 6],
+            [0, 4, 1, 0, 0, 0, 9, 5, 0],
           ],
         },
       ];
