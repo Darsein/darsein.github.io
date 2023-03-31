@@ -25,114 +25,17 @@
     ga('create', 'UA-101239470-1', 'auto');
     ga('send', 'pageview');
   </script>
-
-  <!-- Angular Material style sheet -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
-  <!-- Angular Material requires Angular.js Libraries -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-  <!-- Angular Material Library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
-
-  <script src="box_exp.js"></script>
 </head>
 
-<body ng-cloak ng-controller='boxExpectedValueController'>
-  <md-content flex layout-padding>
-    スクフェス・BOX勧誘の期待値を最適化し、リセットすべきかまだ引くべきか計算します。<br> n: 自分が引く予定の回数, k: 残りの全枚数, r: URの残り枚数<br> ※オプションとして K: 初期状態の全体枚数 (デフォルト: K=200), R: 初期状態のUR枚数 (デフォルト: R=2) も自分で変更して遊べます<br>
+<body>
+  <div>
+    <p>日頃よりスクフェス BOX勧誘 期待値最適化をご利用いただきありがとうございます。</p>
+    <p>「ラブライブ！スクールアイドルフェスティバル」が2023/03/31 16:00 (JST) にサービスを終了したことを受け、当ページも機能の提供を終了致します。</p>
+    <p>長きに渡りご愛顧いただき、誠にありがとうございました。</p>
 
-    <md-toolbar class="md-accent" md-whiteframe="5">
-      <div class="md-toolbar-tools">
-        <h3 flex> 情報入力 </h3>
-      </div>
-    </md-toolbar>
-
-    <md-card>
-      <md-card-header>
-        <md-card-header-text>
-          <span class='md-title'>枚数情報</span>
-        </md-card-header-text>
-      </md-card-header>
-      <md-card-actions>
-        <form name="form">
-          <md-input-container>
-            <label>引く予定の枚数 n</label>
-            <input required name='drawInput' type='number' step=1 ng-model='box_exp.n' ng-min="1" ng-max="10000">
-            <div ng-messages="form.drawInput.$error">
-              <div ng-message="required">引く予定枚数を入力してください</div>
-              <div ng-message="min">引く予定枚数が少なすぎます</div>
-              <div ng-message="max">引く予定枚数が多すぎます</div>
-            </div>
-          </md-input-container>
-
-          <md-input-container>
-            <label>残りの全枚数 k</label>
-            <input required name='remainAllInput' type='number' step=1 ng-model='box_exp.k' ng-min="1" ng-max="box_exp.K">
-            <div ng-messages="form.remainAllInput.$error">
-              <div ng-message="required">残りの全枚数を入力してください</div>
-              <div ng-message="min">残りの全枚数が少なすぎます</div>
-              <div ng-message="max">残りの全枚数が多すぎます</div>
-            </div>
-          </md-input-container>
-
-          <md-input-container>
-            <label>残りのUR枚数 r</label>
-            <input required name='remainURInput' type='number' step=1 ng-model='box_exp.r' ng-min="0" ng-max="box_exp.R">
-            <div ng-messages="form.remainURInput.$error">
-              <div ng-message="required">残りのUR枚数を入力してください</div>
-              <div ng-message="min">残りのUR枚数が少なすぎます</div>
-              <div ng-message="max">残りのUR枚数が多すぎます</div>
-            </div>
-          </md-input-container>
-
-          <md-input-container>
-            <label>リセット時の全枚数 K</label>
-            <input required name='initAllInput' type='number' step=1 ng-model='box_exp.K' ng-min="1" ng-max="1000">
-            <div ng-messages="form.initAllInput.$error">
-              <div ng-message="required">リセット時の全枚数を入力してください</div>
-              <div ng-message="min">リセット時の全枚数が少なすぎます</div>
-              <div ng-message="max">リセット時の全枚数が多すぎます</div>
-            </div>
-          </md-input-container>
-
-          <md-input-container>
-            <label>リセット時のUR枚数 R</label>
-            <input required name='initURInput' type='number' step=1 ng-model='box_exp.R' ng-min="1" ng-max="box_exp.K">
-            <div ng-messages="form.initURInput.$error">
-              <div ng-message="required">リセット時のUR枚数を入力してください</div>
-              <div ng-message="min">リセット時のUR枚数が少なすぎます</div>
-              <div ng-message="max">リセット時のUR枚数が多すぎます</div>
-            </div>
-          </md-input-container>
-        </form>
-      </md-card-actions>
-    </md-card>
-
-    <md-toolbar class="md-accent" md-whiteframe="5">
-      <div class="md-toolbar-tools">
-        <h3 flex> 期待値の計算結果 </h3>
-      </div>
-    </md-toolbar>
-
-    <md-card>
-      <md-card-content>
-        <md-list>
-          <md-list-item>最適時の期待値: {{box_exp.expected_value}}</md-list-item>
-          <md-list-item>リセット時の期待値: {{box_exp.reset_expected_value}}</md-list-item>
-          <md-list-item> そのまま引く時の期待値: {{box_exp.draw_expected_value}}</md-list-item>
-          <md-list-item>最適戦略:
-            <span ng-if="box_exp.expected_value !== box_exp.draw_expected_value">リセット</span>
-            <span ng-if="box_exp.expected_value === box_exp.draw_expected_value">そのまま引く</span>
-          </md-list-item>
-        </md-list>
-      </md-card-content>
-    </md-card>
-
-  </md-content>
+    <p>2023/04/15 (JST) よりサービス開始が予定されている「ラブライブ！スクールアイドルフェスティバル2 MIRACLE LIVE!」におきましても、自身のできる範囲で何かしらのサービスを公開することも検討して参ります。</p>
+    <p>ご意見・ご要望などあれば <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> まで気軽にご連絡ください。 </p>
+  </div>
 </body>
 
 </html>

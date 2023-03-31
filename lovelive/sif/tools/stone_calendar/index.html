@@ -28,79 +28,17 @@
     ga('create', 'UA-101239470-1', 'auto');
     ga('send', 'pageview');
   </script>
-
-  <!-- Angular Material style sheet -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
-  <!-- Angular Material requires Angular.js Libraries -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-cookies.min.js"></script>
-  <!-- Angular Material Library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
-
-  <script src="stone_events.js"></script>
 </head>
 
-<body ng-cloak ng-controller='stoneEventsController'>
-  <md-content flex layout-padding>
-    期間を指定すると、その期間内に手に入る報酬の個数が表示されます (現在ラブカストーンのみ対応)。<br>
-    カレンダーは手入力で作成しているので、間違い等を見つけたら <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> までご連絡ください。
-    <md-toolbar class="md-accent" md-whiteframe="5">
-      <div class="md-toolbar-tools">
-        <h3 flex> 報酬カレンダー </h3>
-      </div>
-    </md-toolbar>
-    <md-content flex layout-padding>
-      <iframe src="https://calendar.google.com/calendar/embed?showTitle=0&amp;showPrint=0&amp;showCalendars=0&amp;height=300&amp;wkst=1&amp;bgcolor=%23ffcccc&amp;src=darsein.ll%40gmail.com&amp;color=%23B1365F&amp;ctz=Asia%2FTokyo" style="border-width:0" width="400"
-        height="300" frameborder="0" scrolling="no"></iframe>
-    </md-content>
-    <md-toolbar class="md-accent" md-whiteframe="5">
-      <div class="md-toolbar-tools">
-        <h3 flex> 期間選択 </h3>
-      </div>
-    </md-toolbar>
-    <md-card>
-      <md-card-content>
-        <md-datepicker ng-model-options="{ timezone: '+0900' }" ng-model="stone_events.start_day" md-placeholder="Enter date"></md-datepicker> から<br>
-        <md-datepicker ng-model-options="{ timezone: '+0900' }" ng-model="stone_events.target_day" md-placeholder="Enter date"></md-datepicker> まで
-      </md-card-content>
-    </md-card>
+<body>
+  <div>
+    <p>日頃よりスクフェス 報酬カレンダーをご利用いただきありがとうございます。</p>
+    <p>「ラブライブ！スクールアイドルフェスティバル」が2023/03/31 16:00 (JST) にサービスを終了したことを受け、当ページも機能の提供を終了致します。</p>
+    <p>長きに渡りご愛顧いただき、誠にありがとうございました。</p>
 
-    <md-toolbar class="md-accent" md-whiteframe="5">
-      <div class="md-toolbar-tools">
-        <h3 flex> 報酬一覧 </h3>
-      </div>
-    </md-toolbar>
-    <md-card ng-repeat="(reward_id, reward) in stone_events.rewards">
-      <md-card-title>
-        <md-card-title-text>{{reward_id}}: 合計 {{reward.total_num}} 個</md-card-title-text>
-      </md-card-title>
-      <md-card-content>
-        内訳:
-        <md-list>
-          <md-list-item ng-repeat="(category, nums) in reward.detail" ng-show="nums.times>0">
-            {{category}}: {{nums.num}}個 × {{nums.times}}日
-          </md-list-item>
-        </md-list>
-      </md-card-content>
-    </md-card>
-
-    <h2> 更新履歴 </h2>
-    <ul layout-margin>
-      <li> 2017/08/02: ブラウザが Safari の場合に計算失敗するバグを修正 </li>
-      <li> 2017/08/01: 公開 </li>
-    </ul>
-    <h2> アップデート予定 (個人的優先度順) </h2> 下記以外にも要望があれば <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> まで。
-    <ul layout-margin>
-      <li> 勧誘チケット・補助チケット・特技サポート部員など、他の報酬に対応 </li>
-      <li> 内訳の種類ごとに獲得個数や日数を自分で入力して調整可能に </li>
-      <li> イベント・期間内の一定日数のみログインなど複雑な状況に対応できるよう、カスタム入力欄を追加 </li>
-    </ul>
-  </md-content>
+    <p>2023/04/15 (JST) よりサービス開始が予定されている「ラブライブ！スクールアイドルフェスティバル2 MIRACLE LIVE!」におきましても、自身のできる範囲で何かしらのサービスを公開することも検討して参ります。</p>
+    <p>ご意見・ご要望などあれば <a href="https://twitter.com/Darsein_LL">@Darsein_LL</a> まで気軽にご連絡ください。 </p>
+  </div>
 </body>
 
 </html>
